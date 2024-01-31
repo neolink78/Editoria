@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  back:
+    build: ./back
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+    depends_on:
+      - database
+    ports:
+      - 4000:4000
+    develop:
+      watch:
+        - action: sync
+          path: ./back
+          target: /app
+        - action: rebuild
+          path: back/package.json
+
+  front:
+    build: ./front
+    ports:
+      - 3000:3000
+    develop:
+      watch:
+        - action: sync
+          path: ./front
+          target: /app
+        - action: rebuild
+          path: front/package.json
+
+  database:
+    image: postgres:15
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  database-data:
