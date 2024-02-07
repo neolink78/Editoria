@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntit
 import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
 import { CreateOrUpdateCodeSnippetArgs } from './codeSnippet.args';
 // import { User } from './User';
-// import { Comment } from './Comment';
+import Comment  from '../comment/comment';
 // import { Like } from './Like';
 
 export enum Language {
@@ -42,9 +42,9 @@ registerEnumType(Language, {
 //   @Field(() => User)
 //   user: User;
 
-//   @OneToMany(() => Comment, (comment) => comment.snippet)
-//   @Field(() => [Comment])
-//   comments: Comment[];
+  @OneToMany(() => Comment, (comment) => comment.content)
+  @Field(() => [Comment])
+  comments!: Comment[];
 
 //   @OneToMany(() => Like, (like) => like.snippet)
 //   @Field(() => [Like])
