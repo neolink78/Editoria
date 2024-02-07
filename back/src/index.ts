@@ -11,6 +11,8 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { AuthChecker, buildSchema } from "type-graphql";
 import { CodeSnippetResolver } from "./resolvers/CodeSnippetResolver";
+import User from "./entities/user/user";
+import { UserResolver } from "./resolvers/UserResolver";
 
 // import { AdResolver } from "./resolvers/AdResolver";
 // import { TagResolver } from "./resolvers/TagResolver";
@@ -22,7 +24,7 @@ import { CodeSnippetResolver } from "./resolvers/CodeSnippetResolver";
 const dataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
-  entities: [CodeSnippet],
+  entities: [CodeSnippet, User],
   synchronize: true,
 });
 
@@ -33,8 +35,8 @@ const dataSource = new DataSource({
 const PORT = 4000;
 const startApolloServer = async () => {
   const schema = await buildSchema({
-    resolvers: [CodeSnippetResolver],
-    // validate: true,
+    resolvers: [CodeSnippetResolver, UserResolver],
+    validate: true,
     // authChecker,
   });
   const server = new ApolloServer({ schema });
