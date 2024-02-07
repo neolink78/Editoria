@@ -38,5 +38,13 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
 
+  adminer:
+    image: adminer
+    depends_on:
+      - database
+    restart: always
+    ports:
+      - 8080:8080
+
 volumes:
   database-data:
