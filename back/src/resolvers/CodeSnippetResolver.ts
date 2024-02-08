@@ -23,12 +23,12 @@ export class CodeSnippetResolver {
   }
 
   @Mutation(() => CodeSnippet)
-  async deleteAd(@Arg("id", () => ID) id: string) {
+  async deleteCodeSnippet(@Arg("id", () => ID) id: string) {
     return CodeSnippet.deleteCodeSnippet(id);
   }
 
   @Mutation(() => CodeSnippet)
-  updateAd(@Arg("id", () => ID) id: string, @Args() args: CreateOrUpdateCodeSnippetArgs) {
+  updateCodeSnippet(@Arg("id", () => ID) id: string, @Args() args: CreateOrUpdateCodeSnippetArgs) {
     return CodeSnippet.updateCodeSnippet(id, args);
   }
 }
