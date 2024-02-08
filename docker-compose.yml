@@ -31,10 +31,20 @@ services:
 
   database:
     image: postgres:15
+    ports: 
+      - 5432:5432
     volumes:
       - database-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
+
+  adminer:
+    image: adminer
+    depends_on:
+      - database
+    restart: always
+    ports:
+      - 8080:8080
 
 volumes:
   database-data:
