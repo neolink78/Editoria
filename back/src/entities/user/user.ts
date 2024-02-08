@@ -3,13 +3,16 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
+  ManyToMany
 } from "typeorm";
 import { compare, hash } from "bcrypt";
-import { CreateOrUpdateUser } from "./user.args";
-// import UserSession from "./userSession";
-// import Ad from "./ad";
+import { CreateOrUpdateUser, SignInUser } from "./user.args";
+import CodeSnippet from "../codeSnippet/codeSnippet";
+import UserSession from "./userSession";
+
 
 export enum Role {
     USER = 'USER',
@@ -48,13 +51,18 @@ class User extends BaseEntity {
 
   @Column({ default: false })
   @Field()
-  is_premium!: boolean
+  is_premium!: boolean;
 
-//   @OneToMany(() => UserSession, (session) => session.user)
-//   sessions!: UserSession[];
-
-//   @OneToMany(() => Ad, (ad) => ad.owner)
-//   ads!: Ad[];
+  @OneToMany(() => CodeSnippet, (code) => code.owner)
+  codes!: CodeSnippet[];
+  
+  @JoinTable({ name: "user_code" })
+  @ManyToMany(() => CodeSnippet, (code) => code.collaborators, { eager: true })
+  @Field(() => [CodeSnippet])
+  codeSnippets!: CodeSnippet[];
+  
+  @OneToMany(() => UserSession, (session) => session.user)
+  sessions!: UserSession[];
 
   constructor(user?: CreateOrUpdateUser) {
     super();
@@ -110,36 +118,39 @@ class User extends BaseEntity {
     await User.delete(id);
     return user;
     }
-//   static async getUserWithEmailAndPassword({
-//     email,
-//     password,
-//   }: SignInUser): Promise<User> {
-//     const user = await User.findOne({ where: { email } });
-//     if (!user || !(await compare(password, user.hashedPassword))) {
-//       throw new Error("INVALID_CREDENTIALS");
-//     }
-//     return user;
-//   }
 
-//   static async signIn({
-//     email,
-//     password,
-//   }: SignInUser): Promise<{ user: User; session: UserSession }> {
-//     const user = await this.getUserWithEmailAndPassword({ email, password });
-//     const session = await UserSession.saveNewSession(user);
-//     return { user, session };
-//   }
+  static async getUserWithEmailAndPassword({
+    email,
+    password,
+  }: SignInUser): Promise<User> {
+    const user = await User.findOne({ where: { email } });
+    if (!user || !(await compare(password, user.hashedPassword))) {
+      throw new Error("INVALID_CREDENTIALS");
+    }
+    return user;
+  }
 
-//   static async getUserWithSessionId(sessionId: string): Promise<User | null> {
-//     const session = await UserSession.findOne({
-//       where: { id: sessionId },
-//       relations: { user: true },
-//     });
-//     if (!session) {
-//       return null;
-//     }
-//     return session.user;
-//   }
+  static async signIn({
+    email,
+    password,
+  }: SignInUser): Promise<{ user: User; session: UserSession }> {
+    const user = await this.getUserWithEmailAndPassword({ email, password });
+    const session = await UserSession.saveNewSession(user);
+    return { user, session };
+  }
+
+  
+
+  static async getUserWithSessionId(sessionId: string): Promise<User | null> {
+    const session = await UserSession.findOne({
+      where: { id: sessionId },
+      relations: { user: true },
+    });
+    if (!session) {
+      return null;
+    }
+    return session.user;
+  }
 }
 
 export default User;

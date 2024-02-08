@@ -15,6 +15,10 @@ export class CreateOrUpdateCodeSnippetArgs {
   @Field()
   is_public!: boolean;
 
-  @Field()
+  @Field(() => Language)
   language!: Language
+
+  @Field(() => [String], { nullable: true })
+  collaboratorIds!: string[];
+
 }

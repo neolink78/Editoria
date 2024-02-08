@@ -1,9 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
 import { CreateOrUpdateCodeSnippetArgs } from './codeSnippet.args';
-// import { User } from './User';
-// import { Comment } from './Comment';
-// import { Like } from './Like';
+import User from '../user/user';
 
 export enum Language {
   JAVASCRIPT = 'JAVASCRIPT',
@@ -18,6 +16,10 @@ export enum Language {
 registerEnumType(Language, {
   name: "Language",
 });
+
+type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
+  owner: User;
+};
 
 @Entity()
 @ObjectType()
@@ -38,32 +40,38 @@ registerEnumType(Language, {
   @Field()
   is_public!: boolean
 
-//   @ManyToOne(() => User, (user) => user.codeSnippets)
-//   @Field(() => User)
-//   user: User;
-
-//   @OneToMany(() => Comment, (comment) => comment.snippet)
-//   @Field(() => [Comment])
-//   comments: Comment[];
-
-//   @OneToMany(() => Like, (like) => like.snippet)
-//   @Field(() => [Like])
-//   likes: Like[];
-
   @CreateDateColumn()
   @Field()
   createdAt!: Date;
-
+  
   @CreateDateColumn()
   @Field()
   updatedAt!: Date;
-
+  
   @Column({default: Language.JAVASCRIPT})
   @Field(type => Language)
   language!: Language;
 
+  @ManyToOne(() => User, (user) => user.codes, { eager: true })
+  @Field()
+  owner!: User;
+  
+  @ManyToMany(() => User, (collaborators) => collaborators.codeSnippets)
+  collaborators!: User[];
+  
+  //   @ManyToOne(() => User, (user) => user.codeSnippets)
+  //   @Field(() => User)
+  //   user: User;
+  
+  //   @OneToMany(() => Comment, (comment) => comment.snippet)
+  //   @Field(() => [Comment])
+  //   comments: Comment[];
+  
+  //   @OneToMany(() => Like, (like) => like.snippet)
+  //   @Field(() => [Like])
+  //   likes: Like[];
 
-  constructor(codeSnippet?: CreateOrUpdateCodeSnippetArgs) {
+  constructor(codeSnippet?: CodeSnippetArgs) {
     super();
 
     if (codeSnippet) {
@@ -71,10 +79,11 @@ registerEnumType(Language, {
       this.code = codeSnippet.code;
       this.is_public = codeSnippet.is_public;
       this.language = codeSnippet.language;
+      this.owner = codeSnippet.owner;
     }
   }
 
-  static async createCodeSnippet(codeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
+  static async createCodeSnippet(codeSnippet: CodeSnippetArgs): Promise<CodeSnippet> {
     const newCodeSnippet = new CodeSnippet(codeSnippet);
     if (newCodeSnippet.code.length === 0 ) {
       throw new Error('Code snippet cannot be empty');
@@ -103,6 +112,11 @@ registerEnumType(Language, {
   static async updateCodeSnippet(id: string, partialCodeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
+    
+    if (partialCodeSnippet.collaboratorIds) {
+      codeSnippet.collaborators = await Promise.all(partialCodeSnippet.collaboratorIds.map(User.getUserById));
+    }
+
     await codeSnippet.save();
     codeSnippet.reload()
     return codeSnippet;

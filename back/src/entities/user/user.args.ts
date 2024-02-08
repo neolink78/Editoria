@@ -18,15 +18,15 @@ export class CreateOrUpdateUser {
 
   @Field()
   description!: string;
-
+  
 }
 
-// @ArgsType()
-// export class SignInUser {
-//   @Field()
-//   @IsEmail()
-//   email!: string;
+@ArgsType()
+export class SignInUser {
+  @Field()
+  @IsEmail()
+  email!: string;
 
-//   @Field()
-//   password!: string;
-// }
+  @Field()
+  password!: string;
+}
