@@ -59,17 +59,6 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @ManyToMany(() => User, (collaborators) => collaborators.codeSnippets)
   collaborators!: User[];
   
-  //   @ManyToOne(() => User, (user) => user.codeSnippets)
-  //   @Field(() => User)
-  //   user: User;
-  
-  //   @OneToMany(() => Comment, (comment) => comment.snippet)
-  //   @Field(() => [Comment])
-  //   comments: Comment[];
-  
-  //   @OneToMany(() => Like, (like) => like.snippet)
-  //   @Field(() => [Like])
-  //   likes: Like[];
 
   constructor(codeSnippet?: CodeSnippetArgs) {
     super();

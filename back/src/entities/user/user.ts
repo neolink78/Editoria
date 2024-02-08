@@ -51,7 +51,7 @@ class User extends BaseEntity {
 
   @Column({ default: false })
   @Field()
-  is_premium!: boolean;
+  isPremium!: boolean;
 
   @OneToMany(() => CodeSnippet, (code) => code.owner)
   codes!: CodeSnippet[];
