@@ -17,4 +17,8 @@ export class CreateOrUpdateCodeSnippetArgs {
 
   @Field(() => Language)
   language!: Language
+
+  @Field(() => [String], { nullable: true })
+  collaboratorIds!: string[];
+
 }

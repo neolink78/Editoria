@@ -1,15 +1,15 @@
-import { Arg, Args, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Context } from "..";
 import CodeSnippet from "../entities/codeSnippet/codeSnippet";
 import { CreateOrUpdateCodeSnippetArgs } from "../entities/codeSnippet/codeSnippet.args";
-// import { CreateCodeSnippetInput, UpdateCodeSnippetInput } from './codeSnippetInputs';
-// import { CodeSnippetService } from './codeSnippetService';
-// import { MyContext } from '../types';
+import User from "../entities/user/user";
 
 @Resolver()
 export class CodeSnippetResolver {
+  @Authorized()
   @Mutation(() => CodeSnippet)
-  createCodeSnippet(@Args() args: CreateOrUpdateCodeSnippetArgs) {
-    return CodeSnippet.createCodeSnippet(args);
+  createCodeSnippet(@Args() args: CreateOrUpdateCodeSnippetArgs, @Ctx() { user }: Context) {
+    return CodeSnippet.createCodeSnippet({ ...args, owner: user as User });
   }
 
   @Query(() => [CodeSnippet])
