@@ -57,7 +57,7 @@ class User extends BaseEntity {
   codeSnippetsOwned!: CodeSnippet[];
   
   @JoinTable({ name: "user_code" })
-  @ManyToMany(() => CodeSnippet, (code) => code.collaborators, { eager: true })
+  @ManyToMany(() => CodeSnippet, (code) => code.collaborators)
   @Field(() => [CodeSnippet])
   codeSnippets!: CodeSnippet[];
   
