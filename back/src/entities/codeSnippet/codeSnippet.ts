@@ -52,7 +52,7 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field(type => Language)
   language!: Language;
 
-  @ManyToOne(() => User, (user) => user.codes, { eager: true })
+  @ManyToOne(() => User, (user) => user.codeSnippetsOwned, { eager: true })
   @Field()
   owner!: User;
   

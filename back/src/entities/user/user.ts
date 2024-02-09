@@ -53,8 +53,8 @@ class User extends BaseEntity {
   @Field()
   isPremium!: boolean;
 
-  @OneToMany(() => CodeSnippet, (code) => code.owner)
-  codes!: CodeSnippet[];
+  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.owner)
+  codeSnippetsOwned!: CodeSnippet[];
   
   @JoinTable({ name: "user_code" })
   @ManyToMany(() => CodeSnippet, (code) => code.collaborators, { eager: true })
