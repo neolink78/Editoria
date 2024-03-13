@@ -38,7 +38,7 @@ class User extends BaseEntity {
   @Field()
   username!: string
 
-  @Column()
+  @Column({default: ""})
   @Field()
   description!: string;
 
@@ -71,7 +71,7 @@ class User extends BaseEntity {
       this.email = user.email;
       this.username = user.username;
       this.hashedPassword = user.password;
-      this.description = user.description;
+      this.description = user.description || "";
     }
   }
 

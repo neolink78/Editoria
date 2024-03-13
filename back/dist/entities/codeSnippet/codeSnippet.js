@@ -8,15 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var CodeSnippet_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Language = void 0;
 const typeorm_1 = require("typeorm");
 const type_graphql_1 = require("type-graphql");
-const codeSnippet_args_1 = require("./codeSnippet.args");
-// import { User } from './User';
-// import { Comment } from './Comment';
-// import { Like } from './Like';
+const user_1 = __importDefault(require("../user/user"));
 var Language;
 (function (Language) {
     Language["JAVASCRIPT"] = "JAVASCRIPT";
@@ -27,6 +27,9 @@ var Language;
     Language["CPP"] = "C++";
     Language["CSHARP"] = "C#";
 })(Language || (exports.Language = Language = {}));
+(0, type_graphql_1.registerEnumType)(Language, {
+    name: "Language",
+});
 let CodeSnippet = CodeSnippet_1 = class CodeSnippet extends typeorm_1.BaseEntity {
     constructor(codeSnippet) {
         super();
@@ -35,6 +38,7 @@ let CodeSnippet = CodeSnippet_1 = class CodeSnippet extends typeorm_1.BaseEntity
             this.code = codeSnippet.code;
             this.is_public = codeSnippet.is_public;
             this.language = codeSnippet.language;
+            this.owner = codeSnippet.owner;
         }
     }
     static async createCodeSnippet(codeSnippet) {
@@ -44,11 +48,36 @@ let CodeSnippet = CodeSnippet_1 = class CodeSnippet extends typeorm_1.BaseEntity
         }
         return await CodeSnippet_1.save(newCodeSnippet);
     }
+    static async getCodeSnippet() {
+        return await CodeSnippet_1.find();
+    }
+    static async getCodeSnippetById(id) {
+        const codeSnippet = await CodeSnippet_1.findOne({ where: { id } });
+        if (!codeSnippet) {
+            throw new Error('Code snippet not found');
+        }
+        return codeSnippet;
+    }
+    static async deleteCodeSnippet(id) {
+        const codeSnippet = await CodeSnippet_1.getCodeSnippetById(id);
+        await CodeSnippet_1.delete(id);
+        return codeSnippet;
+    }
+    static async updateCodeSnippet(id, partialCodeSnippet) {
+        const codeSnippet = await CodeSnippet_1.getCodeSnippetById(id);
+        Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
+        if (partialCodeSnippet.collaboratorIds) {
+            codeSnippet.collaborators = await Promise.all(partialCodeSnippet.collaboratorIds.map(user_1.default.getUserById));
+        }
+        await codeSnippet.save();
+        codeSnippet.reload();
+        return codeSnippet;
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     (0, type_graphql_1.Field)(() => type_graphql_1.ID),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], CodeSnippet.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -77,12 +106,21 @@ __decorate([
 ], CodeSnippet.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: Language.JAVASCRIPT }),
-    (0, type_graphql_1.Field)(),
+    (0, type_graphql_1.Field)(type => Language),
     __metadata("design:type", String)
 ], CodeSnippet.prototype, "language", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_1.default, (user) => user.codeSnippetsOwned, { eager: true }),
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", user_1.default)
+], CodeSnippet.prototype, "owner", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => user_1.default, (collaborators) => collaborators.codeSnippets),
+    __metadata("design:type", Array)
+], CodeSnippet.prototype, "collaborators", void 0);
 CodeSnippet = CodeSnippet_1 = __decorate([
     (0, typeorm_1.Entity)(),
     (0, type_graphql_1.ObjectType)(),
-    __metadata("design:paramtypes", [codeSnippet_args_1.CreateOrUpdateCodeSnippetArgs])
+    __metadata("design:paramtypes", [Object])
 ], CodeSnippet);
 exports.default = CodeSnippet;

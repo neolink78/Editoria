@@ -9,35 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateOrUpdateCodeSnippetArgs = void 0;
+exports.SignInUser = exports.CreateOrUpdateUser = void 0;
 const type_graphql_1 = require("type-graphql");
 const class_validator_1 = require("class-validator");
-const codeSnippet_1 = require("./codeSnippet");
-let CreateOrUpdateCodeSnippetArgs = class CreateOrUpdateCodeSnippetArgs {
+let CreateOrUpdateUser = class CreateOrUpdateUser {
 };
-exports.CreateOrUpdateCodeSnippetArgs = CreateOrUpdateCodeSnippetArgs;
+exports.CreateOrUpdateUser = CreateOrUpdateUser;
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
-], CreateOrUpdateCodeSnippetArgs.prototype, "title", void 0);
+], CreateOrUpdateUser.prototype, "email", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MinLength)(1),
     __metadata("design:type", String)
-], CreateOrUpdateCodeSnippetArgs.prototype, "code", void 0);
+], CreateOrUpdateUser.prototype, "username", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
-    __metadata("design:type", Boolean)
-], CreateOrUpdateCodeSnippetArgs.prototype, "is_public", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => codeSnippet_1.Language),
+    (0, class_validator_1.MinLength)(12),
     __metadata("design:type", String)
-], CreateOrUpdateCodeSnippetArgs.prototype, "language", void 0);
+], CreateOrUpdateUser.prototype, "password", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(() => [String], { nullable: true }),
-    __metadata("design:type", Array)
-], CreateOrUpdateCodeSnippetArgs.prototype, "collaboratorIds", void 0);
-exports.CreateOrUpdateCodeSnippetArgs = CreateOrUpdateCodeSnippetArgs = __decorate([
+    (0, type_graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], CreateOrUpdateUser.prototype, "description", void 0);
+exports.CreateOrUpdateUser = CreateOrUpdateUser = __decorate([
     (0, type_graphql_1.ArgsType)()
-], CreateOrUpdateCodeSnippetArgs);
+], CreateOrUpdateUser);
+let SignInUser = class SignInUser {
+};
+exports.SignInUser = SignInUser;
+__decorate([
+    (0, type_graphql_1.Field)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], SignInUser.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], SignInUser.prototype, "password", void 0);
+exports.SignInUser = SignInUser = __decorate([
+    (0, type_graphql_1.ArgsType)()
+], SignInUser);

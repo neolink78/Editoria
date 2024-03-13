@@ -19,22 +19,61 @@ exports.CodeSnippetResolver = void 0;
 const type_graphql_1 = require("type-graphql");
 const codeSnippet_1 = __importDefault(require("../entities/codeSnippet/codeSnippet"));
 const codeSnippet_args_1 = require("../entities/codeSnippet/codeSnippet.args");
-// import { CreateCodeSnippetInput, UpdateCodeSnippetInput } from './codeSnippetInputs';
-// import { CodeSnippetService } from './codeSnippetService';
-// import { MyContext } from '../types';
 let CodeSnippetResolver = class CodeSnippetResolver {
-    createCodeSnippet(args) {
-        return codeSnippet_1.default.createCodeSnippet(args);
+    createCodeSnippet(args, { user }) {
+        return codeSnippet_1.default.createCodeSnippet({ ...args, owner: user });
+    }
+    codeSnippets() {
+        return codeSnippet_1.default.getCodeSnippet();
+    }
+    codeSnippet(id) {
+        return codeSnippet_1.default.getCodeSnippetById(id);
+    }
+    async deleteCodeSnippet(id) {
+        return codeSnippet_1.default.deleteCodeSnippet(id);
+    }
+    updateCodeSnippet(id, args) {
+        return codeSnippet_1.default.updateCodeSnippet(id, args);
     }
 };
 exports.CodeSnippetResolver = CodeSnippetResolver;
 __decorate([
+    (0, type_graphql_1.Authorized)(),
     (0, type_graphql_1.Mutation)(() => codeSnippet_1.default),
     __param(0, (0, type_graphql_1.Args)()),
+    __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [codeSnippet_args_1.CreateOrUpdateCodeSnippetArgs]),
+    __metadata("design:paramtypes", [codeSnippet_args_1.CreateOrUpdateCodeSnippetArgs, Object]),
     __metadata("design:returntype", void 0)
 ], CodeSnippetResolver.prototype, "createCodeSnippet", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => [codeSnippet_1.default]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CodeSnippetResolver.prototype, "codeSnippets", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => codeSnippet_1.default),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], CodeSnippetResolver.prototype, "codeSnippet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => codeSnippet_1.default),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CodeSnippetResolver.prototype, "deleteCodeSnippet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => codeSnippet_1.default),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
+    __param(1, (0, type_graphql_1.Args)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, codeSnippet_args_1.CreateOrUpdateCodeSnippetArgs]),
+    __metadata("design:returntype", void 0)
+], CodeSnippetResolver.prototype, "updateCodeSnippet", null);
 exports.CodeSnippetResolver = CodeSnippetResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], CodeSnippetResolver);
