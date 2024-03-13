@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
-import Tile from "../tile";
+import Tile from "../../lib/tile";
 
 const Dashboard = () => {
 
