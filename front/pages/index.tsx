@@ -2,7 +2,7 @@ import Section from "../lib/section";
 import { Flex, Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import SubmitButton from "../lib/submitButton";
-import Tile from "../components/tile";
+import Tile from "../lib/tile";
 import indexMock from "../mocks/indexMock";
 import Layout from "../components/layout";
 

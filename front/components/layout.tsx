@@ -1,17 +1,26 @@
 import { Flex, Box } from "@chakra-ui/react";
 import SubmitButton from "../lib/submitButton";
+import UserIcon from "../icons/userIcon";
+import { useRouter } from "next/router";
 type Props = {
   children: React.ReactNode;
+  user?: boolean;
 };
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children, user = true }: Props) => {
+  const router = useRouter();
   return (
     <Box bg="#14181F" color="#fbfbfb" fontFamily="body">
       <Flex className="header_home_page">
         EDITORIA
-        <Flex gap="1.5vw">
-          <SubmitButton onClick={() => alert("redirecting to IDE...")} w="6vw">
-            Sign In
+        <Flex gap="1.5vw" align="center">
+          <SubmitButton
+            onClick={() =>
+              alert(user ? "Redirecting to account" : "redirecting to IDE...")
+            }
+            w="6vw"
+          >
+            {user ? "Sign In" : "All projects"}
           </SubmitButton>
           <SubmitButton
             w="9vw"
@@ -20,6 +29,9 @@ const Layout = ({ children }: Props) => {
           >
             Start coding
           </SubmitButton>
+          <Box onClick={() => router.push("/account")} cursor="pointer">
+            {user && <UserIcon />}
+          </Box>
         </Flex>
       </Flex>
       {children}

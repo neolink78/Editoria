@@ -24,6 +24,7 @@ const Tile = ({
 }: TileProps) => {
   return (
     <Flex
+      cursor="pointer"
       justifyContent="space-between"
       alignItems="center"
       p="0.8vw 1.5vw"
@@ -32,6 +33,7 @@ const Tile = ({
       bg="#2F3138"
       mt={marginTop}
       fontSize="0.9vw"
+      onClick={() => alert("redirecting to")}
     >
       <Flex alignItems="center" gap="0.5vw">
         {icon}
