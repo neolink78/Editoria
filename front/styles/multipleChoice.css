@@ -1,0 +1,42 @@
+.rarity_multiple_choice_container {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.04);
+    border-style: solid;
+    border-radius: 0.4vw;
+    border-color: var(--base-grey, #1e2022);
+    border-width: 0.1vw;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.3vw;
+    box-shadow: var(
+        --drop-shardow-01-box-shadow,
+        0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+        0px 12px 16px -4px rgba(16, 24, 40, 0.08)
+    );
+}
+
+.rarity_multiple_choice_item {
+    font-size: 0.8vw;
+    border-radius: 0.3vw;
+    white-space: nowrap;
+    transition: background 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    border-radius: 0.3vw;
+
+}
+
+.rarity_multiple_choice_item_:hover {
+    background:  white;
+    color: black;
+    border-radius: 0.3vw;
+
+
+}
+
+.rarity_multiple_choice_item_selected {
+    color: black;
+    background: #ffffff;
+    border-radius: 0.3vw;
+
+}

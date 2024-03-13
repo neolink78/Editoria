@@ -1,52 +1,48 @@
-import { Flex, Box, useColorModeValue, Button } from '@chakra-ui/react';
+import { Flex, Box } from '@chakra-ui/react'
 
 type Item = {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
 
 type MultipleChoiceProps = {
-  items: Item[];
-  value: string | null;
-  onChange: (value: string | undefined) => void;
+  items: Item[]
+  value: string | null
+  className?: string
+  onChange: (value: string | undefined) => void
+  padding?: string
 }
 
 const MultipleChoice = ({
   items,
   value,
   onChange,
+  className,
+  padding = '0.3vw 1.4vw',
 }: MultipleChoiceProps) => {
-  const bgColor = useColorModeValue('black', 'white');
-  const color = useColorModeValue('white', 'black');
-
   return (
-    <Flex>
+    <Flex className="rarity_multiple_choice_container">
       {items.map((item) => {
-        const hoverTextColor = 'black';
-        const hoverBgColor = useColorModeValue('gray.200', 'gray.600');
-        const isSelected = value === item.value;
+        const selected = value === item.value
         return (
           <Box
-            as="button"
             key={item.value}
-            onClick={() => onChange(item.value === value ? undefined : item.value)}
-            p="0.3vw 1.4vw"
-            borderRadius="0.3vw"
-            bg={isSelected ? 'white' : bgColor}
-            color={isSelected ? 'black' : color}
-            _hover={{
-              bg: hoverBgColor,
-              color: hoverTextColor,
-            }} transition="background 0.3s ease, color 0.3s ease"
-            cursor="pointer"
-            mx={2}
+            padding={padding}
+            className={
+              `rarity_multiple_choice_item_${selected ? 'selected' : ''} ${className}`
+            }
+            onClick={() => {
+              if (item.value === value) {
+                onChange(undefined)
+              } else onChange(item.value)
+            }}
           >
             {item.label}
           </Box>
-        );
+        )
       })}
     </Flex>
-  );
+  )
 }
 
-export default MultipleChoice;
+export default MultipleChoice
