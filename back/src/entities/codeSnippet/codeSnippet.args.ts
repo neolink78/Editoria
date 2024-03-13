@@ -11,14 +11,10 @@ export class CreateOrUpdateCodeSnippetArgs {
   @Field()
   @MinLength(2)
   code!: string;
-
-  @Field()
-  is_public!: boolean;
-
+  
   @Field(() => Language)
   language!: Language
 
-  @Field(() => [String], { nullable: true })
-  collaboratorIds!: string[];
-
+  @Field()
+  projectId!: string
 }
