@@ -12,6 +12,7 @@ import { compare, hash } from "bcrypt";
 import { CreateOrUpdateUser, SignInUser } from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
+import Project from "../project/project";
 
 
 export enum Role {
@@ -53,13 +54,13 @@ class User extends BaseEntity {
   @Field()
   isPremium!: boolean;
 
-  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.owner)
-  codeSnippetsOwned!: CodeSnippet[];
+  @OneToMany(() => Project, (project) => project.owner)
+  projectsOwned!: Project[];
   
-  @JoinTable({ name: "user_code" })
-  @ManyToMany(() => CodeSnippet, (code) => code.collaborators, { eager: true })
-  @Field(() => [CodeSnippet])
-  codeSnippets!: CodeSnippet[];
+  @JoinTable({ name: "user_project" })
+  @ManyToMany(() => Project, (code) => code.collaborators)
+  @Field(() => [Project])
+  projects!: Project[];
   
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];

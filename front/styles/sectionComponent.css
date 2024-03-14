@@ -1,20 +1,15 @@
 .section_title {
-    font-size: 2.5vw;
+    font-size: 2.3vw;
     font-weight: 600;
-    margin-top: 0.2vw;
     line-height: 3.2vw;
 }
 
 .section_children {
-    margin-top: 0.9vw;
-    font-size: 1vw;
-    width: 26vw;
-    line-height: 1.3vw;
-}
-
-.submit_button_box {
-    align-items: center;
-    font-size: 0.8vw;
+    margin-top: 1vw;
+    font-size: 1.8vw;
+    font-weight: 300;
+    width: 37vw;
+    line-height: 3vw;
 }
 
 .submit_button_button {
@@ -26,16 +21,16 @@
     line-height: 24px;
     background-color: white;
     cursor: pointer;
-    &:hover {
-        opacity: 0.8;
-    }
-
-    svg {
-        transform: translateX(5px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        pointer-events: none; 
-        margin-top: 0.2vw;
-        align-items: center;
-}
 }
 
+.submit_button_button:hover {
+    opacity: 0.8;
+}
+
+.submit_button_button svg {
+    transform: translateX(5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none; 
+    margin-top: 0.2vw;
+    align-items: center;
+}
