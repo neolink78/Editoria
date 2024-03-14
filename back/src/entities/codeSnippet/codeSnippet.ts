@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntit
 import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
 import { CreateOrUpdateCodeSnippetArgs } from './codeSnippet.args';
 import User from '../user/user';
+import Project from '../project/project';
 
 export enum Language {
   JAVASCRIPT = 'JAVASCRIPT',
@@ -19,6 +20,7 @@ registerEnumType(Language, {
 
 type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   owner: User;
+  project: Project;
 };
 
 @Entity()
@@ -36,10 +38,6 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field()
   code!: string
 
-  @Column({ default: true })
-  @Field()
-  is_public!: boolean
-
   @CreateDateColumn()
   @Field()
   createdAt!: Date;
@@ -52,13 +50,9 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field(type => Language)
   language!: Language;
 
-  @ManyToOne(() => User, (user) => user.codeSnippetsOwned, { eager: true })
+  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { eager: true })
   @Field()
-  owner!: User;
-  
-  @ManyToMany(() => User, (collaborators) => collaborators.codeSnippets)
-  collaborators!: User[];
-  
+  project!: Project;
 
   constructor(codeSnippet?: CodeSnippetArgs) {
     super();
@@ -66,9 +60,7 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
     if (codeSnippet) {
       this.title = codeSnippet.title;
       this.code = codeSnippet.code;
-      this.is_public = codeSnippet.is_public;
       this.language = codeSnippet.language;
-      this.owner = codeSnippet.owner;
     }
   }
 
@@ -77,6 +69,11 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
     if (newCodeSnippet.code.length === 0 ) {
       throw new Error('Code snippet cannot be empty');
     }
+      
+    if (codeSnippet.projectId) {
+      newCodeSnippet.project = await Project.getProjectById(codeSnippet.projectId);
+    }
+
     return await CodeSnippet.save(newCodeSnippet);
   }
 
@@ -102,10 +99,6 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
     
-    if (partialCodeSnippet.collaboratorIds) {
-      codeSnippet.collaborators = await Promise.all(partialCodeSnippet.collaboratorIds.map(User.getUserById));
-    }
-
     await codeSnippet.save();
     codeSnippet.reload()
     return codeSnippet;
