@@ -26,11 +26,12 @@ const Breadcrumb = ({
         const selected = value === item.value
         return (
           <Box
+            opacity={selected ? 1 : 0.5}
             key={item.value}
             padding={padding}
-            mx="0.2vw"
+            m="0.1vw"
             className={
-              `breadcrumb_item_${selected ? 'selected' : ''} ${className}`
+              `breadcrumb_item_${selected ? 'selected' : ''}`
             }
             onClick={() => {
               if (item.value === value) {
