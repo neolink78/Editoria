@@ -3,22 +3,22 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useState } from "react";
 
 const files = {
-  "script.js" : {
-    name: "script.js",
-    language: "javascript",
-    value: "console.log('Hello, world!');",
+  "index.html": {
+    name: "index.html",
+    language: "html",
+    value: "<!-- Write your HTML -->",
   },
 };
 
 function CodeEditor() {
-  const [fileName, setFileName] = useState<keyof typeof files>("script.js");
+  const [fileName, setFileName] = useState<keyof typeof files>("index.html");
   const [output, setOutput] = useState<string>("");
 
   const file = files[fileName];
 
   const defineCustomTheme = (monaco: Monaco) => {
     monaco.editor.defineTheme("customTheme", {
-      base: "vs-dark", // Utilisez 'vs' pour un thème clair
+      base: "vs-dark",
       inherit: true,
       rules: [],
       colors: {
@@ -28,9 +28,31 @@ function CodeEditor() {
   };
 
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
-    if (!monaco) return
+    if (!monaco) return;
     defineCustomTheme(monaco);
-    monaco.editor.setTheme('customTheme')
+    monaco.editor.setTheme("customTheme");
+  };
+
+  const getLanguage = (fileName : string) => {
+    if (fileName.endsWith(".js")) {
+      return "javascript";
+    } else if (fileName.endsWith(".css")) {
+      return "css";
+    } else if (fileName.endsWith(".html")) {
+      return "html";
+    }
+  }
+
+  const addFile = () => {
+    const newFileName = prompt("Enter file name");
+    if (newFileName) {
+      files[newFileName] = {
+        name: newFileName,
+        language: getLanguage(newFileName),
+        value: "// test file",
+      };
+      setFileName(newFileName);
+    }
   };
 
   return (
@@ -40,19 +62,32 @@ function CodeEditor() {
       </Box>
       <Flex w="100%">
         <Box w="65px" bg="#2F3138" className="p-4"></Box>
-        <Box w="260px" backgroundColor={"#212227"} color="white" className="p-4">
+        <Flex
+          w="260px"
+          direction={"column"}
+          backgroundColor={"#212227"}
+          color="white"
+          className="p-4"
+        >
           PROJECT
-        </Box>
+          <Box>Info</Box>
+          <Box>Files</Box>
+          <button onClick={addFile}>+</button>
+          <Box>Depedencies</Box>
+          <Box>Comments</Box>
+        </Flex>
         <Flex direction={"column"} w="100%">
           <Box backgroundColor={"#212227"} color="white">
-            <button
-              disabled={fileName === "script.js"}
-              onClick={() => setFileName("script.js")}
-              className="bg-[#14181F] py-2 px-4 text-sm"
-            >
-              script.js
-            </button>
-            <button>run code</button>
+            {Object.keys(files).map((key) => (
+              <button
+                key={key}
+                disabled={fileName === key}
+                onClick={() => setFileName(key as keyof typeof files)}
+                className={"py-2 px-4 text-sm "  + (fileName === key ? "bg-[#14181F]" : "bg-[#25292F]") + " hover:bg-[#14181F]"}
+              >
+                {key}
+              </button>
+            ))}
           </Box>
           <Flex>
             <Editor
@@ -63,7 +98,6 @@ function CodeEditor() {
               defaultLanguage={file.language}
               defaultValue={file.value}
               onChange={(value) => {
-                // Update the code value in the files object when it changes
                 files[fileName].value = value;
               }}
               onMount={handleEditorDidMount}
