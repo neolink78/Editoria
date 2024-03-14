@@ -1,21 +1,35 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Input } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const files = {
-  "index.html": {
-    name: "index.html",
-    language: "html",
-    value: "<!-- Write your HTML -->",
-  },
+type File = {
+  name: string;
+  language: string;
+  value: string;
 };
 
 function CodeEditor() {
-  const [fileName, setFileName] = useState<keyof typeof files>("index.html");
+  const [fileName, setFileName] = useState<string | null>("index.html");
+  const [project, setProject] = useState<File[]>([
+    {
+      name: "index.html",
+      language: "html",
+      value: "<!-- Write your HTML -->",
+    },
+  ]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [output, setOutput] = useState<string>("");
+  const [showInput, setShowInput] = useState<boolean>(false);
+  const [newFileName, setNewFileName] = useState<string>("");
 
-  const file = files[fileName];
+  useEffect(() => {
+    const file = project.find((file) => file.name === fileName);
+    if (file) setSelectedFile(file);
+  }, [fileName, project])
 
+  useEffect(() => {
+    console.log(project);
+  }, [project]);
   const defineCustomTheme = (monaco: Monaco) => {
     monaco.editor.defineTheme("customTheme", {
       base: "vs-dark",
@@ -33,26 +47,53 @@ function CodeEditor() {
     monaco.editor.setTheme("customTheme");
   };
 
-  const getLanguage = (fileName : string) => {
+  const getLanguage = (fileName: string) => {
     if (fileName.endsWith(".js")) {
       return "javascript";
     } else if (fileName.endsWith(".css")) {
       return "css";
-    } else if (fileName.endsWith(".html")) {
+    } else {
       return "html";
     }
-  }
+  };
 
   const addFile = () => {
-    const newFileName = prompt("Enter file name");
     if (newFileName) {
-      files[newFileName] = {
-        name: newFileName,
-        language: getLanguage(newFileName),
-        value: "// test file",
-      };
+      let language = getLanguage(newFileName);
+      let fileValue;
+
+      if (language === "javascript") {
+        fileValue = "// Write your JavaScript";
+      } else if (language === "css") {
+        fileValue = "/* Write your CSS */";
+      } else {
+        fileValue = "<!-- Write your HTML -->";
+      }
+
+      setProject([
+        ...project,
+        {
+          name: newFileName,
+          language: language,
+          value: fileValue,
+        },
+      ]);
       setFileName(newFileName);
+      setShowInput(false);
     }
+  };
+
+  const updateFile = (fileName: string, value: string) => {
+    const newProject = project.map((file) => {
+      if (file.name === fileName) {
+        return {
+          ...file,
+          value,
+        };
+      }
+      return file;
+    });
+    setProject(newProject);
   };
 
   return (
@@ -72,20 +113,39 @@ function CodeEditor() {
           PROJECT
           <Box>Info</Box>
           <Box>Files</Box>
-          <button onClick={addFile}>+</button>
+          {project.map((file) => (
+            <p key={file.name} onClick={() => setFileName(file.name)}>
+              {file.name}
+            </p>
+          ))}
+          {showInput && (
+            <Input
+              placeholder="file name"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addFile();
+              }}
+            />
+          )}
+          <button onClick={() => setShowInput(true)}>+</button>
           <Box>Depedencies</Box>
           <Box>Comments</Box>
         </Flex>
         <Flex direction={"column"} w="100%">
           <Box backgroundColor={"#212227"} color="white">
-            {Object.keys(files).map((key) => (
+            {project.map((file) => (
               <button
-                key={key}
-                disabled={fileName === key}
-                onClick={() => setFileName(key as keyof typeof files)}
-                className={"py-2 px-4 text-sm "  + (fileName === key ? "bg-[#14181F]" : "bg-[#25292F]") + " hover:bg-[#14181F]"}
+                key={file.name}
+                disabled={fileName === file.name}
+                onClick={() => setFileName(file.name)}
+                className={
+                  "py-2 px-4 text-sm " +
+                  (fileName === file.name ? "bg-[#14181F]" : "bg-[#25292F]") +
+                  " hover:bg-[#14181F]"
+                }
               >
-                {key}
+                {file.name}
               </button>
             ))}
           </Box>
@@ -94,11 +154,11 @@ function CodeEditor() {
               className="pt-2 bg-[#14181F]"
               height="calc(100vh - 92px)"
               width="60%"
-              path={file.name}
-              defaultLanguage={file.language}
-              defaultValue={file.value}
+              path={selectedFile?.name}
+              defaultLanguage={selectedFile?.language}
+              defaultValue={selectedFile?.value}
               onChange={(value) => {
-                files[fileName].value = value;
+                if (selectedFile) updateFile(selectedFile.name, value || "");
               }}
               onMount={handleEditorDidMount}
             />
