@@ -1,8 +1,8 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import MultipleChoice from "../../lib/breadCrumb";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
+import Breadcrumb from "../../lib/breadCrumb";
 
 export default function Account() {
     const [activePage, setActivePage] = useState('dashboard');
@@ -17,7 +17,7 @@ export default function Account() {
     return (
         <Layout>
             <Box bg="#14181F" color="white" minH="100vh" p={8} display="flex" flexDirection="column" alignItems="center">
-                <MultipleChoice
+                <Breadcrumb
                     items={navigationItems}
                     value={activePage}
                     onChange={handlePageChange}

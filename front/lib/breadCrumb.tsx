@@ -5,7 +5,7 @@ type Item = {
   value: string
 }
 
-type MultipleChoiceProps = {
+type breadcrumbProps = {
   items: Item[]
   value: string | null
   className?: string
@@ -13,23 +13,24 @@ type MultipleChoiceProps = {
   padding?: string
 }
 
-const MultipleChoice = ({
+const Breadcrumb = ({
   items,
   value,
   onChange,
   className,
   padding = '0.3vw 1.4vw',
-}: MultipleChoiceProps) => {
+}: breadcrumbProps) => {
   return (
-    <Flex className="rarity_multiple_choice_container">
+    <Flex className="breadcrumb_container">
       {items.map((item) => {
         const selected = value === item.value
         return (
           <Box
             key={item.value}
             padding={padding}
+            mx="0.2vw"
             className={
-              `rarity_multiple_choice_item_${selected ? 'selected' : ''} ${className}`
+              `breadcrumb_item_${selected ? 'selected' : ''} ${className}`
             }
             onClick={() => {
               if (item.value === value) {
@@ -45,4 +46,4 @@ const MultipleChoice = ({
   )
 }
 
-export default MultipleChoice
+export default Breadcrumb
