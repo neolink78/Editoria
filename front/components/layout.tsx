@@ -16,11 +16,11 @@ const Layout = ({ children, user = true }: Props) => {
         <Flex gap="1.5vw" align="center">
           <SubmitButton
             onClick={() =>
-              alert(user ? "Redirecting to account" : "redirecting to IDE...")
+              user ? alert("Redirecting to account") : router.push("/sign-in")
             }
             w="6vw"
           >
-            {user ? "Sign In" : "All projects"}
+            {user ? "All projects" : "Sign In"}
           </SubmitButton>
           <SubmitButton
             w="9vw"

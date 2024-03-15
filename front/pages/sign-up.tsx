@@ -2,7 +2,7 @@ import { Box, Flex, FormControl, Heading, Text } from "@chakra-ui/react";
 import Layout from "../components/layout";
 import InputForm from "../components/input";
 import SubmitButton from "../lib/submitButton";
-import { useSignInFormik } from "../components/form";
+import { useSignInFormik } from "../hooks/form";
 
 export default function SignUp() {
   const formik = useSignInFormik(false);
