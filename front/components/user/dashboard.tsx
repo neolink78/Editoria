@@ -28,6 +28,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         ))}
       </Box>
@@ -55,6 +56,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         ))}
       </Box>
@@ -82,6 +84,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         ))}
       </Box>
@@ -108,6 +111,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         ))}
       </Box>

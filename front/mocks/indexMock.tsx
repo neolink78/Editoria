@@ -7,6 +7,7 @@ const indexMock = [
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
+    user: "Novak",
   },
   {
     marginTop: "1.2vw",
@@ -14,6 +15,7 @@ const indexMock = [
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
+    user: "John",
   },
   {
     marginTop: "1.2vw",
@@ -21,6 +23,7 @@ const indexMock = [
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
+    user: "Mehmet",
   },
 ];
 

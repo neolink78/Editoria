@@ -12,6 +12,7 @@ type TileProps = {
   date?: string;
   marginTop?: string;
   homePage?: boolean;
+  user?: string;
 };
 
 const Tile = ({
@@ -21,6 +22,7 @@ const Tile = ({
   date,
   marginTop,
   homePage,
+  user,
 }: TileProps) => {
   return (
     <Flex
@@ -47,7 +49,7 @@ const Tile = ({
         <Flex alignItems="center">
           <CiChat1 /> 4
         </Flex>
-        {date}
+        {date} by {user}
       </Flex>
       {!homePage && <FaRegTrashAlt />}
     </Flex>
