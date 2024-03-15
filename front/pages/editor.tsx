@@ -2,6 +2,7 @@ import { Box, Flex, Input, Text } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 type File = {
   name: string;
@@ -31,6 +32,7 @@ function CodeEditor() {
   useEffect(() => {
     const file = project.find((file) => file.name === fileName);
     if (file) setSelectedFile(file);
+    else setSelectedFile(null);
   }, [fileName, project]);
 
   useEffect(() => {
@@ -86,6 +88,7 @@ function CodeEditor() {
       ]);
       setFileName(newFileName);
       setShowInput(false);
+      setNewFileName("");
     }
   };
 
@@ -116,8 +119,15 @@ function CodeEditor() {
           color="white"
         >
           <Text className="p-4">PROJECT</Text>
-          <Flex alignItems="center" bg="#2F3138" className="p-1 cursor-pointer">
-            <BiChevronRight />
+          <Flex
+            alignItems="center"
+            bg="#2F3138"
+            className="p-1 cursor-pointer"
+            onClick={() => setShowTabs({ ...showTabs, info: !showTabs.info })}
+          >
+            <BiChevronRight
+              style={{ transform: showTabs.info ? "rotate(90deg)" : "" }}
+            />
             Info
           </Flex>
           <Flex
@@ -132,18 +142,34 @@ function CodeEditor() {
             Files
           </Flex>
           {showTabs.files && (
-            <Flex direction={"column"} gap='2' className="px-8 py-2">
+            <Flex direction={"column"} gap="2" className="px-8 py-2">
               {project.map((file) => (
-                <p
+                <Flex
                   key={file.name}
-                  onClick={() => setFileName(file.name)}
-                  className="text-xs cursor-pointer"
+                  justifyContent={"space-between"}
+                  alignContent={"center"}
                 >
-                  {file.name}
-                </p>
+                  <p
+                    onClick={() => setFileName(file.name)}
+                    className="text-xs cursor-pointer"
+                  >
+                    {file.name}
+                  </p>
+                  <FaRegTrashAlt
+                    className="w-2 cursor-pointer"
+                    onClick={() =>
+                      setProject(
+                        project.filter(
+                          (projecFile) => projecFile.name !== file.name
+                        )
+                      )
+                    }
+                  />
+                </Flex>
               ))}
               {showInput && (
                 <Input
+                  size={"xs"}
                   placeholder="file name"
                   value={newFileName}
                   onChange={(e) => setNewFileName(e.target.value)}
@@ -154,17 +180,28 @@ function CodeEditor() {
                 />
               )}
               {showTabs.files && (
-                <button className="m-auto" onClick={() => setShowInput(true)}>+</button>
+                <button className="m-auto" onClick={() => setShowInput(true)}>
+                  +
+                </button>
               )}
             </Flex>
           )}
-          <Flex alignItems="center" bg="#2F3138" className="p-1 cursor-pointer">
-            <BiChevronRight />
+          <Flex
+            alignItems="center"
+            bg="#2F3138"
+            className="p-1 cursor-pointer"
+            onClick={() =>
+              setShowTabs({ ...showTabs, comments: !showTabs.comments })
+            }
+          >
+            <BiChevronRight
+              style={{ transform: showTabs.comments ? "rotate(90deg)" : "" }}
+            />
             Comments
           </Flex>
         </Flex>
         <Flex direction={"column"} w="100%">
-          <Box backgroundColor={"#212227"} color="white">
+          <Box backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" className="min-h-9">
             {project.map((file) => (
               <button
                 key={file.name}
@@ -188,7 +225,7 @@ function CodeEditor() {
               path={selectedFile?.name}
               defaultLanguage={selectedFile?.language}
               defaultValue={selectedFile?.value}
-              onChange={(value) => {
+              onChange={(value: string) => {
                 if (selectedFile) updateFile(selectedFile.name, value || "");
               }}
               onMount={handleEditorDidMount}
