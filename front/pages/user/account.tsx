@@ -2,6 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
+import Fav from "../../components/user/fav";
 import Breadcrumb from "../../lib/breadCrumb";
 
 export default function Account() {
@@ -24,7 +25,7 @@ export default function Account() {
                 />
                 {activePage === 'dashboard' && <Dashboard/>}
                 {activePage === 'settings' && <Text>Paramètres</Text>}
-                {activePage === 'yourfavcoder' && <Text>Votre codeur préféré</Text>}
+                {activePage === 'yourfavcoder' && <Fav/>}
             </Box>
         </Layout>
     );
