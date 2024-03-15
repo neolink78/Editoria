@@ -7,6 +7,7 @@ type SubmitButtonProps = {
   bg?: string;
   w?: string;
   h?: string;
+  type?: "button" | "submit";
 };
 
 const SubmitButton = ({
@@ -15,6 +16,7 @@ const SubmitButton = ({
   bg = "white",
   w,
   h = "2.5vw",
+  type = "submit",
 }: SubmitButtonProps) => {
   const [color, setColor] = useState("black");
   return (
@@ -33,6 +35,7 @@ const SubmitButton = ({
       }}
       onMouseEnter={() => setColor("white")}
       onMouseLeave={() => setColor("black")}
+      type={type}
     >
       {children}
 

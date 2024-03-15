@@ -1,7 +1,7 @@
 import { Input } from "@chakra-ui/react";
 
 type InputFormProps = {
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   value?: string;
   color?: string;
