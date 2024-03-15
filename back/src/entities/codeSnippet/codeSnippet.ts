@@ -20,7 +20,7 @@ registerEnumType(Language, {
 
 type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   owner: User;
-  project: Project;
+  projectId: string;
 };
 
 @Entity()
