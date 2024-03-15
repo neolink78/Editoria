@@ -7,15 +7,14 @@ const Dashboard = () => {
     <>
       <Box
         fontSize="1.4vw"
-        m={"4vw 0 0 10vw"}
-        alignSelf={"flex-start"}
+        m="4vw 0 0 10vw"
+        alignSelf="flex-start"
         display="flex"
         alignItems="baseline"
       >
         <Box>Mes projets récents</Box>
         <Box fontSize="1vw" ml="2vw">
-          {" "}
-          Tout voir{" "}
+          Tout voir
         </Box>
       </Box>
       <Box>
@@ -41,8 +40,7 @@ const Dashboard = () => {
       >
         Mes projets likés
         <Box fontSize="1vw" ml="2vw">
-          {" "}
-          Tout voir{" "}
+          Tout voir
         </Box>
       </Box>
       <Box>
@@ -68,8 +66,7 @@ const Dashboard = () => {
       >
         Mes projets en collaboration
         <Box fontSize="1vw" ml="2vw">
-          {" "}
-          Tout voir{" "}
+          Tout voir
         </Box>
       </Box>
       <Box>
@@ -94,11 +91,10 @@ const Dashboard = () => {
       >
         Mes derniers commentaires
         <Box fontSize="1vw" ml="2vw">
-          {" "}
-          Tout voir{" "}
+          Tout voir
         </Box>
       </Box>
-      <Box>
+      <Box mb="6vw">
         {indexMock.slice(-2).map((e, idx) => (
           <Tile
             homePage
