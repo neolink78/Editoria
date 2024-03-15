@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
@@ -17,11 +17,10 @@ export default function Account() {
   ];
   return (
     <Layout>
-      <Box
+      <Flex
         bg="#14181F"
         color="white"
         mt="7.8vw"
-        display="flex"
         flexDirection="column"
         alignItems="center"
       >
@@ -33,7 +32,7 @@ export default function Account() {
         {activePage === "dashboard" && <Dashboard />}
         {activePage === "settings" && <Settings />}
         {activePage === "yourfavcoder" && <Text>Votre codeur préféré</Text>}
-      </Box>
+      </Flex>
     </Layout>
   );
 }

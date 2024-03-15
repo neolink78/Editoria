@@ -31,7 +31,6 @@ export const useSettingsFormik = (user: any) => {
       //if (values?.image?.includes("/")) values.image = null;
       try {
         console.log(values);
-
         toast({
           position: "bottom-right",
           render: () => (

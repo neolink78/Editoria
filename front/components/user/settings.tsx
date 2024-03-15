@@ -19,7 +19,7 @@ const Settings = (user: any) => {
     }
   };
   return (
-    <Flex flexDirection="column" align="flex-start" mx="10.5vw" mb="5vw">
+    <Flex flexDirection="column" align="flex-start" mb="5vw" mr="37.5vw">
       <Flex alignItems="center" mt="4.4vw" fontSize="2vw" gap="1vw" ml="1.4vw">
         <PictureIcon />
         Your informations
@@ -66,8 +66,16 @@ const Settings = (user: any) => {
         In case of deletion, all your projects and personal data will be
         deleted.
       </Box>
-      <SubmitButton w="16.2vw">Delete my account</SubmitButton>
-      <Box fontSize="1.5vw" fontWeight={600} mt="7.7vw" mb="1.5vw">
+      <SubmitButton w="16.2vw" onClick={() => alert("deleting account...")}>
+        Delete my account
+      </SubmitButton>
+      <Box
+        fontSize="1.5vw"
+        fontWeight={600}
+        mt="7.7vw"
+        mb="1.5vw"
+        onClick={() => alert("upgrading...")}
+      >
         Billing
       </Box>
       <SubmitButton w="16.2vw">Upgrade to premium</SubmitButton>
