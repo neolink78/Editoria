@@ -1,7 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
+import emptyMocks from "../../mocks/emptyMocks";
 import SubmitButton from "../../lib/submitButton";
+import favMocks from "../../mocks/favMocks";
 
 const Dashboard = () => {
   return (
@@ -14,13 +16,14 @@ const Dashboard = () => {
         alignItems="baseline"
       >
         <Box>Mes projets récents</Box>
-        {indexMock && <Box fontSize="1vw" ml="2vw">
+        {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
           {" "}
           Tout voir{" "}
         </Box>}
       </Box>
-      <Box>
-        {indexMock ? indexMock.slice(-2).map((e, idx) => (
+      <Box mb={12}>
+        { emptyMocks && emptyMocks.length > 0
+        ? emptyMocks.slice(-2).map((e, idx) => (
           <Tile
             homePage
             key={idx}
@@ -29,8 +32,10 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            
           />
-        )) : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} my="10">
+        ))
+        : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
           <Box fontSize="0.9vw" m="2vw">
             {" "}
             Vous n'avez pas encore de projet.{" "}
@@ -44,7 +49,6 @@ const Dashboard = () => {
           </SubmitButton>
         </Box>
         }
-
       </Box>
 
       <Box
@@ -55,13 +59,13 @@ const Dashboard = () => {
         alignItems="baseline"
       >
         Mes projets likés
-        {indexMock && <Box fontSize="1vw" ml="2vw">
+        {favMocks && <Box fontSize="1vw" ml="2vw">
           {" "}
           Tout voir{" "}
         </Box>}
       </Box>
-      <Box>
-        {indexMock ? indexMock.slice(-2).map((e, idx) => (
+      <Box mb={12}>
+        { favMocks ? favMocks.slice(-2).map((e, idx) => (
           <Tile
             homePage
             key={idx}
@@ -99,7 +103,7 @@ const Dashboard = () => {
           Tout voir{" "}
         </Box>}
       </Box>
-      <Box>
+      <Box mb={12}>
         {indexMock ? indexMock.slice(-2).map((e, idx) => (
           <Tile
             homePage
@@ -127,13 +131,14 @@ const Dashboard = () => {
         alignItems="baseline"
       >
         Mes derniers commentaires
-        {indexMock && <Box fontSize="1vw" ml="2vw">
+        {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
           {" "}
           Tout voir{" "}
         </Box>}
       </Box>
-      <Box>
-        {indexMock ? indexMock.slice(-2).map((e, idx) => (
+      <Box mb={12}>
+         { emptyMocks.length > 0
+        ? emptyMocks.slice(-2).map((e, idx) => (
           <Tile
             homePage
             key={idx}
