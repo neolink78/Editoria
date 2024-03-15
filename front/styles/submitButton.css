@@ -7,10 +7,9 @@
   font-weight: 600;
   font-size: 1vw;
   gap: 0.3vw;
+}
 
-  svg {
-    pointer-events: none;
-
-    align-items: center;
-  }
+.submit_button_container svg {
+  pointer-events: none;
+  align-items: center;
 }

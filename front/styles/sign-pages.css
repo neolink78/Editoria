@@ -1,0 +1,20 @@
+.box {
+    height: calc(100vh - 149.98px);
+}
+
+.header_form_pages {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.section_input {
+    flex-direction: column;
+}
+
+.form_control_button {
+    display: flex;
+    justify-content: center;
+}
