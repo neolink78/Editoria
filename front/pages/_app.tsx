@@ -1,8 +1,10 @@
+import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider, CSSReset } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import { AppProps } from "next/app";
 import "../styles/globals.css";
 import theme from "../styles/theme";
+import createApolloClient from "./apollo-client";
 
 const Fonts = () => (
   <Global
@@ -48,11 +50,15 @@ const Fonts = () => (
 );
 
 export default function App({ Component, pageProps }: AppProps) {
+  const apolloClient = createApolloClient();
+
   return (
-    <ChakraProvider theme={theme}>
-      <CSSReset />
-      <Fonts />
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <ApolloProvider client={apolloClient}>
+      <ChakraProvider theme={theme}>
+        <CSSReset />
+        <Fonts />
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </ApolloProvider>
   );
 }
