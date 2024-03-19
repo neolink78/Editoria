@@ -2,7 +2,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { SignUpMutation, SignUpMutationVariables } from "../gql/graphql";
+import {
+  SignInMutation,
+  SignInMutationVariables,
+  SignUpMutation,
+  SignUpMutationVariables,
+} from "../gql/graphql";
 
 const SIGN_UP_FORM = gql`
   mutation SignUp($email: String!, $username: String!, $password: String!) {
@@ -12,11 +17,26 @@ const SIGN_UP_FORM = gql`
   }
 `;
 
+const SIGN_IN_FORM = gql`
+  mutation SignIn($email: String!, $password: String!) {
+    signIn(email: $email, password: $password) {
+      description
+      email
+      id
+      username
+    }
+  }
+`;
+
 export const useSignInFormik = (isLogin: boolean) => {
   const router = useRouter();
 
   const [signUpMutation] = useMutation<SignUpMutation, SignUpMutationVariables>(
     SIGN_UP_FORM
+  );
+
+  const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
+    SIGN_IN_FORM
   );
 
   const validationSchema = isLogin
@@ -37,15 +57,19 @@ export const useSignInFormik = (isLogin: boolean) => {
           .required("Password confirmation not entered"),
       });
 
-  const formik = useFormik({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema,
-    onSubmit: async () => {
+  const onSubmit = async () => {
+    if (isLogin) {
+      const { data } = await signInMutation({
+        variables: {
+          email: formik.values.email,
+          password: formik.values.password,
+        },
+      });
+
+      if (data && data.signIn) {
+        router.push(`/user/account`);
+      }
+    } else {
       const { data } = await signUpMutation({
         variables: {
           email: formik.values.email,
@@ -55,11 +79,28 @@ export const useSignInFormik = (isLogin: boolean) => {
       });
 
       if (data && data.signUp) {
-        router.push(
-          `/sign-in?email=${encodeURIComponent(formik.values.email)}`
-        );
+        const signInData = await signInMutation({
+          variables: {
+            email: formik.values.email,
+            password: formik.values.password,
+          },
+        });
+        if (signInData && signInData.data?.signIn) {
+          router.push(`/user/account`);
+        }
       }
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
+    validationSchema,
+    onSubmit,
   });
   return formik;
 };

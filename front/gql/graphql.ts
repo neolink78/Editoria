@@ -23,9 +23,8 @@ export type CodeSnippet = {
   code: Scalars['String']['output'];
   createdAt: Scalars['DateTimeISO']['output'];
   id: Scalars['ID']['output'];
-  is_public: Scalars['Boolean']['output'];
   language: Language;
-  owner: User;
+  project: Project;
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTimeISO']['output'];
 };
@@ -43,26 +42,40 @@ export enum Language {
 export type Mutation = {
   __typename?: 'Mutation';
   createCodeSnippet: CodeSnippet;
+  createProject: Project;
   deleteCodeSnippet: CodeSnippet;
+  deleteProject: Project;
   deleteUser: User;
   signIn: User;
   signOut: Scalars['Boolean']['output'];
   signUp: User;
   updateCodeSnippet: CodeSnippet;
+  updateProject: Project;
   updateUser: User;
 };
 
 
 export type MutationCreateCodeSnippetArgs = {
   code: Scalars['String']['input'];
+  language: Language;
+  projectId: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationCreateProjectArgs = {
   collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
   is_public: Scalars['Boolean']['input'];
-  language: Language;
   title: Scalars['String']['input'];
 };
 
 
 export type MutationDeleteCodeSnippetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteProjectArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -88,10 +101,17 @@ export type MutationSignUpArgs = {
 
 export type MutationUpdateCodeSnippetArgs = {
   code: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  language: Language;
+  projectId: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateProjectArgs = {
   collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
   id: Scalars['ID']['input'];
   is_public: Scalars['Boolean']['input'];
-  language: Language;
   title: Scalars['String']['input'];
 };
 
@@ -104,10 +124,22 @@ export type MutationUpdateUserArgs = {
   username: Scalars['String']['input'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  createdAt: Scalars['DateTimeISO']['output'];
+  id: Scalars['ID']['output'];
+  is_public: Scalars['Boolean']['output'];
+  owner: User;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   codeSnippet: CodeSnippet;
   codeSnippets: Array<CodeSnippet>;
+  getProjectById: Project;
+  getProjects: Array<Project>;
   getUser: User;
   getUsers: Array<User>;
   myProfile: User;
@@ -115,6 +147,11 @@ export type Query = {
 
 
 export type QueryCodeSnippetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetProjectByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -130,11 +167,11 @@ export enum Role {
 
 export type User = {
   __typename?: 'User';
-  codeSnippets: Array<CodeSnippet>;
   description: Scalars['String']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   isPremium: Scalars['Boolean']['output'];
+  projects: Array<Project>;
   role: Role;
   username: Scalars['String']['output'];
 };
@@ -148,5 +185,14 @@ export type SignUpMutationVariables = Exact<{
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'User', email: string } };
 
+export type SignInMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'User', description: string, email: string, id: string, username: string } };
+
 
 export const SignUpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignUp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signUp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<SignUpMutation, SignUpMutationVariables>;
+export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;

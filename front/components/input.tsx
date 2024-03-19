@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { FormErrorMessage, Input } from "@chakra-ui/react";
 
 type InputFormProps = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -9,6 +9,7 @@ type InputFormProps = {
   border?: string;
   borderRadius?: number | string;
   name?: string;
+  error?: string;
   type?: "text" | "password" | "email";
 };
 
@@ -21,20 +22,24 @@ const InputForm = ({
   border = "none",
   borderRadius = 10,
   name = "",
+  error = "",
   type = "text",
 }: InputFormProps) => {
   return (
-    <Input
-      onChange={onChange}
-      placeholder={placeholder}
-      value={value}
-      color={color}
-      bg={bg}
-      border={border}
-      borderRadius={borderRadius}
-      name={name}
-      type={type}
-    />
+    <div>
+      <Input
+        onChange={onChange}
+        placeholder={placeholder}
+        value={value}
+        color={color}
+        bg={bg}
+        border={border}
+        borderRadius={borderRadius}
+        name={name}
+        isInvalid={!!error}
+        type={type}
+      />
+    </div>
   );
 };
 

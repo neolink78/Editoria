@@ -53,14 +53,16 @@ export default function SignUp() {
                     I do not have an account yet
                   </Text>
                 </Link>
-                <Text
-                  fontSize="sm"
-                  textDecoration="underline"
-                  color="rgba(255, 255, 255, 0.5)"
-                  mb="15px"
-                >
-                  I forgot my password
-                </Text>
+                <Link href="/reset-password">
+                  <Text
+                    fontSize="sm"
+                    textDecoration="underline"
+                    color="rgba(255, 255, 255, 0.5)"
+                    mb="15px"
+                  >
+                    I forgot my password
+                  </Text>
+                </Link>
                 <FormControl
                   textAlign="center"
                   mt="20px"

@@ -22,7 +22,7 @@ export default function SignUp() {
           <Box w="25%">
             <form onSubmit={formik.handleSubmit}>
               <Flex className="section_input">
-                <FormControl isRequired mb="25px">
+                <FormControl mb="25px">
                   <InputForm
                     placeholder="Pseudo"
                     type="text"
@@ -31,16 +31,19 @@ export default function SignUp() {
                     value={formik.values.username}
                   />
                 </FormControl>
-                <FormControl isRequired mb="25px">
+                <FormControl mb="25px">
                   <InputForm
                     placeholder="Email"
                     type="text"
                     name="email"
                     onChange={formik.handleChange}
                     value={formik.values.email}
+                    error={
+                      formik.touched.email ? formik.errors.email : undefined
+                    }
                   />
                 </FormControl>
-                <FormControl isRequired mb="25px">
+                <FormControl mb="25px">
                   <InputForm
                     placeholder="Password"
                     type="password"
@@ -49,7 +52,7 @@ export default function SignUp() {
                     value={formik.values.password}
                   />
                 </FormControl>
-                <FormControl isRequired mb="25px">
+                <FormControl mb="25px">
                   <InputForm
                     placeholder="Confirm password"
                     type="password"
