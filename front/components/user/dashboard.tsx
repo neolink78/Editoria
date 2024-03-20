@@ -1,6 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
+import emptyMocks from "../../mocks/emptyMocks";
+import SubmitButton from "../../lib/submitButton";
+import favMocks from "../../mocks/favMocks";
 
 const Dashboard = () => {
   return (
@@ -17,18 +20,40 @@ const Dashboard = () => {
           Tout voir
         </Box>
       </Box>
-      <Box>
-        {indexMock.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        ))}
+      <Box mb={12}>
+        {emptyMocks && emptyMocks.length > 0 ? (
+          emptyMocks
+            .slice(-2)
+            .map((e, idx) => (
+              <Tile
+                homePage
+                key={idx}
+                marginTop={e.marginTop}
+                icon={e.icon}
+                label={e.label}
+                description={e.description}
+                date={e.date}
+              />
+            ))
+        ) : (
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box fontSize="0.9vw" m="2vw">
+              {"Vous n'avez pas encore de projet."}
+            </Box>
+            <SubmitButton
+              w="13vw"
+              bg="#1574EF"
+              onClick={() => alert("redirecting to IDE...")}
+            >
+              Commencez à coder
+            </SubmitButton>
+          </Box>
+        )}
       </Box>
 
       <Box
@@ -43,18 +68,41 @@ const Dashboard = () => {
           Tout voir
         </Box>
       </Box>
-      <Box>
-        {indexMock.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        ))}
+      <Box mb={12}>
+        {favMocks ? (
+          favMocks
+            .slice(-2)
+            .map((e, idx) => (
+              <Tile
+                homePage
+                key={idx}
+                marginTop={e.marginTop}
+                icon={e.icon}
+                label={e.label}
+                description={e.description}
+                date={e.date}
+              />
+            ))
+        ) : (
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            my="10"
+          >
+            <Box fontSize="0.9vw" m="2vw">
+              {"Vous n'avez pas encore liké de projet."}
+            </Box>
+            <SubmitButton
+              w="11vw"
+              bg="#1574EF"
+              onClick={() => alert("redirecting to all projects...")}
+            >
+              Tous les projets
+            </SubmitButton>
+          </Box>
+        )}
       </Box>
 
       <Box
@@ -69,18 +117,33 @@ const Dashboard = () => {
           Tout voir
         </Box>
       </Box>
-      <Box>
-        {indexMock.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        ))}
+      <Box mb={12}>
+        {indexMock ? (
+          indexMock
+            .slice(-2)
+            .map((e, idx) => (
+              <Tile
+                homePage
+                key={idx}
+                marginTop={e.marginTop}
+                icon={e.icon}
+                label={e.label}
+                description={e.description}
+                date={e.date}
+              />
+            ))
+        ) : (
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box fontSize="0.9vw" m="4vw">
+              {"Vous n'avez pas encore de projet en collaboration."}
+            </Box>
+          </Box>
+        )}
       </Box>
       <Box
         fontSize="1.4vw"
@@ -95,17 +158,32 @@ const Dashboard = () => {
         </Box>
       </Box>
       <Box mb="6vw">
-        {indexMock.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        ))}
+        {emptyMocks.length > 0 ? (
+          indexMock
+            .slice(-2)
+            .map((e, idx) => (
+              <Tile
+                homePage
+                key={idx}
+                marginTop={e.marginTop}
+                icon={e.icon}
+                label={e.label}
+                description={e.description}
+                date={e.date}
+              />
+            ))
+        ) : (
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box fontSize="0.9vw" m="4vw">
+              {"Vous n'avez pas encore de commentaire."}
+            </Box>
+          </Box>
+        )}
       </Box>
     </>
   );
