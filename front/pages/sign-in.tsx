@@ -1,4 +1,11 @@
-import { Box, Flex, FormControl, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  Heading,
+  Text,
+} from "@chakra-ui/react";
 import Layout from "../components/layout";
 import InputForm from "../components/input";
 import SubmitButton from "../lib/submitButton";
@@ -26,23 +33,37 @@ export default function SignUp() {
           <Box w="25%">
             <form onSubmit={formik.handleSubmit}>
               <Flex className="section_input">
-                <FormControl isRequired mb="25px">
+                <FormControl
+                  mb="25px"
+                  isInvalid={!!formik.errors.email && formik.touched.email}
+                >
                   <InputForm
                     placeholder="Email"
                     type="text"
                     name="email"
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    onFocus={formik.handleBlur}
                     value={formik.values.email}
                   />
+                  <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
                 </FormControl>
-                <FormControl isRequired mb="5px">
+                <FormControl
+                  mb="5px"
+                  isInvalid={
+                    !!formik.errors.password && formik.touched.password
+                  }
+                >
                   <InputForm
                     placeholder="Password"
                     type="password"
                     name="password"
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    onFocus={formik.handleBlur}
                     value={formik.values.password}
                   />
+                  <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
                 </FormControl>
                 <Link href="/sign-up">
                   <Text
@@ -53,7 +74,7 @@ export default function SignUp() {
                     I do not have an account yet
                   </Text>
                 </Link>
-                <Link href="/reset-password">
+                <Link href="reset/email">
                   <Text
                     fontSize="sm"
                     textDecoration="underline"

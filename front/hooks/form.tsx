@@ -41,17 +41,15 @@ export const useSignInFormik = (isLogin: boolean) => {
 
   const validationSchema = isLogin
     ? Yup.object({
-        email: Yup.string()
-          .email("Invalid email")
-          .required("Email not specified"),
-        password: Yup.string().required("Password not specified"),
+        email: Yup.string().email("Invalid email").required("Email required"),
+        password: Yup.string().required("Password required"),
       })
     : Yup.object({
-        username: Yup.string().required("Username not specified"),
-        email: Yup.string()
-          .email("Invalid email")
-          .required("Email not specified"),
-        password: Yup.string().required("Password not specified"),
+        username: Yup.string().required("Username required"),
+        email: Yup.string().email("Invalid email").required("Email required"),
+        password: Yup.string()
+          .required("Password required")
+          .min(12, "The password is too short"),
         confirmPassword: Yup.string()
           .oneOf([Yup.ref("password")], "Passwords do not match")
           .required("Password confirmation not entered"),
@@ -59,15 +57,21 @@ export const useSignInFormik = (isLogin: boolean) => {
 
   const onSubmit = async () => {
     if (isLogin) {
-      const { data } = await signInMutation({
-        variables: {
-          email: formik.values.email,
-          password: formik.values.password,
-        },
-      });
-
-      if (data && data.signIn) {
-        router.push(`/user/account`);
+      try {
+        const { data } = await signInMutation({
+          variables: {
+            email: formik.values.email,
+            password: formik.values.password,
+          },
+        });
+        if (data && data.signIn) {
+          router.push(`/user/account`);
+        }
+      } catch (error: any) {
+        formik.setErrors({
+          email: "Email or password wrong",
+          password: "Email or password wrong",
+        });
       }
     } else {
       const { data } = await signUpMutation({

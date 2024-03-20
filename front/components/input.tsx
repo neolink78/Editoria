@@ -2,6 +2,8 @@ import { FormErrorMessage, Input } from "@chakra-ui/react";
 
 type InputFormProps = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   value?: string;
   color?: string;
@@ -15,6 +17,8 @@ type InputFormProps = {
 
 const InputForm = ({
   onChange,
+  onBlur,
+  onFocus,
   placeholder,
   value,
   color = "#fbfbfb",
@@ -29,6 +33,8 @@ const InputForm = ({
     <div>
       <Input
         onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
         placeholder={placeholder}
         value={value}
         color={color}
