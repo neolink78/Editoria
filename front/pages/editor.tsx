@@ -3,6 +3,8 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { IoClose } from "react-icons/io5";
+import { FaCss3Alt, FaHtml5 } from "react-icons/fa";
+import { IoLogoJavascript } from "react-icons/io5";
 
 export type File = {
   name: string;
@@ -58,6 +60,19 @@ function CodeEditor() {
     setProject(newProject);
   };
 
+  const showIcon = (name: string) => {
+    const file = project.find((el) => el.name === name)
+    if(!file) return null;
+    switch (file.language) {
+      case "html":
+        return <FaHtml5 color="#F76904" />;
+      case "css":
+        return <FaCss3Alt color="#1D84C1" />;
+      case "javascript":
+        return <IoLogoJavascript color="#F0DB4F" />;
+    }
+  }
+
   const getGeneratedPageURL = ({ html, css, js }: {html: string, css: string, js: string}) => {
   const getBlobURL = (code: string, type: string) => {
     const blob = new Blob([code], { type })
@@ -110,11 +125,12 @@ const removeFileFromTabs = (fileName: string) => {
                 <Center
                   key={file}
                   className={
-                    "text-sm cursor-pointer px-1 " +
+                    "text-sm cursor-pointer pl-2 pr-1 " +
                     (fileName === file ? "bg-[#14181F]" : "bg-[#25292F]")
                   }
                 >
-                  <p className="py-2 pl-3 pr-3" onClick={() => setFileName(file)}>{file}</p>
+                  <span className="mr-2">{ showIcon(file) }</span>
+                  <p className="py-2 pr-2" onClick={() => setFileName(file)}>{file}</p>
                   <Center className="p-1 rounded hover:bg-[#2F3138]">
                     <IoClose color="white" onClick={() => removeFileFromTabs(file)}>x</IoClose>
                   </Center>
