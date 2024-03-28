@@ -20,7 +20,6 @@ function CodeEditor() {
     },
   ]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [output, setOutput] = useState<string>("");
   const [showInput, setShowInput] = useState<boolean>(false);
   const [newFileName, setNewFileName] = useState<string>("");
   const [showTabs, setShowTabs] = useState({
@@ -105,14 +104,45 @@ function CodeEditor() {
     setProject(newProject);
   };
 
+  const getGeneratedPageURL = ({ html, css, js }: {html: string, css: string, js: string}) => {
+  const getBlobURL = (code: string, type: string) => {
+    const blob = new Blob([code], { type })
+    return URL.createObjectURL(blob)
+  }
+
+  const cssURL = getBlobURL(css, 'text/css')
+  const jsURL = getBlobURL(js, 'text/javascript')
+
+  const source = `
+    <html>
+      <head>
+        ${css && `<link rel="stylesheet" type="text/css" href="${cssURL}" />`}
+        </head>
+        <body>
+        ${html || ''}
+        ${js && `<script src="${jsURL}"></script>`}
+      </body>
+    </html>
+  `
+
+  return getBlobURL(source, 'text/html')
+}
+
+const url = getGeneratedPageURL({
+  html: project.find((file) => file.language === "html")?.value || '',
+  css: project.find((file) => file.language === "css")?.value || '',
+  js: project.find((file) => file.language === "javascript")?.value || ''
+})
+
   return (
     <>
-      <Box w="100%" bg="#2F3138" p={4} color="white">
+      <Box w="100%" bg="#2F3138" p={4} color="white" className="editor-navbar">
         EDITORIA
       </Box>
-      <Flex w="100%">
-        <Box w="65px" bg="#2F3138" className="p-4"></Box>
+      <Flex w="100%" className="editor-container">
+        <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
         <Flex
+          className="editor-sidebar"
           w="260px"
           direction={"column"}
           backgroundColor={"#212227"}
@@ -142,21 +172,22 @@ function CodeEditor() {
             Files
           </Flex>
           {showTabs.files && (
-            <Flex direction={"column"} gap="2" className="px-8 py-2">
+            <Flex direction={"column"}>
               {project.map((file) => (
                 <Flex
                   key={file.name}
                   justifyContent={"space-between"}
                   alignContent={"center"}
+                  className={"pl-8 pr-2 py-1 " + (fileName === file.name && !showInput ? "bg-[#1574EF] " : "") + (fileName !== file.name ? "hover:bg-[#25292F]" : "")}
                 >
                   <p
                     onClick={() => setFileName(file.name)}
-                    className="text-xs cursor-pointer"
+                    className="text-xs cursor-pointer w-full"
                   >
                     {file.name}
                   </p>
                   <FaRegTrashAlt
-                    className="w-2 cursor-pointer"
+                    className="w-2 cursor-pointer opacity-40 hover:opacity-100"
                     onClick={() =>
                       setProject(
                         project.filter(
@@ -170,19 +201,18 @@ function CodeEditor() {
               {showInput && (
                 <Input
                   size={"xs"}
+                  width='auto'
                   placeholder="file name"
                   value={newFileName}
                   onChange={(e) => setNewFileName(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") addFile();
                   }}
-                  className="text-xs"
+                  className="text-xs ml-8"
                 />
               )}
               {showTabs.files && (
-                <button className="m-auto" onClick={() => setShowInput(true)}>
-                  +
-                </button>
+                <button className="m-auto" onClick={() => setShowInput(true)}>+</button>
               )}
             </Flex>
           )}
@@ -194,13 +224,11 @@ function CodeEditor() {
               setShowTabs({ ...showTabs, comments: !showTabs.comments })
             }
           >
-            <BiChevronRight
-              style={{ transform: showTabs.comments ? "rotate(90deg)" : "" }}
-            />
+            <BiChevronRight style={{ transform: showTabs.comments ? "rotate(90deg)" : "" }}/>
             Comments
           </Flex>
         </Flex>
-        <Flex direction={"column"} w="100%">
+        <Flex direction={"column"} w="100%" className="editor-filetabs">
           <Box backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" className="min-h-9">
             {project.map((file) => (
               <button
@@ -230,9 +258,8 @@ function CodeEditor() {
               }}
               onMount={handleEditorDidMount}
             />
-            <Box w="25%">
-              <h2>Output :</h2>
-              <p>{output}</p>
+            <Box w="40%">
+              <iframe src={url} className="w-full h-full" />
             </Box>
           </Flex>
         </Flex>
