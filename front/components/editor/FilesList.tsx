@@ -1,8 +1,10 @@
 import { Flex, Input } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { FaCss3Alt, FaHtml5, FaRegTrashAlt } from "react-icons/fa";
 import { IoLogoJavascript } from "react-icons/io5";
 import { File } from "../../pages/editor";
+import { isClickOutside } from '../../utils/event'
+
 
 type FilesListProps = {
   project: File[];
@@ -22,6 +24,7 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
 
     const [showInput, setShowInput] = useState<boolean>(false);
     const [newFileName, setNewFileName] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     const getLanguage = (fileName: string) => {
     if (fileName.endsWith(".js")) {
@@ -78,6 +81,25 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
     setFilesInTabs(filesInTabs.filter((file) => file !== fileName));
   }
 
+/**
+ * Handler for document click event that is outside $root element
+ * @param event
+ */
+const clickOutsideHandler = (event: MouseEvent) => {
+  if (showInput && inputRef && isClickOutside(event, inputRef.current)) {
+    setShowInput(false)
+  }
+}
+
+useEffect(() => {
+  document.addEventListener("mousedown", clickOutsideHandler);
+  
+  return () => {
+    document.removeEventListener("mousedown", clickOutsideHandler);
+  };
+})
+
+
   return (
         <Flex direction={"column"}>
         {project.map((file: File) => (
@@ -105,6 +127,7 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
         ))}
         {showInput && (
           <Input
+            ref={inputRef}
             size={"xs"}
             width='auto'
             placeholder="file name"
