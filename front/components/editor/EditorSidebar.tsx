@@ -3,6 +3,8 @@ import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { File } from "../../pages/editor";
 import FilesList from "./FilesList";
+import ProjectInfo from "./ProjectInfo";
+import EditorComments from "./EditorComments";
 
 type EditorSidebarProps = {
   project: File[];
@@ -33,9 +35,12 @@ const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInT
     switch (tab) {
       case "Files":
         return <FilesList project={project} fileName={fileName} setProject={setProject} showTabs={showTabs} setFileName={setFileName} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />;
-
+      
+      case "Comments":
+        return <EditorComments />;
+        
       default:
-        return <Text>Content for {tab}</Text>
+        return <ProjectInfo />
     }
   }
 

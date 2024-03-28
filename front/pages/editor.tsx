@@ -118,13 +118,13 @@ const removeFileFromTabs = (fileName: string) => {
       <Flex w="100%" bg="#2F3138" p={4} color="white" className="editor-navbar relative">
         <Text>EDITORIA</Text>
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <SubmitButton>Sign in to save your project</SubmitButton>
+          <SubmitButton bg="#1574EF">Sign in to save your project</SubmitButton>
         </Box>
       </Flex>
       <Flex w="100%" className="editor-container">
         <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
         <EditorSidebar project={project} fileName={fileName} setFileName={setFileName} setProject={setProject} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />
-        <Flex direction={"column"} w="100%" className="editor-filetabs">
+        <Flex direction={"column"} w="100%">
           <Flex className="min-h-9">
             <Flex backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" width={"60%"}>
               {filesInTabs.map((file) => (
@@ -135,8 +135,10 @@ const removeFileFromTabs = (fileName: string) => {
                     (fileName === file ? "bg-[#14181F]" : "bg-[#25292F]")
                   }
                 >
-                  <span className="mr-2">{ showIcon(file) }</span>
-                  <p className="py-2 pr-2" onClick={() => setFileName(file)}>{file}</p>
+                  <Center onClick={() => setFileName(file)}>
+                    <span className="mr-2">{ showIcon(file) }</span>
+                    <p className="py-2 pr-2">{file}</p>
+                  </Center>
                   <Center className="p-1 rounded hover:bg-[#2F3138]">
                     <IoClose color="white" onClick={() => removeFileFromTabs(file)}>x</IoClose>
                   </Center>
