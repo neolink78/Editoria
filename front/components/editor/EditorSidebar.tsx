@@ -9,11 +9,13 @@ type EditorSidebarProps = {
   setProject: Dispatch<SetStateAction<File[]>>;
   fileName: string | null;
   setFileName: Dispatch<SetStateAction<string | null>>;
+  setFilesInTabs: Dispatch<SetStateAction<string[]>>;
+  filesInTabs: string[];
 }
 
 const SIDEBAR_TABS = ["Info", "Files", "Comments"]
 
-const EditorSidebar = ({ project, setProject, fileName, setFileName }: EditorSidebarProps) => {
+const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
 
   const [showTabs, setShowTabs] = useState({
     Files: false,
@@ -24,7 +26,7 @@ const EditorSidebar = ({ project, setProject, fileName, setFileName }: EditorSid
   const displayTabContent = (tab: string) => {
     switch (tab) {
       case "Files":
-        return <FilesList project={project} fileName={fileName} setProject={setProject} showTabs={showTabs} setFileName={setFileName} />;
+        return <FilesList project={project} fileName={fileName} setProject={setProject} showTabs={showTabs} setFileName={setFileName} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />;
 
       default:
         return <Text>Content for {tab}</Text>

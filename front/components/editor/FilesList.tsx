@@ -9,6 +9,8 @@ type FilesListProps = {
   setProject: Dispatch<SetStateAction<File[]>>;
   fileName: string | null;
   setFileName: Dispatch<SetStateAction<string | null>>;
+  setFilesInTabs: Dispatch<SetStateAction<string[]>>;
+  filesInTabs: string[];
   showTabs: {
     Files: boolean;
     Comments: boolean;
@@ -16,7 +18,7 @@ type FilesListProps = {
   };
 }
 
-const FilesList = ({project, fileName, setProject, showTabs, setFileName }: FilesListProps) => {
+const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFilesInTabs, filesInTabs }: FilesListProps) => {
 
     const [showInput, setShowInput] = useState<boolean>(false);
     const [newFileName, setNewFileName] = useState<string>("");
@@ -52,6 +54,7 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName }: File
           value: fileValue,
         },
       ]);
+      setFilesInTabs((prevsState) => [...prevsState, newFileName]);
       setFileName(newFileName);
       setShowInput(false);
       setNewFileName("");
@@ -72,6 +75,7 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName }: File
   const deleteFile = (fileName: string) => {
     setProject((prevState) => prevState.filter((file: File) => file.name !== fileName));
     setFileName(project[0].name);
+    setFilesInTabs(filesInTabs.filter((file) => file !== fileName));
   }
 
   return (
@@ -85,7 +89,10 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName }: File
           >
             <span className="mr-2">{ showIcon(file.language) }</span>
             <p
-              onClick={() => setFileName(file.name)}
+              onClick={() => {
+                setFileName(file.name)
+                if(filesInTabs.indexOf(file.name) === -1) setFilesInTabs([...filesInTabs, file.name])
+              }}
               className="text-xs cursor-pointer w-full"
             >
               {file.name}

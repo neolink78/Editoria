@@ -1,7 +1,8 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
+import { IoClose } from "react-icons/io5";
 
 export type File = {
   name: string;
@@ -19,14 +20,13 @@ function CodeEditor() {
     },
   ]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
   useEffect(() => {
     const file = project.find((file) => file.name === fileName);
     if (file) setSelectedFile(file);
     else setSelectedFile(null);
   }, [fileName, project]);
-
-  useEffect(() => {console.log(project)}, [project])
 
   const defineCustomTheme = (monaco: Monaco) => {
     monaco.editor.defineTheme("customTheme", {
@@ -88,6 +88,13 @@ const url = getGeneratedPageURL({
   js: project.find((file) => file.language === "javascript")?.value || ''
 })
 
+const removeFileFromTabs = (fileName: string) => {
+  setFilesInTabs((prevState) => {
+    const updatedTabs = prevState.filter((fileInTab) => fileInTab !== fileName);
+    if(selectedFile?.name === fileName) setFileName(updatedTabs[0]);
+    return updatedTabs;
+  });
+}
   return (
     <>
       <Box w="100%" bg="#2F3138" p={4} color="white" className="editor-navbar">
@@ -95,31 +102,31 @@ const url = getGeneratedPageURL({
       </Box>
       <Flex w="100%" className="editor-container">
         <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
-        <EditorSidebar project={project} fileName={fileName} setFileName={setFileName} setProject={setProject} />
+        <EditorSidebar project={project} fileName={fileName} setFileName={setFileName} setProject={setProject} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />
         <Flex direction={"column"} w="100%" className="editor-filetabs">
           <Flex className="min-h-9">
-            <Box backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" width={"60%"}>
-              {project.map((file) => (
-                <button
-                  key={file.name}
-                  disabled={fileName === file.name}
-                  onClick={() => setFileName(file.name)}
+            <Flex backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" width={"60%"}>
+              {filesInTabs.map((file) => (
+                <Center
+                  key={file}
                   className={
-                    "py-2 px-4 text-sm cursor-pointer " +
-                    (fileName === file.name ? "bg-[#14181F]" : "bg-[#25292F]") +
-                    " hover:bg-[#14181F]"
+                    "text-sm cursor-pointer px-1 " +
+                    (fileName === file ? "bg-[#14181F]" : "bg-[#25292F]")
                   }
                 >
-                  {file.name}
-                </button>
+                  <p className="py-2 pl-3 pr-3" onClick={() => setFileName(file)}>{file}</p>
+                  <Center className="p-1 rounded hover:bg-[#2F3138]">
+                    <IoClose color="white" onClick={() => removeFileFromTabs(file)}>x</IoClose>
+                  </Center>
+                </Center>
               ))}
-            </Box>
+            </Flex>
             <Box width={"40%"} bg={"#212227"} color={"white"}>
               TODO : mettre icons
             </Box>
           </Flex>
           <Flex>
-            {project.length !== 0 ? 
+            {filesInTabs.length !== 0 ? 
               <Editor
                 className="pt-2 bg-[#14181F]"
                 height="calc(100vh - 92px)"
