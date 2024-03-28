@@ -3,7 +3,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { IoClose } from "react-icons/io5";
-import { FaCss3Alt, FaHtml5 } from "react-icons/fa";
+import { FaCss3Alt, FaHtml5, FaRegFile } from "react-icons/fa";
 import { IoLogoJavascript } from "react-icons/io5";
 
 export type File = {
@@ -70,6 +70,8 @@ function CodeEditor() {
         return <FaCss3Alt color="#1D84C1" />;
       case "javascript":
         return <IoLogoJavascript color="#F0DB4F" />;
+      default:
+        return <FaRegFile color="#fff" />;
     }
   }
 
@@ -138,7 +140,7 @@ const removeFileFromTabs = (fileName: string) => {
               ))}
             </Flex>
             <Box width={"40%"} bg={"#212227"} color={"white"}>
-              TODO : mettre icons
+              {url}
             </Box>
           </Flex>
           <Flex>
