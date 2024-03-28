@@ -26,9 +26,7 @@ function CodeEditor() {
     else setSelectedFile(null);
   }, [fileName, project]);
 
-  useEffect(() => {
-    console.log(project);
-  }, [project]);
+  useEffect(() => {console.log(project)}, [project])
 
   const defineCustomTheme = (monaco: Monaco) => {
     monaco.editor.defineTheme("customTheme", {
@@ -99,35 +97,44 @@ const url = getGeneratedPageURL({
         <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
         <EditorSidebar project={project} fileName={fileName} setFileName={setFileName} setProject={setProject} />
         <Flex direction={"column"} w="100%" className="editor-filetabs">
-          <Box backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" className="min-h-9">
-            {project.map((file) => (
-              <button
-                key={file.name}
-                disabled={fileName === file.name}
-                onClick={() => setFileName(file.name)}
-                className={
-                  "py-2 px-4 text-sm cursor-pointer " +
-                  (fileName === file.name ? "bg-[#14181F]" : "bg-[#25292F]") +
-                  " hover:bg-[#14181F]"
-                }
-              >
-                {file.name}
-              </button>
-            ))}
-          </Box>
+          <Flex className="min-h-9">
+            <Box backgroundColor={project.length > 0 ? "#212227" : "#14181F"} color="white" width={"60%"}>
+              {project.map((file) => (
+                <button
+                  key={file.name}
+                  disabled={fileName === file.name}
+                  onClick={() => setFileName(file.name)}
+                  className={
+                    "py-2 px-4 text-sm cursor-pointer " +
+                    (fileName === file.name ? "bg-[#14181F]" : "bg-[#25292F]") +
+                    " hover:bg-[#14181F]"
+                  }
+                >
+                  {file.name}
+                </button>
+              ))}
+            </Box>
+            <Box width={"40%"} bg={"#212227"} color={"white"}>
+              TODO : mettre icons
+            </Box>
+          </Flex>
           <Flex>
-            <Editor
-              className="pt-2 bg-[#14181F]"
-              height="calc(100vh - 92px)"
-              width="60%"
-              path={selectedFile?.name}
-              defaultLanguage={selectedFile?.language}
-              defaultValue={selectedFile?.value}
-              onChange={(value: string) => {
-                if (selectedFile) updateFile(selectedFile.name, value || "");
-              }}
-              onMount={handleEditorDidMount}
-            />
+            {project.length !== 0 ? 
+              <Editor
+                className="pt-2 bg-[#14181F]"
+                height="calc(100vh - 92px)"
+                width="60%"
+                path={selectedFile?.name}
+                language={selectedFile?.language}
+                value={selectedFile?.value}
+                onChange={(value: string) => {
+                  if (selectedFile) updateFile(selectedFile.name, value || "");
+                }}
+                onMount={handleEditorDidMount}
+              />
+              :
+              <Box height={"calc(100vh - 92px)"} width="60%" bg={"#14181F"}/>
+            }
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />
             </Box>
