@@ -3,6 +3,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { File } from "../../pages/editor";
+import { FaHtml5 } from "react-icons/fa";
+import { FaCss3Alt } from "react-icons/fa";
+import { IoLogoJavascript } from "react-icons/io5";
 
 type EditorSidebarProps = {
   project: File[];
@@ -59,6 +62,17 @@ const EditorSidebar = ({ project, setProject, fileName, setFileName }: EditorSid
     }
   };
 
+  const showIcon = (language: string) => {
+    switch (language) {
+      case "html":
+        return <FaHtml5 color="#F76904" />;
+      case "css":
+        return <FaCss3Alt color="#1574EF" />;
+      case "javascript":
+        return <IoLogoJavascript color="#F0DB4F" />;
+    }
+  }
+
 
 return (
   <Flex
@@ -95,11 +109,12 @@ return (
       <Flex direction={"column"}>
         {project.map((file) => (
           <Flex
-            key={file.name}
-            justifyContent={"space-between"}
-            alignContent={"center"}
-            className={"pl-8 pr-2 py-1 " + (fileName === file.name && !showInput ? "bg-[#1574EF] " : "") + (fileName !== file.name ? "hover:bg-[#25292F]" : "")}
+          key={file.name}
+          justifyContent={"space-between"}
+          alignContent={"center"}
+          className={"pl-6 pr-2 py-1 " + (fileName === file.name && !showInput ? "bg-[#1574EF] " : "") + (fileName !== file.name ? "hover:bg-[#25292F]" : "")}
           >
+            <span className="mr-2">{ showIcon(file.language) }</span>
             <p
               onClick={() => setFileName(file.name)}
               className="text-xs cursor-pointer w-full"
