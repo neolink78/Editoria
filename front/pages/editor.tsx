@@ -1,10 +1,11 @@
-import { Box, Center, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { IoClose } from "react-icons/io5";
 import { FaCss3Alt, FaHtml5, FaRegFile } from "react-icons/fa";
 import { IoLogoJavascript } from "react-icons/io5";
+import SubmitButton from "../lib/submitButton";
 
 export type File = {
   name: string;
@@ -114,9 +115,12 @@ const removeFileFromTabs = (fileName: string) => {
 }
   return (
     <>
-      <Box w="100%" bg="#2F3138" p={4} color="white" className="editor-navbar">
-        EDITORIA
-      </Box>
+      <Flex w="100%" bg="#2F3138" p={4} color="white" className="editor-navbar relative">
+        <Text>EDITORIA</Text>
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <SubmitButton>Sign in to save your project</SubmitButton>
+        </Box>
+      </Flex>
       <Flex w="100%" className="editor-container">
         <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
         <EditorSidebar project={project} fileName={fileName} setFileName={setFileName} setProject={setProject} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />
@@ -140,7 +144,7 @@ const removeFileFromTabs = (fileName: string) => {
               ))}
             </Flex>
             <Box width={"40%"} bg={"#212227"} color={"white"}>
-              {url}
+              blablabla
             </Box>
           </Flex>
           <Flex>
@@ -152,7 +156,7 @@ const removeFileFromTabs = (fileName: string) => {
                 path={selectedFile?.name}
                 language={selectedFile?.language}
                 value={selectedFile?.value}
-                onChange={(value: string) => {
+                onChange={(value: string | undefined) => {
                   if (selectedFile) updateFile(selectedFile.name, value || "");
                 }}
                 onMount={handleEditorDidMount}

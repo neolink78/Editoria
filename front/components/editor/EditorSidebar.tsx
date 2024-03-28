@@ -1,5 +1,5 @@
 import { Box, Flex, Input, Text } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { File } from "../../pages/editor";
 import FilesList from "./FilesList";
@@ -13,11 +13,17 @@ type EditorSidebarProps = {
   filesInTabs: string[];
 }
 
+type ShowTabs = {
+  Files: boolean;
+  Comments: boolean;
+  Info: boolean;
+}
+
 const SIDEBAR_TABS = ["Info", "Files", "Comments"]
 
 const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
 
-  const [showTabs, setShowTabs] = useState({
+  const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: false,
     Comments: false,
     Info: false,
@@ -44,21 +50,20 @@ return (
     <Text className="p-4">PROJECT</Text>
     {SIDEBAR_TABS.map((tab) => {
       return (
-        <>
+        <Fragment key={tab}>
         <Flex
-          key={tab}
           alignItems="center"
           bg="#2F3138"
           className="p-1 cursor-pointer"
-          onClick={() => setShowTabs({ ...showTabs, [tab]: !showTabs[tab] })}
+          onClick={() => setShowTabs({ ...showTabs, [tab]: !showTabs[tab as keyof ShowTabs] })}
         >
           <BiChevronRight
-            style={{ transform: showTabs[tab] ? "rotate(90deg)" : "" }}
+            style={{ transform: showTabs[tab as keyof ShowTabs] ? "rotate(90deg)" : "" }}
           />
           {tab}
         </Flex>
-        {showTabs[tab] && <Box>{displayTabContent(tab)}</Box>}
-        </>
+        {showTabs[tab as keyof ShowTabs] && <Box>{displayTabContent(tab)}</Box>}
+        </Fragment>
       )
     })}
   </Flex>
