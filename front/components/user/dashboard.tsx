@@ -2,10 +2,55 @@ import { Box } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
-import SubmitButton from "../../lib/submitButton";
 import favMocks from "../../mocks/favMocks";
+// import emptyMocks from "../../mocks/emptyMocks";
+import SubmitButton from "../../lib/submitButton";
+// import favMocks from "../../mocks/favMocks";
+import { gql, useQuery } from "@apollo/client";
+import { GetProjectsQuery } from "../../gql/graphql";
+
+import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
+
+
+const GET_PROJECTS = gql`
+query GetProjects {
+  getProjects {
+    id
+    title
+    updatedAt
+    createdAt
+    codeSnippetsOwned {
+      language
+    }
+    owner {
+      username
+    }
+  }
+}
+`;
+
+const getLanguageIcon = (language: any) => {
+  switch (language) {
+    case 'JAVASCRIPT':
+      return <SiJavascript />;
+    case 'TYPESCRIPT':
+      return <SiTypescript />;
+    case 'PYTHON':
+      return <SiPython />;
+    case 'CPP':
+      return <SiCplusplus />;
+    case 'CSHARP':
+      return <SiCsharp />;
+    default:
+      return <SiJavascript />; // Retourne une icône par défaut si le langage n'est pas géré
+  }
+};
+
 
 const Dashboard = () => {
+
+  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  console.log(data);  
   return (
     <>
       <Box
@@ -16,23 +61,24 @@ const Dashboard = () => {
         alignItems="baseline"
       >
         <Box>Mes projets récents</Box>
-        {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
+        {data ? <Box fontSize="1vw" ml="2vw">
           {" "}
           Tout voir{" "}
-        </Box>}
+        </Box> : ""}
       </Box>
       <Box mb={12}>
-        { emptyMocks && emptyMocks.length > 0
-        ? emptyMocks.slice(-2).map((e, idx) => (
+        { 
+        data
+        ? data.getProjects.slice(-2).map((e, idx) => (
           <Tile
             homePage
             key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-            
+            // marginTop={e.marginTop}
+            icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+            // description={e.description}
+            title={e.title}
+            createdAt={e.createdAt}
+            owner={e.owner.username}            
           />
         ))
         : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
