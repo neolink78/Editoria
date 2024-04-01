@@ -1,15 +1,18 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
 // import emptyMocks from "../../mocks/emptyMocks";
 import SubmitButton from "../../lib/submitButton";
+import modal from "../../lib/modal";
 // import favMocks from "../../mocks/favMocks";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { GetProjectsQuery } from "../../gql/graphql";
 
 import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
+import { useState } from "react";
+import ConfirmModal from "../../lib/modal";
 
 
 const GET_PROJECTS = gql`
@@ -28,6 +31,15 @@ query GetProjects {
   }
 }
 `;
+
+export const DELETE_PROJECT = gql`
+mutation DeleteProject($deleteProjectId: ID!) {
+  deleteProject(id: $deleteProjectId) {
+    id
+  }
+}
+`;
+
 
 const getLanguageIcon = (language: any) => {
   switch (language) {
@@ -48,9 +60,27 @@ const getLanguageIcon = (language: any) => {
 
 
 const Dashboard = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
-  console.log(data);  
+  const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
+    refetchQueries: [{ query: GET_PROJECTS }],
+  });
+
+  const handleDelete = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    onOpen();
+  };
+
+  const confirmDelete = async () => {
+    await deleteProject({ variables: { deleteProjectId: selectedProjectId } });
+  };
+
+  console.log(data);
+  if (loading) return 'Chargement...';
+  if (error) return `Erreur! ${error.message}`;
+
   return (
     <>
       <Box
@@ -66,34 +96,34 @@ const Dashboard = () => {
           Tout voir{" "}
         </Box> : ""}
       </Box>
-      <Box mb={12}>
-        { 
-        data
-        ? data.getProjects.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            // marginTop={e.marginTop}
-            icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-            // description={e.description}
-            title={e.title}
-            createdAt={e.createdAt}
-            owner={e.owner.username}            
-          />
-        ))
-        : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
-          <Box fontSize="0.9vw" m="2vw">
-            {" "}
-            Vous n'avez pas encore de projet.{" "}
-          </Box>
-          <SubmitButton
-            w="13vw"
-            bg="#1574EF"
-            onClick={() => alert("redirecting to IDE...")}
-          >
-            Commencez à coder
-          </SubmitButton>
-        </Box>
+      <Box mb={10}>
+        {
+          data
+            ? data.getProjects.slice(-3).map((e, idx) => (
+              <Tile
+                homePage={false}
+                key={idx}
+                icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                // description={e.description}
+                title={e.title}
+                createdAt={e.createdAt}
+                owner={e.owner.username}
+                onDelete={() => handleDelete(e.id)}
+              />
+            ))
+            : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
+              <Box fontSize="0.9vw" m="2vw">
+                {" "}
+                Vous n'avez pas encore de projet.{" "}
+              </Box>
+              <SubmitButton
+                w="13vw"
+                bg="#1574EF"
+                onClick={() => alert("redirecting to IDE...")}
+              >
+                Commencez à coder
+              </SubmitButton>
+            </Box>
         }
       </Box>
 
@@ -111,11 +141,10 @@ const Dashboard = () => {
         </Box>}
       </Box>
       <Box mb={12}>
-        { favMocks ? favMocks.slice(-2).map((e, idx) => (
+        {favMocks ? favMocks.slice(-2).map((e, idx) => (
           <Tile
             homePage
             key={idx}
-            marginTop={e.marginTop}
             icon={e.icon}
             label={e.label}
             description={e.description}
@@ -154,7 +183,6 @@ const Dashboard = () => {
           <Tile
             homePage
             key={idx}
-            marginTop={e.marginTop}
             icon={e.icon}
             label={e.label}
             description={e.description}
@@ -183,18 +211,18 @@ const Dashboard = () => {
         </Box>}
       </Box>
       <Box mb={12}>
-         { emptyMocks.length > 0
-        ? emptyMocks.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        )) :
+        {emptyMocks.length > 0
+          ? emptyMocks.slice(-2).map((e, idx) => (
+            <Tile
+              homePage
+              key={idx}
+              marginTop={e.marginTop}
+              icon={e.icon}
+              label={e.label}
+              description={e.description}
+              date={e.date}
+            />
+          )) :
           <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
             <Box fontSize="0.9vw" m="4vw">
               {" "}
@@ -203,6 +231,14 @@ const Dashboard = () => {
           </Box>
         }
       </Box>
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+      >
+        Êtes-vous sûr de vouloir supprimer ce projet ?
+      </ConfirmModal>
     </>
   );
 };
