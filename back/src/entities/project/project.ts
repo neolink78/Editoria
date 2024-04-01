@@ -34,7 +34,7 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   @Field()
   updatedAt!: Date;
 
-  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, { eager: true })
+  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, { eager: true, onDelete: "CASCADE" })
   @Field(type => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[]
 
