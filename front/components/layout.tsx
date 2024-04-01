@@ -29,7 +29,7 @@ const Layout = ({ children, user = true }: Props) => {
           >
             Start coding
           </SubmitButton>
-          <Box onClick={() => router.push("/account")} cursor="pointer">
+          <Box onClick={() => router.push("/user/account")} cursor="pointer">
             {user && <UserIcon />}
           </Box>
         </Flex>
