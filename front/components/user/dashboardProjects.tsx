@@ -1,5 +1,5 @@
 
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, Skeleton } from '@chakra-ui/react';
 import { SetStateAction, useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
 import Tile from '../../lib/tile';
@@ -17,9 +17,10 @@ interface DashboardProjectsProps {
     projects: Project[];
     onDelete: (projectId: string) => void;
     setShowAllProjects: (show: boolean) => void;
+    isLoading: boolean;
 }
 
-const DashboardProjects = ({ projects, onDelete, setShowAllProjects }: DashboardProjectsProps) => {
+const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }: DashboardProjectsProps) => {
     const [currentPage, setCurrentPage] = useState(1);
     const projectsPerPage = 8;
 
@@ -46,7 +47,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects }: Dashboard
             </Button>
         </Flex>
     );
-    
+
     return (
         <Box mb={10}>
             <Box
@@ -61,18 +62,20 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects }: Dashboard
                     <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes projets récents
                 </Box>
                 {currentProjects.map((project, idx) => (
-                    <Tile
-                        homePage={false}
-                        projectId={project.id}
-                        key={idx}
-                        icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
-                        title={project.title}
-                        createdAt={project.createdAt}
-                        owner={project.owner.username}
-                        onDelete={() => {
-                            onDelete(project.id);
-                        }}
-                    />
+                    <Skeleton isLoaded={!isLoading}>
+                        <Tile
+                            homePage={false}
+                            projectId={project.id}
+                            key={idx}
+                            icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
+                            title={project.title}
+                            createdAt={project.createdAt}
+                            owner={project.owner.username}
+                            onDelete={() => {
+                                onDelete(project.id);
+                            }}
+                        />
+                    </Skeleton>
                 ))}
             </Box>
             <PaginationControls />

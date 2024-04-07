@@ -1,4 +1,4 @@
-import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Skeleton, Text } from "@chakra-ui/react";
 import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
@@ -85,8 +85,6 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  console.log(data);
-  if (loading) return 'Chargement...';
   if (error) return `Erreur! ${error.message}`;
 
 
@@ -94,8 +92,12 @@ const Dashboard = () => {
     <>
       {showAllProjects ? (
         <>
-          <DashboardProjects projects={data?.getProjects || []} onDelete={handleDelete} setShowAllProjects={setShowAllProjects} />
-
+          <DashboardProjects
+            projects={data?.getProjects || []}
+            onDelete={handleDelete}
+            setShowAllProjects={setShowAllProjects}
+            isLoading={loading}
+          />
         </>
       ) : (
         <>
@@ -115,16 +117,18 @@ const Dashboard = () => {
             {
               data
                 ? data.getProjects.slice(-3).map((e, idx) => (
-                  <Tile
-                    homePage={false}
-                    key={idx}
-                    icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-                    // description={e.description}
-                    title={e.title}
-                    createdAt={e.createdAt}
-                    owner={e.owner.username}
-                    onDelete={() => handleDelete(e.id)}
-                  />
+                  <Skeleton isLoaded={!loading}>
+                    <Tile
+                      homePage={false}
+                      key={idx}
+                      icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                      // description={e.description}
+                      title={e.title}
+                      createdAt={e.createdAt}
+                      owner={e.owner.username}
+                      onDelete={() => handleDelete(e.id)}
+                    />
+                  </Skeleton>
                 ))
                 : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
                   <Box fontSize="0.9vw" m="2vw">
@@ -157,14 +161,16 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {favMocks ? favMocks.slice(-2).map((e, idx) => (
-              <Tile
-                homePage
-                key={idx}
-                icon={e.icon}
-                label={e.label}
-                description={e.description}
-                date={e.date}
-              />
+              <Skeleton isLoaded={!loading}>
+                <Tile
+                  homePage
+                  key={idx}
+                  icon={e.icon}
+                  label={e.label}
+                  description={e.description}
+                  date={e.date}
+                />
+              </Skeleton>
             )) : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} my="10" >
               <Box fontSize="0.9vw" m="2vw">
                 {" "}
@@ -195,14 +201,16 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {indexMock ? indexMock.slice(-2).map((e, idx) => (
-              <Tile
-                homePage
-                key={idx}
-                icon={e.icon}
-                label={e.label}
-                description={e.description}
-                date={e.date}
-              />
+              <Skeleton isLoaded={!loading}>
+                <Tile
+                  homePage
+                  key={idx}
+                  icon={e.icon}
+                  label={e.label}
+                  description={e.description}
+                  date={e.date}
+                />
+              </Skeleton>
             )) :
               <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
                 <Box fontSize="0.9vw" m="4vw">
@@ -248,7 +256,7 @@ const Dashboard = () => {
           </Box>
         </>
       )}
-      <ConfirmModal/>
+      <ConfirmModal />
     </>
   );
 };
