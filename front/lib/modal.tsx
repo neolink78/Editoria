@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     Button,
     Modal,
@@ -9,23 +8,14 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react';
+import { useModal } from '../context/ModalContext';
 
-interface ConfirmModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title: string;
-    children: React.ReactNode;
-}
-const ConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title,
-    children
-}: ConfirmModalProps) => {
+const ConfirmModal = () => {
+    const { isOpen, closeModal, modalProps } = useModal();
+    const { title, children, onConfirm } = modalProps;
+
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={closeModal}>
             <ModalOverlay />
             <ModalContent bg="#1d222a" color="white">
                 <ModalHeader>{title}</ModalHeader>
@@ -33,15 +23,10 @@ const ConfirmModal = ({
                 <ModalBody>{children}</ModalBody>
                 <ModalFooter>
                     <Button bg="#1d222a" color="white" mr={3} _hover={{ bg: "#1574EF", color: "white" }}
-                        onClick={onClose}>
+                        onClick={closeModal}>
                         Annuler
                     </Button>
-                    <Button colorScheme="red" onClick={() => {
-                        onConfirm();
-                        onClose();
-                    }}>
-                        Confirmer
-                    </Button>
+                    <Button colorScheme="red" onClick={() => { onConfirm?.(); closeModal(); }}>Confirmer</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

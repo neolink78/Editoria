@@ -12,8 +12,10 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { GetProjectsQuery } from "../../gql/graphql";
 
 import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmModal from "../../lib/modal";
+import DashboardProjects from "./dashboardProjects";
+import { useModal } from "../../context/ModalContext";
 
 
 const GET_PROJECTS = gql`
@@ -41,8 +43,7 @@ mutation DeleteProject($deleteProjectId: ID!) {
 }
 `;
 
-
-const getLanguageIcon = (language: any) => {
+export const getLanguageIcon = (language: any) => {
   switch (language) {
     case 'JAVASCRIPT':
       return <SiJavascript />;
@@ -61,7 +62,7 @@ const getLanguageIcon = (language: any) => {
 
 
 const Dashboard = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
@@ -72,51 +73,29 @@ const Dashboard = () => {
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
-    onOpen();
+    openModal({
+      title: "Confirmer la suppression",
+      children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
+      onConfirm: () => confirmDelete(projectId),
+    });
+
   };
 
-  const confirmDelete = async () => {
-    await deleteProject({ variables: { deleteProjectId: selectedProjectId } });
+  const confirmDelete = async (projectId: string) => {
+    await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
   console.log(data);
   if (loading) return 'Chargement...';
   if (error) return `Erreur! ${error.message}`;
 
+
   return (
     <>
       {showAllProjects ? (
         <>
-          <Box mb={10}>
-            <Box
-              fontSize="1.4vw"
-              m={"4vw 0 0 2vw"}
-              alignSelf={"flex-start"}
-              display="flex"
-              alignItems="center"
-              gap={4}
-            >
-              {/* <Button leftIcon={<ArrowLeftIcon />} onClick={() => setShowAllProjects(false)} m={4}>
-          </Button> */}
+          <DashboardProjects projects={data?.getProjects || []} onDelete={handleDelete} setShowAllProjects={setShowAllProjects} />
 
-              <ArrowLeftIcon onClick={() => setShowAllProjects(false)}/>
-              <Box>Mes projets récents</Box>
-            </Box>
-            {data ? (
-              data.getProjects.map((project, idx) => (
-                <Tile
-                  key={project.id}
-                  icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
-                  title={project.title}
-                  createdAt={project.createdAt}
-                  owner={project.owner.username}
-                  onDelete={() => handleDelete(project.id)}
-                />
-              ))
-            ) : (
-              <Text>Chargement...</Text>
-            )}
-          </Box>
         </>
       ) : (
         <>
@@ -267,16 +246,9 @@ const Dashboard = () => {
               </Box>
             }
           </Box>
-          <ConfirmModal
-            isOpen={isOpen}
-            onClose={onClose}
-            onConfirm={confirmDelete}
-            title="Confirmer la suppression"
-          >
-            Êtes-vous sûr de vouloir supprimer ce projet ?
-          </ConfirmModal>
         </>
       )}
+      <ConfirmModal/>
     </>
   );
 };
