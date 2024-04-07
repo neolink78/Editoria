@@ -1,7 +1,9 @@
 
-import { Box, Button, Flex, Skeleton } from '@chakra-ui/react';
+import { Box, Button, Flex, IconButton, Skeleton } from '@chakra-ui/react';
+
 import { SetStateAction, useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
+import ArrowRightIcon from '../../icons/arrowRightIcon';
 import Tile from '../../lib/tile';
 import { getLanguageIcon } from './dashboard';
 
@@ -33,18 +35,26 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
 
     const PaginationControls = () => (
         <Flex mt="8" justifyContent="center" alignItems="center">
-            <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} mx="2">
-                Previous
-            </Button>
+            <IconButton
+                icon={<ArrowLeftIcon color={currentPage === 1 ? 'gray' : 'black'} />}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                isDisabled={currentPage === 1}
+                aria-label="Page précédente"
+                mx="2"
+            />
             {Array.from({ length: totalPages }, (_, index) => (
                 <Button key={index} mx="1" onClick={() => paginate(index + 1)} variant={currentPage === index + 1 ? "solid" : "ghost"}>
                     {index + 1}
                 </Button>
             ))}
 
-            <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} mx="2">
-                Next
-            </Button>
+            <IconButton
+                icon={<ArrowRightIcon color={currentPage === totalPages ? 'gray' : 'black'} />}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                isDisabled={currentPage === totalPages}
+                aria-label="Page suivante"
+                mx="2"
+            />
         </Flex>
     );
 
@@ -58,7 +68,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                 gap={2}
                 flexDirection="column"
             >
-                <Box display={"flex"} >
+                <Box display="flex" alignItems="center" >
                     <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes projets récents
                 </Box>
                 {currentProjects.map((project, idx) => (
