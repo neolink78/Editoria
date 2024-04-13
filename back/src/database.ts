@@ -1,8 +1,9 @@
-import { DataSource, Like } from "typeorm";
+import { DataSource } from "typeorm";
 import UserSession from "./entities/user/userSession";
 import User from "./entities/user/user";
 import CodeSnippet from "./entities/codeSnippet/codeSnippet";
 import Project from "./entities/project/project";
+import Like from "./entities/like/like";
 
 let dataSource: DataSource;
 
