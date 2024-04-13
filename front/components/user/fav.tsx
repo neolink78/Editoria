@@ -1,8 +1,22 @@
+import { gql, useQuery } from "@apollo/client"
 import { Box } from "@chakra-ui/react"
+import { GetUsersQuery } from "../../gql/graphql"
 import Tile from "../../lib/tile"
 import indexMock from "../../mocks/indexMock"
 
+const GETUSERS = gql`
+  query GetUsers {
+    getUsers {
+      id
+      username
+      email
+    }
+  }
+`
+
 const Fav = () => {
+  const { data, loading, error } = useQuery<GetUsersQuery>(GETUSERS)
+  
   return (
     <>
       <Box
