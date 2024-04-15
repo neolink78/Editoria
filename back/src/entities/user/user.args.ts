@@ -30,3 +30,10 @@ export class SignInUser {
   @Field()
   password!: string;
 }
+
+@ArgsType()
+export class ResetUser {
+  @Field()
+  @IsEmail()
+  email!: string;
+}

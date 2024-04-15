@@ -69,8 +69,8 @@ export const useSignInFormik = (isLogin: boolean) => {
         }
       } catch (error: any) {
         formik.setErrors({
-          email: "Email or password wrong",
-          password: "Email or password wrong",
+          email: "Wrong email or password",
+          password: "Wrong email or password",
         });
       }
     } else {

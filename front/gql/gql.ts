@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n": types.SignUpDocument,
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
+    "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
 };
 
 /**
@@ -39,6 +40,10 @@ export function graphql(source: "\n  mutation SignUp($email: String!, $username:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n"): (typeof documents)["\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
