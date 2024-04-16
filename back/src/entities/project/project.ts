@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
+import Comment from "../comment/comment";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
@@ -30,9 +31,14 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   @CreateDateColumn()
   @Field()
   updatedAt!: Date;
+  
 
   @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project)
   codeSnippetsOwned!: CodeSnippet[]
+
+  @OneToMany(() => Comment, (comment) => comment.project)
+  @Field(() => [Comment])
+  comments!: Comment[];
 
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
   @Field()

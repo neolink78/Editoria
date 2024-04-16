@@ -49,10 +49,6 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
 //   @Field(() => User)
 //   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.content)
-  @Field(() => [Comment])
-  comments!: Comment[];
-
 //   @OneToMany(() => Like, (like) => like.snippet)
 //   @Field(() => [Like])
 //   likes: Like[];

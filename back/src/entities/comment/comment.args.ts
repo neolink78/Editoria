@@ -9,5 +9,5 @@ export class CreateOrUpdateCommentArgs {
   content!: string;
 
   @Field(() => ID)
-  snippetId!: string;
+  projectId!: string;
 }
