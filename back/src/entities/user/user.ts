@@ -13,6 +13,7 @@ import { CreateOrUpdateUser, SignInUser } from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
 import Project from "../project/project";
+import Comment from "../comment/comment";
 
 
 export enum Role {
@@ -64,6 +65,10 @@ class User extends BaseEntity {
   
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments!: Comment[];
+
 
   constructor(user?: CreateOrUpdateUser) {
     super();
