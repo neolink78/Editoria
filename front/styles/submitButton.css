@@ -1,0 +1,16 @@
+.submit_button_container {
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.4vw;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1vw;
+  gap: 0.3vw;
+
+  svg {
+    pointer-events: none;
+
+    align-items: center;
+  }
+}

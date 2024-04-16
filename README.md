@@ -1,4 +1,4 @@
-# The Good Corner
+# Editoria
 
 ## Development
 

@@ -17,4 +17,7 @@ export class CreateOrUpdateCodeSnippetArgs {
 
   @Field(() => Language)
   language!: Language
+
+  @Field()
+  projectId!: string
 }

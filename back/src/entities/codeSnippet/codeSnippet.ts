@@ -1,9 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BaseEntity, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
 import { CreateOrUpdateCodeSnippetArgs } from './codeSnippet.args';
 // import { User } from './User';
 import Comment  from '../comment/comment';
 // import { Like } from './Like';
+import User from '../user/user';
+import Project from '../project/project';
 
 export enum Language {
   JAVASCRIPT = 'JAVASCRIPT',
@@ -18,6 +20,11 @@ export enum Language {
 registerEnumType(Language, {
   name: "Language",
 });
+
+type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
+  owner: User;
+  projectId: string;
+};
 
 @Entity()
 @ObjectType()
@@ -53,32 +60,39 @@ registerEnumType(Language, {
   @CreateDateColumn()
   @Field()
   createdAt!: Date;
-
+  
   @CreateDateColumn()
   @Field()
   updatedAt!: Date;
-
+  
   @Column({default: Language.JAVASCRIPT})
   @Field(type => Language)
   language!: Language;
 
+  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { eager: true })
+  @Field()
+  project!: Project;
 
-  constructor(codeSnippet?: CreateOrUpdateCodeSnippetArgs) {
+  constructor(codeSnippet?: CodeSnippetArgs) {
     super();
 
     if (codeSnippet) {
       this.title = codeSnippet.title;
       this.code = codeSnippet.code;
-      this.is_public = codeSnippet.is_public;
       this.language = codeSnippet.language;
     }
   }
 
-  static async createCodeSnippet(codeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
+  static async createCodeSnippet(codeSnippet: CodeSnippetArgs): Promise<CodeSnippet> {
     const newCodeSnippet = new CodeSnippet(codeSnippet);
     if (newCodeSnippet.code.length === 0 ) {
       throw new Error('Code snippet cannot be empty');
     }
+      
+    if (codeSnippet.projectId) {
+      newCodeSnippet.project = await Project.getProjectById(codeSnippet.projectId);
+    }
+
     return await CodeSnippet.save(newCodeSnippet);
   }
 
@@ -103,6 +117,7 @@ registerEnumType(Language, {
   static async updateCodeSnippet(id: string, partialCodeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
+    
     await codeSnippet.save();
     codeSnippet.reload()
     return codeSnippet;
