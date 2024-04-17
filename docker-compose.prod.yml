@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  back-end:
+    build:
+      context: ./back
+      target: prod
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - NODE_ENV=production
+    depends_on:
+      - database
+    expose:
+      4000
+
+  web-app:
+    build:
+      context: ./front
+      target: prod
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3000:3000
+
+  database:
+    image: postgres:15
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  database-data:
