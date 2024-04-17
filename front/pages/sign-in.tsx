@@ -13,7 +13,7 @@ import { useSignInFormik } from "../hooks/form";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export default function SignUp() {
+export default function SignIn() {
   const formik = useSignInFormik(true);
   const router = useRouter();
   const { email } = router.query;
