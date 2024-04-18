@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  back-end:
+  back:
     build:
       context: ./back
       target: prod
@@ -13,14 +13,14 @@ services:
     expose:
       4000
 
-  web-app:
+  front:
     build:
       context: ./front
       target: prod
     environment:
       - NODE_ENV=production
     ports:
-      - 3000:3000
+      - ${GATEWAY_PORT}:3000
 
   database:
     image: postgres:15

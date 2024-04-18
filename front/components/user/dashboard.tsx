@@ -115,7 +115,7 @@ const Dashboard = () => {
             {
               data
                 ? data.getProjects.slice(-3).map((e, idx) => (
-                  <Skeleton isLoaded={!loading}>
+                  <Skeleton isLoaded={!loading} key={e.id}>
                     <Tile
                       homePage={false}
                       key={idx}
@@ -159,7 +159,7 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {favMocks ? favMocks.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading}>
+              <Skeleton isLoaded={!loading} key={idx}>
                 <Tile
                   homePage
                   key={idx}
@@ -199,7 +199,7 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {indexMock ? indexMock.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading}>
+              <Skeleton isLoaded={!loading} key={idx}>
                 <Tile
                   homePage
                   key={idx}
