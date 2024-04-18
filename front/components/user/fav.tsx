@@ -77,7 +77,7 @@ const Fav = () => {
         <Box>Novak a liké ...</Box>
        
       </Box>
-      <Box>
+      <Box mb={12}>
         {indexMock.slice(-3).map((e, idx) => (
           <Tile
             homePage
