@@ -7,6 +7,9 @@ export class CreateOrUpdateProjectArgs {
   @MinLength(2)
   title!: string;
 
+  @Field({ nullable: true })
+  description!: string;
+
   @Field()
   is_public!: boolean;
 

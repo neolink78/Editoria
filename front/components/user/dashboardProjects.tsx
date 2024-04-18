@@ -11,6 +11,7 @@ export type Project = {
     id: string;
     codeSnippetsOwned: Array<{ language: string }>;
     title: string;
+    description: string;
     createdAt: string;
     owner: { username: string };
 };
@@ -51,6 +52,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             key={idx}
                             icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
                             title={project.title}
+                            description={project.description}
                             createdAt={project.createdAt}
                             owner={project.owner.username}
                             onDelete={() => {

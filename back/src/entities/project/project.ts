@@ -30,6 +30,10 @@ class Project extends BaseEntity {
   @Field()
   title!: string;
 
+  @Column({ default: "" })
+  @Field()
+  description!: string;
+
   @Column({ default: true })
   @Field()
   is_public!: boolean;
@@ -61,6 +65,7 @@ class Project extends BaseEntity {
 
     if (project) {
       this.title = project.title;
+      this.description = project.description;
       this.is_public = project.is_public;
       this.owner = project.owner;
     }

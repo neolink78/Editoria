@@ -21,6 +21,7 @@ query GetProjects {
   getProjects {
     id
     title
+    description
     updatedAt
     createdAt
     codeSnippetsOwned {
@@ -121,6 +122,7 @@ const Dashboard = () => {
                       key={idx}
                       icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
                       title={e.title}
+                      description={e.description}
                       createdAt={e.createdAt}
                       owner={e.owner.username}
                       onDelete={() => handleDelete(e.id)}
