@@ -2,6 +2,7 @@ import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider, CSSReset } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import { AppProps } from "next/app";
+import { ModalProvider } from "../context/ModalContext";
 import "../styles/globals.css";
 import theme from "../styles/theme";
 import createApolloClient from "./apollo-client";
@@ -55,9 +56,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
       <ChakraProvider theme={theme}>
-        <CSSReset />
-        <Fonts />
-        <Component {...pageProps} />
+        <ModalProvider>
+          <CSSReset />
+          <Fonts />
+          <Component {...pageProps} />
+        </ModalProvider>
       </ChakraProvider>
     </ApolloProvider>
   );

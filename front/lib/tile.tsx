@@ -1,4 +1,7 @@
-import { Text, Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { fr } from 'date-fns/locale';
+
 import { ReactNode } from "react";
 //import LikeIcon from "../icons/likeIcon"
 import { AiOutlineLike } from "react-icons/ai";
@@ -12,8 +15,14 @@ type TileProps = {
   date?: string;
   marginTop?: string;
   homePage?: boolean;
-  user?: string;
+  title?: string;
+  createdAt?: string;
+  owner?: string;
+  projectId?: string;
+  onDelete?: (e: any) => void;
 };
+
+
 
 const Tile = ({
   icon,
@@ -22,8 +31,14 @@ const Tile = ({
   date,
   marginTop,
   homePage,
-  user,
+  title,
+  createdAt,
+  owner,
+  projectId,
+  onDelete,
 }: TileProps) => {
+  const relativeDate = createdAt ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr }) : '';
+
   return (
     <Flex
       cursor="pointer"
@@ -35,16 +50,16 @@ const Tile = ({
       bg="#2F3138"
       mt={marginTop || "1vw"}
       fontSize="0.9vw"
-      onClick={() => alert("redirecting to")}
     >
       <Flex alignItems="center" gap="2vw">
         {icon}
-        <Text isTruncated minWidth="10vw" maxWidth="10vw">{label} azddzdzadazd</Text>
+        <Text isTruncated minWidth="10vw" maxWidth="10vw">{title} azddzdzadazd</Text>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">
-          {description}
-        </Text>
+        <Text isTruncated minWidth="30vw" maxWidth="30vw">description</Text>
+      </Flex>
+      {/* {description} */}
+      <Flex gap="1vw">
       </Flex>
       <Flex gap="1vw">
         <Flex alignItems="center">
@@ -53,11 +68,11 @@ const Tile = ({
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> 4
         </Flex>
-        <Text isTruncated minWidth="16vw" maxWidth="16vw">
-          {date} par {user ? <span style={{ color: "#1574EF" }}>{user}</span> : "Unknown"}
-        </Text>
+        {/* {date}
+         */}
+        <Text isTruncated minWidth="16vw" maxWidth="16vw">{relativeDate} par {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}</Text>
       </Flex>
-      {!homePage && <FaRegTrashAlt />}
+      {!homePage && <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />}
     </Flex>
   );
 };

@@ -1,7 +1,8 @@
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import SubmitButton from "../lib/submitButton";
 import UserIcon from "../icons/userIcon";
 import { useRouter } from "next/router";
+import Link from "next/link";
 type Props = {
   children: React.ReactNode;
   user?: boolean;
@@ -10,9 +11,11 @@ type Props = {
 const Layout = ({ children, user = true }: Props) => {
   const router = useRouter();
   return (
-    <Box bg="#14181F" color="#fbfbfb" fontFamily="body">
+    <Box bg="#14181F" color="#fbfbfb" fontFamily="body" minH="100vh">
       <Flex className="header_home_page">
-        EDITORIA
+        <Link href="/">
+          EDITORIA
+        </Link>
         <Flex gap="1.5vw" align="center">
           <SubmitButton
             onClick={() =>
@@ -35,7 +38,7 @@ const Layout = ({ children, user = true }: Props) => {
         </Flex>
       </Flex>
       {children}
-      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw">
+      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw" w="100%" mt="5vw">
         © 2024 Editoria. All rights reserved.
       </Flex>
     </Box>
