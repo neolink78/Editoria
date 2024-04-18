@@ -38,7 +38,7 @@ const Layout = ({ children, user = true }: Props) => {
         </Flex>
       </Flex>
       {children}
-      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw" position="absolute" bottom="0" w="100%">
+      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw" w="100%" mt="5vw">
         © 2024 Editoria. All rights reserved.
       </Flex>
     </Box>
