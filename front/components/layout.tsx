@@ -18,9 +18,9 @@ const Layout = ({ children, user = true }: Props) => {
             onClick={() =>
               alert(user ? "Redirecting to account" : "redirecting to IDE...")
             }
-            w="6vw"
+            w={user ? "9vw" : "6vw"}
           >
-            {user ? "Sign In" : "All projects"}
+            {user ? "All projects" : "Sign In"}
           </SubmitButton>
           <SubmitButton
             w="9vw"
@@ -29,13 +29,13 @@ const Layout = ({ children, user = true }: Props) => {
           >
             Start coding
           </SubmitButton>
-          <Box onClick={() => router.push("/account")} cursor="pointer">
+          <Box onClick={() => router.push("/user/account")} cursor="pointer">
             {user && <UserIcon />}
           </Box>
         </Flex>
       </Flex>
       {children}
-      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" mt="4vw" fontSize="1vw">
+      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw">
         © 2024 Editoria. All rights reserved.
       </Flex>
     </Box>
