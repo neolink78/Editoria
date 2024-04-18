@@ -1,5 +1,14 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
@@ -8,40 +17,42 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   owner: User;
 };
 
-
 //TODO: Add description to the project
 
 @Entity()
 @ObjectType()
- class Project extends BaseEntity {
+class Project extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   @Field(() => ID)
-  id!: string
+  id!: string;
 
   @Column()
   @Field()
-  title!: string
+  title!: string;
 
   @Column({ default: true })
   @Field()
-  is_public!: boolean
+  is_public!: boolean;
 
   @CreateDateColumn()
   @Field()
   createdAt!: Date;
-  
+
   @CreateDateColumn()
   @Field()
   updatedAt!: Date;
 
-  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, { eager: true, onDelete: "CASCADE" })
-  @Field(type => [CodeSnippet])
-  codeSnippetsOwned!: CodeSnippet[]
+  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @Field((type) => [CodeSnippet])
+  codeSnippetsOwned!: CodeSnippet[];
 
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
   @Field()
   owner!: User;
-  
+
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
@@ -57,18 +68,22 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
 
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
-    
+
     return await Project.save(newProject);
   }
 
   static async getProject(): Promise<Project[]> {
-    return await Project.find();
+    return await Project.find({
+      order: {
+        createdAt: "DESC",
+      },
+    });
   }
 
   static async getProjectById(id: string): Promise<Project> {
     const project = await Project.findOne({ where: { id } });
     if (!project) {
-      throw new Error('Project not found');
+      throw new Error("Project not found");
     }
     return project;
   }
@@ -78,20 +93,24 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
     await Project.delete(id);
     return project;
   }
-  
-  static async updateProject(id: string, partialProject: CreateOrUpdateProjectArgs): Promise<Project> {
+
+  static async updateProject(
+    id: string,
+    partialProject: CreateOrUpdateProjectArgs
+  ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
-    
+
     if (partialProject.collaboratorIds) {
-      project.collaborators = await Promise.all(partialProject.collaboratorIds.map(User.getUserById));
+      project.collaborators = await Promise.all(
+        partialProject.collaboratorIds.map(User.getUserById)
+      );
     }
 
     await project.save();
-    project.reload()
+    project.reload();
     return project;
   }
+}
 
- }
-
- export default Project;
+export default Project;

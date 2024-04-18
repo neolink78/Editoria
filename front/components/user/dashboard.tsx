@@ -1,4 +1,4 @@
-import { Box, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
@@ -42,9 +42,10 @@ mutation DeleteProject($deleteProjectId: ID!) {
 `;
 
 export const getLanguageIcon = (language: any) => {
+  const iconStyle = { fontSize: '32px' };
   switch (language) {
     case 'JAVASCRIPT':
-      return <SiJavascript />;
+      return <SiJavascript color="yellow" style={iconStyle} />;
     case 'TYPESCRIPT':
       return <SiTypescript />;
     case 'PYTHON':
@@ -54,7 +55,7 @@ export const getLanguageIcon = (language: any) => {
     case 'CSHARP':
       return <SiCsharp />;
     default:
-      return <SiJavascript />; // Retourne une icône par défaut si le langage n'est pas géré
+      return <SiJavascript color="yellow" style={iconStyle} />;
   }
 };
 
@@ -99,18 +100,17 @@ const Dashboard = () => {
         </>
       ) : (
         <>
-          <Box
+          <Flex
             fontSize="1.4vw"
-            m={"4vw 0 0 10vw"}
-            alignSelf={"flex-start"}
-            display="flex"
+            m="4vw 0 0 10vw"
+            alignSelf="flex-start"
             alignItems="baseline"
           >
             <Box>Mes projets récents</Box>
             {data && <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
-              <Text cursor="pointer" >Tout voir{" "}</Text>
+              <Text cursor="pointer" >Tout voir</Text>
             </Box>}
-          </Box>
+          </Flex>
           <Box mb={10}>
             {
               data
@@ -120,7 +120,6 @@ const Dashboard = () => {
                       homePage={false}
                       key={idx}
                       icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-                      // description={e.description}
                       title={e.title}
                       createdAt={e.createdAt}
                       owner={e.owner.username}
@@ -128,22 +127,27 @@ const Dashboard = () => {
                     />
                   </Skeleton>
                 ))
-                : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
-                  <Box fontSize="0.9vw" m="2vw">
-                    {" "}
-                    Vous n'avez pas encore de projet.{" "}
-                  </Box>
-                  <SubmitButton
-                    w="13vw"
-                    bg="#1574EF"
-                    onClick={() => alert("redirecting to IDE...")}
+                :
+                <>
+                  <Flex
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
                   >
-                    Commencez à coder
-                  </SubmitButton>
-                </Box>
+                    <Box fontSize="0.9vw" m="2vw">
+                      Vous n'avez pas encore de projet.
+                    </Box>
+                    <SubmitButton
+                      w="13vw"
+                      bg="#1574EF"
+                      onClick={() => alert("redirecting to IDE...")}
+                    >
+                      Commencez à coder
+                    </SubmitButton>
+                  </Flex>
+                </>
             }
           </Box>
-
           <Box
             fontSize="1.4vw"
             m={"2vw 0 0 10vw"}
@@ -153,8 +157,7 @@ const Dashboard = () => {
           >
             Mes projets likés
             {favMocks && <Box fontSize="1vw" ml="2vw">
-              {" "}
-              Tout voir{" "}
+              Tout voir
             </Box>}
           </Box>
           <Box mb={12}>
@@ -169,19 +172,24 @@ const Dashboard = () => {
                   date={e.date}
                 />
               </Skeleton>
-            )) : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} my="10" >
-              <Box fontSize="0.9vw" m="2vw">
-                {" "}
-                Vous n'avez pas encore liké de projet.{" "}
-              </Box>
-              <SubmitButton
-                w="11vw"
-                bg="#1574EF"
-                onClick={() => alert("redirecting to all projects...")}
+            )) :
+              <Flex
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                my="10"
               >
-                Tous les projets
-              </SubmitButton>
-            </Box>}
+                <Box fontSize="0.9vw" m="2vw">
+                  Vous n'avez pas encore liké de projet.
+                </Box>
+                <SubmitButton
+                  w="11vw"
+                  bg="#1574EF"
+                  onClick={() => alert("redirecting to all projects...")}
+                >
+                  Tous les projets
+                </SubmitButton>
+              </Flex>}
           </Box>
 
           <Box
@@ -193,8 +201,7 @@ const Dashboard = () => {
           >
             Mes projets en collaboration
             {indexMock && <Box fontSize="1vw" ml="2vw">
-              {" "}
-              Tout voir{" "}
+              Tout voir
             </Box>}
           </Box>
           <Box mb={12}>
@@ -210,12 +217,15 @@ const Dashboard = () => {
                 />
               </Skeleton>
             )) :
-              <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
+              <Flex
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
                 <Box fontSize="0.9vw" m="4vw">
-                  {" "}
-                  Vous n'avez pas encore de projet en collaboration.{" "}
+                  Vous n'avez pas encore de projet en collaboration.
                 </Box>
-              </Box>
+              </Flex>
             }
           </Box>
           <Box
@@ -227,8 +237,7 @@ const Dashboard = () => {
           >
             Mes derniers commentaires
             {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
-              {" "}
-              Tout voir{" "}
+              Tout voir
             </Box>}
           </Box>
           <Box mb={12}>
@@ -244,12 +253,15 @@ const Dashboard = () => {
                   date={e.date}
                 />
               )) :
-              <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
+              <Flex
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
                 <Box fontSize="0.9vw" m="4vw">
-                  {" "}
-                  Vous n'avez pas encore de commentaire.{" "}
+                  Vous n'avez pas encore de commentaire.
                 </Box>
-              </Box>
+              </Flex>
             }
           </Box>
         </>
