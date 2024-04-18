@@ -4,15 +4,13 @@ import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
-// import emptyMocks from "../../mocks/emptyMocks";
 import SubmitButton from "../../lib/submitButton";
 import modal from "../../lib/modal";
-// import favMocks from "../../mocks/favMocks";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GetProjectsQuery } from "../../gql/graphql";
 
 import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
