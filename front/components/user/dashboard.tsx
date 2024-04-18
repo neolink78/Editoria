@@ -46,7 +46,7 @@ mutation DeleteProject($deleteProjectId: ID!) {
 export const getLanguageIcon = (language: any) => {
   switch (language) {
     case 'JAVASCRIPT':
-      return <SiJavascript />;
+      return <SiJavascript color="yellow"/>;
     case 'TYPESCRIPT':
       return <SiTypescript />;
     case 'PYTHON':
@@ -56,7 +56,7 @@ export const getLanguageIcon = (language: any) => {
     case 'CSHARP':
       return <SiCsharp />;
     default:
-      return <SiJavascript />; // Retourne une icône par défaut si le langage n'est pas géré
+      return <SiJavascript color="yellow"/>; // Retourne une icône par défaut si le langage n'est pas géré
   }
 };
 

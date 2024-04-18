@@ -5,7 +5,6 @@ import { AppProps } from "next/app";
 import { ModalProvider } from "../context/ModalContext";
 import "../styles/globals.css";
 import theme from "../styles/theme";
-
 import createApolloClient from "./apollo-client";
 
 const Fonts = () => (
@@ -56,13 +55,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ApolloProvider client={apolloClient}>
-        <ChakraProvider theme={theme}>
-      <ModalProvider>
+      <ChakraProvider theme={theme}>
+        <ModalProvider>
           <CSSReset />
           <Fonts />
           <Component {...pageProps} />
-      </ModalProvider>
-        </ChakraProvider>
+        </ModalProvider>
+      </ChakraProvider>
     </ApolloProvider>
   );
 }

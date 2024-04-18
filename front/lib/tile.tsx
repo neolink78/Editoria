@@ -19,7 +19,7 @@ type TileProps = {
   createdAt?: string;
   owner?: string;
   projectId?: string;
-  onDelete?: (e: any ) => void;
+  onDelete?: (e: any) => void;
 };
 
 
