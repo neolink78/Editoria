@@ -17,6 +17,7 @@ const documents = {
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
     "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
     "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n": types.GetProjectsDocument,
+    "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n": types.GetProjectsDocument,
 };
 
 /**
@@ -48,6 +49,7 @@ export function graphql(source: "\n  mutation SignIn($email: String!, $password:
 export function graphql(source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"];
 
 export function graphql(source: "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n"): (typeof documents)["\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n"];
+export function graphql(source: "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
