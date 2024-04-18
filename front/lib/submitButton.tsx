@@ -23,7 +23,8 @@ const SubmitButton = ({
     <Flex
       as="button"
       className="submit_button_container"
-      w={w}
+      p="0.5vw 0.5vw"
+      // w={w}
       h={h}
       bg={bg}
       onClick={onClick}

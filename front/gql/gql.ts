@@ -13,11 +13,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n": types.GetProjectsDocument,
+    "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n": types.DeleteProjectDocument,
+    "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n": types.GetUsersDocument,
     "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n": types.SignUpDocument,
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
     "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
-    "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n": types.GetProjectsDocument,
-    "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n": types.GetProjectsDocument,
 };
 
 /**
@@ -37,7 +38,18 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-
+export function graphql(source: "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"): (typeof documents)["\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n"): (typeof documents)["\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -47,9 +59,6 @@ export function graphql(source: "\n  mutation SignIn($email: String!, $password:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"];
-
-export function graphql(source: "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n"): (typeof documents)["\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n  }\n}\n"];
-export function graphql(source: "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery GetProjects {\n  getProjects {\n    id\n    title\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
