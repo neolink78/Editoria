@@ -16,7 +16,7 @@ export class CreateOrUpdateUser {
   @MinLength(12)
   password!: string;
 
-  @Field()
+  @Field({nullable: true})
   description!: string;
   
 }
@@ -29,4 +29,11 @@ export class SignInUser {
 
   @Field()
   password!: string;
+}
+
+@ArgsType()
+export class ResetUser {
+  @Field()
+  @IsEmail()
+  email!: string;
 }

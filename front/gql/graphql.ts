@@ -41,6 +41,7 @@ export enum Language {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  ResetUser: User;
   createCodeSnippet: CodeSnippet;
   createProject: Project;
   deleteCodeSnippet: CodeSnippet;
@@ -52,6 +53,11 @@ export type Mutation = {
   updateCodeSnippet: CodeSnippet;
   updateProject: Project;
   updateUser: User;
+};
+
+
+export type MutationResetUserArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -92,7 +98,7 @@ export type MutationSignInArgs = {
 
 
 export type MutationSignUpArgs = {
-  description: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -117,7 +123,7 @@ export type MutationUpdateProjectArgs = {
 
 
 export type MutationUpdateUserArgs = {
-  description: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   id: Scalars['ID']['input'];
   password: Scalars['String']['input'];
@@ -142,6 +148,7 @@ export type Query = {
   getProjectById: Project;
   getProjects: Array<Project>;
   getUser: User;
+  getUserByEmail: User;
   getUsers: Array<User>;
   myProfile: User;
 };
@@ -159,6 +166,11 @@ export type QueryGetProjectByIdArgs = {
 
 export type QueryGetUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetUserByEmailArgs = {
+  email: Scalars['String']['input'];
 };
 
 export enum Role {
@@ -182,5 +194,46 @@ export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, title: string, updatedAt: any, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', language: Language }>, owner: { __typename?: 'User', username: string } }> };
 
+export type DeleteProjectMutationVariables = Exact<{
+  deleteProjectId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'Project', id: string } };
+
+export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, username: string, email: string }> };
+
+export type SignUpMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'User', email: string } };
+
+export type SignInMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'User', description: string, email: string, id: string, username: string } };
+
+export type ResetUserMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ResetUserMutation = { __typename?: 'Mutation', ResetUser: { __typename?: 'User', email: string, username: string, id: string } };
+
 
 export const GetProjectsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"codeSnippetsOwned"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const DeleteProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteProjectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteProjectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const GetUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
+export const SignUpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignUp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signUp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<SignUpMutation, SignUpMutationVariables>;
+export const SignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;
+export const ResetUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResetUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ResetUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ResetUserMutation, ResetUserMutationVariables>;

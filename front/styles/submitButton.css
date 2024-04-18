@@ -8,3 +8,8 @@
   font-size: 1vw;
   gap: 0.3vw;
 }
+
+.submit_button_container svg {
+  pointer-events: none;
+  align-items: center;
+}
