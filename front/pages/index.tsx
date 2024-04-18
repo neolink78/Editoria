@@ -39,10 +39,11 @@ export default function HomePage() {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         ))}
       </Box>
-      <Flex justifyContent="center" mt="3vw">
+      <Flex justifyContent="center" mt="3vw" mb="4vw">
         <SubmitButton onClick={() => alert("redirecting to IDE...")} w="10vw">
           See all projects
         </SubmitButton>
