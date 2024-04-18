@@ -32,6 +32,7 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   updatedAt!: Date;
 
   @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project)
+  @Field(type => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[]
 
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })

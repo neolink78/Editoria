@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
@@ -37,10 +37,10 @@ const Dashboard = () => {
             ))
         ) : (
           <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
           >
             <Box fontSize="0.9vw" m="2vw">
               {"Vous n'avez pas encore de projet."}
@@ -58,8 +58,8 @@ const Dashboard = () => {
 
       <Box
         fontSize="1.4vw"
-        m={"2vw 0 0 10vw"}
-        alignSelf={"flex-start"}
+        m="2vw 0 0 10vw"
+        alignSelf="flex-start"
         display="flex"
         alignItems="baseline"
       >
@@ -84,11 +84,10 @@ const Dashboard = () => {
               />
             ))
         ) : (
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
             my="10"
           >
             <Box fontSize="0.9vw" m="2vw">
@@ -101,14 +100,14 @@ const Dashboard = () => {
             >
               Tous les projets
             </SubmitButton>
-          </Box>
+          </Flex>
         )}
       </Box>
 
       <Box
         fontSize="1.4vw"
-        m={"2vw 0 0 10vw"}
-        alignSelf={"flex-start"}
+        m="2vw 0 0 10vw"
+        alignSelf="flex-start"
         display="flex"
         alignItems="baseline"
       >
@@ -133,22 +132,21 @@ const Dashboard = () => {
               />
             ))
         ) : (
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
           >
             <Box fontSize="0.9vw" m="4vw">
               {"Vous n'avez pas encore de projet en collaboration."}
             </Box>
-          </Box>
+          </Flex>
         )}
       </Box>
       <Box
         fontSize="1.4vw"
-        m={"2vw 0 0 10vw"}
-        alignSelf={"flex-start"}
+        m="2vw 0 0 10vw"
+        alignSelf="flex-start"
         display="flex"
         alignItems="baseline"
       >
@@ -173,16 +171,15 @@ const Dashboard = () => {
               />
             ))
         ) : (
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
           >
             <Box fontSize="0.9vw" m="4vw">
               {"Vous n'avez pas encore de commentaire."}
             </Box>
-          </Box>
+          </Flex>
         )}
       </Box>
     </>

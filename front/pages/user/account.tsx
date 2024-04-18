@@ -1,7 +1,8 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
+import Fav from "../../components/user/fav";
 import Breadcrumb from "../../lib/breadCrumb";
 import Settings from "../../components/user/settings";
 
@@ -31,7 +32,7 @@ export default function Account() {
         />
         {activePage === "dashboard" && <Dashboard />}
         {activePage === "settings" && <Settings />}
-        {activePage === "yourfavcoder" && <Text>Votre codeur préféré</Text>}
+        {activePage === "yourfavcoder" && <Fav />}
       </Flex>
     </Layout>
   );
