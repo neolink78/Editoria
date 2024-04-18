@@ -82,10 +82,10 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
     }
   }
 
-  const deleteFile = (fileName: string) => {
-    setProject((prevState) => prevState.filter((file: File) => file.name !== fileName));
-    setFileName(project[0].name);
-    setFilesInTabs(filesInTabs.filter((file) => file !== fileName));
+  const deleteFile = (fileToDelete: string) => {
+    setProject((prevState) => prevState.filter((file: File) => file.name !== fileToDelete));
+    if(fileToDelete === fileName) setFileName(project[0].name);
+    setFilesInTabs(filesInTabs.filter((file) => file !== fileToDelete));
   }
 
 /**

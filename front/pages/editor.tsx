@@ -22,14 +22,10 @@ function CodeEditor() {
       value: "<!-- Write your HTML -->",
     },
   ]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
-  useEffect(() => {
-    const file = project.find((file) => file.name === fileName);
-    if (file) setSelectedFile(file);
-    else setSelectedFile(null);
-  }, [fileName, project]);
+  const selectedFile = project.find((file) => file.name === fileName);
 
   const defineCustomTheme = (monaco: Monaco) => {
     monaco.editor.defineTheme("customTheme", {
