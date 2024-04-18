@@ -32,7 +32,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
-            
+            user={e.user}
           />
         ))
         : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
@@ -74,6 +74,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         )) : <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} my="10" >
           <Box fontSize="0.9vw" m="2vw">
@@ -113,6 +114,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         )) :
           <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
@@ -147,6 +149,7 @@ const Dashboard = () => {
             label={e.label}
             description={e.description}
             date={e.date}
+            user={e.user}
           />
         )) :
           <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"} >
