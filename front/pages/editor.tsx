@@ -1,6 +1,6 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { IoClose } from "react-icons/io5";
 import { FaCss3Alt, FaHtml5, FaRegFile } from "react-icons/fa";
