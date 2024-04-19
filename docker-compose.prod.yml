@@ -19,8 +19,8 @@ services:
       target: prod
     environment:
       - NODE_ENV=production
-    ports:
-      - ${GATEWAY_PORT}:3000
+    expose:
+      - 3000
 
   database:
     image: postgres:15
@@ -28,6 +28,16 @@ services:
       - database-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
+  
+  gateway:
+    image: nginx
+    depends_on:
+      - back
+      - front
+    ports:
+      - ${GATEWAY_PORT}:80
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
   database-data:
