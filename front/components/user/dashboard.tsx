@@ -43,7 +43,7 @@ mutation DeleteProject($deleteProjectId: ID!) {
 `;
 
 export const getLanguageIcon = (language: any) => {
-  const iconStyle = { fontSize: '32px' };
+  const iconStyle = { fontSize: '22px' };
   switch (language) {
     case 'JAVASCRIPT':
       return <SiJavascript color="yellow" style={iconStyle} />;
