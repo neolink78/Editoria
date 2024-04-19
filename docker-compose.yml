@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   back:
-    build: ./back
+    build: 
+      context: ./back
+      target: dev
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/postgres
     depends_on:
@@ -18,7 +20,9 @@ services:
           path: back/package.json
 
   front:
-    build: ./front
+    build: 
+      context: ./front
+      target: dev
     ports:
       - 3000:3000
     develop:
