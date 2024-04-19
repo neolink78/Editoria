@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Response } from "express";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
