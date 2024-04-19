@@ -21,12 +21,10 @@ const Layout = ({ children, user = true }: Props) => {
             onClick={() =>
               alert(user ? "Redirecting to account" : "redirecting to IDE...")
             }
-            w={user ? "9vw" : "6vw"}
           >
             {user ? "All projects" : "Sign In"}
           </SubmitButton>
           <SubmitButton
-            w="9vw"
             bg="#1574EF"
             onClick={() => alert("redirecting to IDE...")}
           >
