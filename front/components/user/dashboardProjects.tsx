@@ -72,11 +72,10 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                     <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes projets récents
                 </Box>
                 {currentProjects.map((project, idx) => (
-                    <Skeleton isLoaded={!isLoading}>
+                    <Skeleton isLoaded={!isLoading} key={idx}>
                         <Tile
                             homePage={false}
                             projectId={project.id}
-                            key={idx}
                             icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
                             title={project.title}
                             createdAt={project.createdAt}
