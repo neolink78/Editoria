@@ -8,6 +8,9 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   owner: User;
 };
 
+
+//TODO: Add description to the project
+
 @Entity()
 @ObjectType()
  class Project extends BaseEntity {
@@ -31,7 +34,8 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   @Field()
   updatedAt!: Date;
 
-  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project)
+  @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, { eager: true, onDelete: "CASCADE" })
+  @Field(type => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[]
 
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })

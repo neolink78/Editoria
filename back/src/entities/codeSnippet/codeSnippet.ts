@@ -50,7 +50,7 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field(type => Language)
   language!: Language;
 
-  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { eager: true })
+  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned)
   @Field()
   project!: Project;
 

@@ -9,10 +9,11 @@ import {
   ManyToMany
 } from "typeorm";
 import { compare, hash } from "bcrypt";
-import { CreateOrUpdateUser, SignInUser } from "./user.args";
+import { CreateOrUpdateUser, ResetUser, SignInUser } from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
 import Project from "../project/project";
+import UserResetSession from "./userResetSession";
 
 
 export enum Role {
@@ -39,7 +40,7 @@ class User extends BaseEntity {
   @Field()
   username!: string
 
-  @Column()
+  @Column({default: ""})
   @Field()
   description!: string;
 
@@ -70,6 +71,9 @@ class User extends BaseEntity {
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
 
+  @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
+  sessionsReset!: UserResetSession[];
+
   constructor(user?: CreateOrUpdateUser) {
     super();
 
@@ -77,7 +81,7 @@ class User extends BaseEntity {
       this.email = user.email;
       this.username = user.username;
       this.hashedPassword = user.password;
-      this.description = user.description;
+      this.description = user.description || "";
     }
   }
 
@@ -102,6 +106,14 @@ class User extends BaseEntity {
     }
     return user;
     }
+
+  static async getUserByEmail(email: string): Promise<User> {
+    const user = await User.findOne({ where: { email }});
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+    return user;
+  }
 
   static async updateUser(id: string, userData: CreateOrUpdateUser): Promise<User> {
     const user = await User.getUserById(id);
@@ -145,7 +157,13 @@ class User extends BaseEntity {
     return { user, session };
   }
 
-  
+  static async resetUser({
+    email
+  }: ResetUser): Promise<{ user: User; session: UserSession }> {
+    const user = await this.getUserByEmail(email);
+    const session = await UserResetSession.saveNewSession(user);
+    return { user, session };
+  }
 
   static async getUserWithSessionId(sessionId: string): Promise<User | null> {
     const session = await UserSession.findOne({
@@ -156,6 +174,17 @@ class User extends BaseEntity {
       return null;
     }
     return session.user;
+  }
+
+  static async getUserResetWithSessionId(resetSessionId: string): Promise<User | null> {
+    const resetSession = await UserResetSession.findOne({
+      where: { id: resetSessionId },
+      relations: { user: true },
+    });
+    if (!resetSession) {
+      return null;
+    }
+    return resetSession.user;
   }
 }
 

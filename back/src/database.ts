@@ -4,6 +4,7 @@ import User from "./entities/user/user";
 import CodeSnippet from "./entities/codeSnippet/codeSnippet";
 import Project from "./entities/project/project";
 import Like from "./entities/like/like";
+import UserResetSession from "./entities/user/userResetSession";
 
 let dataSource: DataSource;
 
@@ -15,7 +16,7 @@ export const getDataSource = async () => {
         process.env.NODE_ENV === "test"
           ? process.env.TEST_DATABASE_URL
           : process.env.DATABASE_URL,
-      entities: [CodeSnippet, User, UserSession, Project, Like],
+      entities: [CodeSnippet, User, UserSession, Project, Like, UserResetSession],
       synchronize: true,
     });
     await dataSource.initialize();
