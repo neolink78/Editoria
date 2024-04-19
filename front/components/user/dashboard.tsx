@@ -67,6 +67,7 @@ const Dashboard = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  const projects = data?.getProjects || [];
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_PROJECTS }],
   });
@@ -93,7 +94,7 @@ const Dashboard = () => {
       {showAllProjects ? (
         <>
           <DashboardProjects
-            projects={data?.getProjects || []}
+            projects={projects || []}
             onDelete={handleDelete}
             setShowAllProjects={setShowAllProjects}
             isLoading={loading}
@@ -116,7 +117,7 @@ const Dashboard = () => {
             {
               data
                 ? data.getProjects.slice(-3).map((e, idx) => (
-                  <Skeleton isLoaded={!loading}>
+                  <Skeleton isLoaded={!loading} key={e.id}>
                     <Tile
                       homePage={false}
                       key={idx}
@@ -137,7 +138,7 @@ const Dashboard = () => {
                     alignItems="center"
                   >
                     <Box fontSize="0.9vw" m="2vw">
-                      Vous n'avez pas encore de projet.
+                      Vous n&apos;avez pas encore de projet.{" "}
                     </Box>
                     <SubmitButton
                       w="13vw"
@@ -164,7 +165,7 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {favMocks ? favMocks.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading}>
+              <Skeleton isLoaded={!loading} key={idx}>
                 <Tile
                   homePage
                   key={idx}
@@ -174,6 +175,7 @@ const Dashboard = () => {
                   date={e.date}
                 />
               </Skeleton>
+
             )) :
               <Flex
                 flexDirection="column"
@@ -182,7 +184,7 @@ const Dashboard = () => {
                 my="10"
               >
                 <Box fontSize="0.9vw" m="2vw">
-                  Vous n'avez pas encore liké de projet.
+                  Vous n&apos;avez pas encore liké de projet.
                 </Box>
                 <SubmitButton
                   w="11vw"
@@ -208,7 +210,7 @@ const Dashboard = () => {
           </Box>
           <Box mb={12}>
             {indexMock ? indexMock.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading}>
+              <Skeleton isLoaded={!loading} key={idx}>
                 <Tile
                   homePage
                   key={idx}
@@ -225,7 +227,8 @@ const Dashboard = () => {
                 alignItems="center"
               >
                 <Box fontSize="0.9vw" m="4vw">
-                  Vous n'avez pas encore de projet en collaboration.
+                  {" "}
+                  Vous n&apos;avez pas encore de projet en collaboration.{" "}
                 </Box>
               </Flex>
             }
@@ -261,7 +264,8 @@ const Dashboard = () => {
                 alignItems="center"
               >
                 <Box fontSize="0.9vw" m="4vw">
-                  Vous n'avez pas encore de commentaire.
+                  {" "}
+                  Vous n&apos;avez pas encore de commentaire.{" "}
                 </Box>
               </Flex>
             }

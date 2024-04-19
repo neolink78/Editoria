@@ -39,7 +39,6 @@ export default function HomePage() {
             label={e.label}
             description={e.description}
             date={e.date}
-            user={e.user}
           />
         ))}
       </Box>
