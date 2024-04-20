@@ -112,9 +112,10 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
-                <Text cursor="pointer" >Tout voir</Text>
-              </Box>}
+              {data && data.getProjects.length > 3 &&
+                <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
+                  <Text cursor="pointer" >Tout voir</Text>
+                </Box>}
             </Flex>
             <Box mb={10}>
               {loading ? (
@@ -162,7 +163,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets likés
-              {favMocks && <Box fontSize="1vw" ml="2vw">
+              {favMocks && favMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
@@ -207,7 +208,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets en collaboration
-              {indexMock && <Box fontSize="1vw" ml="2vw">
+              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
@@ -244,7 +245,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes derniers commentaires
-              {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
+              {emptyMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
