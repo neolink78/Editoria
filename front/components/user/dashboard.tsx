@@ -114,43 +114,43 @@ const Dashboard = () => {
             </Box>}
           </Flex>
           <Box mb={10}>
-            {
-              data
-                ? data.getProjects.slice(-3).map((e, idx) => (
-                  <Skeleton isLoaded={!loading} key={e.id}>
-                    <Tile
-                      homePage={false}
-                      key={idx}
-                      icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-                      title={e.title}
-                      description={e.description}
-                      createdAt={e.createdAt}
-                      owner={e.owner.username}
-                      onDelete={() => handleDelete(e.id)}
-                    />
-                  </Skeleton>
-                ))
-                :
-                <>
-                  <Flex
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Box fontSize="0.9vw" m="2vw">
-                      Vous n&apos;avez pas encore de projet.{" "}
-                    </Box>
-                    <SubmitButton
-                      w="13vw"
-                      bg="#1574EF"
-                      onClick={() => alert("redirecting to IDE...")}
-                    >
-                      Commencez à coder
-                    </SubmitButton>
-                  </Flex>
-                </>
-            }
+            {loading ? (
+              <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <Box key={idx} width="100%" mb="10px">
+                    <Skeleton height="56px" width="100%" />
+                  </Box>
+                ))}
+              </Flex>
+            ) : (
+              data?.getProjects.slice(-3).map((e, idx) => (
+                <Tile
+                  homePage={false}
+                  key={e.id}
+                  icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                  title={e.title}
+                  createdAt={e.createdAt}
+                  owner={e.owner.username}
+                  onDelete={() => handleDelete(e.id)}
+                />
+              ))
+            )}
+            {data && data.getProjects.length === 0 && (
+              <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+                <Box fontSize="0.9vw" m="2vw">
+                  Vous n&apos;avez pas encore de projet.
+                </Box>
+                <SubmitButton
+                  w="13vw"
+                  bg="#1574EF"
+                  onClick={() => alert("redirecting to IDE...")}
+                >
+                  Commencez à coder
+                </SubmitButton>
+              </Box>
+            )}
           </Box>
+
           <Box
             fontSize="1.4vw"
             m={"2vw 0 0 10vw"}
