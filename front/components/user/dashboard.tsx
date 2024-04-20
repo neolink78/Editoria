@@ -14,6 +14,7 @@ import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
+import { NewUser } from "./newUser";
 
 
 const GET_PROJECTS = gql`
@@ -86,194 +87,199 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
+  const newUser = data?.getProjects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
+
   if (error) return `Erreur! ${error.message}`;
 
-
   return (
-    <>
-      {showAllProjects ? (
-        <>
-          <DashboardProjects
-            projects={projects || []}
-            onDelete={handleDelete}
-            setShowAllProjects={setShowAllProjects}
-            isLoading={loading}
-          />
-        </>
-      ) : (
-        <>
-          <Flex
-            fontSize="1.4vw"
-            m="4vw 0 0 10vw"
-            alignSelf="flex-start"
-            alignItems="baseline"
-          >
-            <Box>Mes projets récents</Box>
-            {data && <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
-              <Text cursor="pointer" >Tout voir</Text>
-            </Box>}
-          </Flex>
-          <Box mb={10}>
-            {loading ? (
-              <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw">
-                {Array.from({ length: 3 }).map((_, idx) => (
-                  <Box key={idx} width="100%" mb="10px">
-                    <Skeleton height="56px" width="100%" />
+    (!newUser && (
+      <>
+        {showAllProjects ? (
+          <>
+            <DashboardProjects
+              projects={projects || []}
+              onDelete={handleDelete}
+              setShowAllProjects={setShowAllProjects}
+              isLoading={loading}
+            />
+          </>
+        ) : (
+          <>
+            <Flex
+              fontSize="1.4vw"
+              m="4vw 0 0 10vw"
+              alignSelf="flex-start"
+              alignItems="baseline"
+            >
+              <Box>Mes projets récents</Box>
+              {data && <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
+                <Text cursor="pointer" >Tout voir</Text>
+              </Box>}
+            </Flex>
+            <Box mb={10}>
+              {loading ? (
+                <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw">
+                  {Array.from({ length: 3 }).map((_, idx) => (
+                    <Box key={idx} width="100%" mb="10px">
+                      <Skeleton height="56px" width="100%" />
+                    </Box>
+                  ))}
+                </Flex>
+              ) : (
+                data?.getProjects.slice(-3).map((e, idx) => (
+                  <Tile
+                    homePage={false}
+                    key={e.id}
+                    icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                    title={e.title}
+                    createdAt={e.createdAt}
+                    owner={e.owner.username}
+                    onDelete={() => handleDelete(e.id)}
+                  />
+                ))
+              )}
+              {data && data.getProjects.length === 0 && (
+                <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+                  <Box fontSize="0.9vw" m="2vw">
+                    Vous n&apos;avez pas encore de projet.
                   </Box>
-                ))}
-              </Flex>
-            ) : (
-              data?.getProjects.slice(-3).map((e, idx) => (
-                <Tile
-                  homePage={false}
-                  key={e.id}
-                  icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-                  title={e.title}
-                  createdAt={e.createdAt}
-                  owner={e.owner.username}
-                  onDelete={() => handleDelete(e.id)}
-                />
-              ))
-            )}
-            {data && data.getProjects.length === 0 && (
-              <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
-                <Box fontSize="0.9vw" m="2vw">
-                  Vous n&apos;avez pas encore de projet.
+                  <SubmitButton
+                    w="13vw"
+                    bg="#1574EF"
+                    onClick={() => alert("redirecting to IDE...")}
+                  >
+                    Commencez à coder
+                  </SubmitButton>
                 </Box>
-                <SubmitButton
-                  w="13vw"
-                  bg="#1574EF"
-                  onClick={() => alert("redirecting to IDE...")}
-                >
-                  Commencez à coder
-                </SubmitButton>
-              </Box>
-            )}
-          </Box>
+              )}
+            </Box>
 
-          <Box
-            fontSize="1.4vw"
-            m={"2vw 0 0 10vw"}
-            alignSelf={"flex-start"}
-            display="flex"
-            alignItems="baseline"
-          >
-            Mes projets likés
-            {favMocks && <Box fontSize="1vw" ml="2vw">
-              Tout voir
-            </Box>}
-          </Box>
-          <Box mb={12}>
-            {favMocks ? favMocks.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading} key={idx}>
-                <Tile
-                  homePage
-                  key={idx}
-                  icon={e.icon}
-                  label={e.label}
-                  description={e.description}
-                  date={e.date}
-                />
-              </Skeleton>
+            <Box
+              fontSize="1.4vw"
+              m={"2vw 0 0 10vw"}
+              alignSelf={"flex-start"}
+              display="flex"
+              alignItems="baseline"
+            >
+              Mes projets likés
+              {favMocks && <Box fontSize="1vw" ml="2vw">
+                Tout voir
+              </Box>}
+            </Box>
+            <Box mb={12}>
+              {favMocks ? favMocks.slice(-2).map((e, idx) => (
+                <Skeleton isLoaded={!loading} key={idx}>
+                  <Tile
+                    homePage
+                    key={idx}
+                    icon={e.icon}
+                    label={e.label}
+                    description={e.description}
+                    date={e.date}
+                  />
+                </Skeleton>
 
-            )) :
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                my="10"
-              >
-                <Box fontSize="0.9vw" m="2vw">
-                  Vous n&apos;avez pas encore liké de projet.
-                </Box>
-                <SubmitButton
-                  w="11vw"
-                  bg="#1574EF"
-                  onClick={() => alert("redirecting to all projects...")}
-                >
-                  Tous les projets
-                </SubmitButton>
-              </Flex>}
-          </Box>
-
-          <Box
-            fontSize="1.4vw"
-            m={"2vw 0 0 10vw"}
-            alignSelf={"flex-start"}
-            display="flex"
-            alignItems="baseline"
-          >
-            Mes projets en collaboration
-            {indexMock && <Box fontSize="1vw" ml="2vw">
-              Tout voir
-            </Box>}
-          </Box>
-          <Box mb={12}>
-            {indexMock ? indexMock.slice(-2).map((e, idx) => (
-              <Skeleton isLoaded={!loading} key={idx}>
-                <Tile
-                  homePage
-                  key={idx}
-                  icon={e.icon}
-                  label={e.label}
-                  description={e.description}
-                  date={e.date}
-                />
-              </Skeleton>
-            )) :
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Box fontSize="0.9vw" m="4vw">
-                  {" "}
-                  Vous n&apos;avez pas encore de projet en collaboration.{" "}
-                </Box>
-              </Flex>
-            }
-          </Box>
-          <Box
-            fontSize="1.4vw"
-            m={"2vw 0 0 10vw"}
-            alignSelf={"flex-start"}
-            display="flex"
-            alignItems="baseline"
-          >
-            Mes derniers commentaires
-            {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
-              Tout voir
-            </Box>}
-          </Box>
-          <Box mb={12}>
-            {emptyMocks.length > 0
-              ? emptyMocks.slice(-2).map((e, idx) => (
-                <Tile
-                  homePage
-                  key={idx}
-                  marginTop={e.marginTop}
-                  icon={e.icon}
-                  label={e.label}
-                  description={e.description}
-                  date={e.date}
-                />
               )) :
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Box fontSize="0.9vw" m="4vw">
-                  {" "}
-                  Vous n&apos;avez pas encore de commentaire.{" "}
-                </Box>
-              </Flex>
-            }
-          </Box>
-        </>
-      )}
-      <ConfirmModal />
-    </>
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  my="10"
+                >
+                  <Box fontSize="0.9vw" m="2vw">
+                    Vous n&apos;avez pas encore liké de projet.
+                  </Box>
+                  <SubmitButton
+                    w="11vw"
+                    bg="#1574EF"
+                    onClick={() => alert("redirecting to all projects...")}
+                  >
+                    Tous les projets
+                  </SubmitButton>
+                </Flex>}
+            </Box>
+
+            <Box
+              fontSize="1.4vw"
+              m={"2vw 0 0 10vw"}
+              alignSelf={"flex-start"}
+              display="flex"
+              alignItems="baseline"
+            >
+              Mes projets en collaboration
+              {indexMock && <Box fontSize="1vw" ml="2vw">
+                Tout voir
+              </Box>}
+            </Box>
+            <Box mb={12}>
+              {indexMock ? indexMock.slice(-2).map((e, idx) => (
+                <Skeleton isLoaded={!loading} key={idx}>
+                  <Tile
+                    homePage
+                    key={idx}
+                    icon={e.icon}
+                    label={e.label}
+                    description={e.description}
+                    date={e.date}
+                  />
+                </Skeleton>
+              )) :
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Box fontSize="0.9vw" m="4vw">
+                    {" "}
+                    Vous n&apos;avez pas encore de projet en collaboration.{" "}
+                  </Box>
+                </Flex>
+              }
+            </Box>
+            <Box
+              fontSize="1.4vw"
+              m={"2vw 0 0 10vw"}
+              alignSelf={"flex-start"}
+              display="flex"
+              alignItems="baseline"
+            >
+              Mes derniers commentaires
+              {emptyMocks.length > 0 && <Box fontSize="1vw" ml="2vw">
+                Tout voir
+              </Box>}
+            </Box>
+            <Box mb={12}>
+              {emptyMocks.length > 0
+                ? emptyMocks.slice(-2).map((e, idx) => (
+                  <Tile
+                    homePage
+                    key={idx}
+                    marginTop={e.marginTop}
+                    icon={e.icon}
+                    label={e.label}
+                    description={e.description}
+                    date={e.date}
+                  />
+                )) :
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Box fontSize="0.9vw" m="4vw">
+                    {" "}
+                    Vous n&apos;avez pas encore de commentaire.{" "}
+                  </Box>
+                </Flex>
+              }
+            </Box>
+          </>
+        )}
+        <ConfirmModal />
+      </>
+    )) || (
+      <NewUser />
+    )
   );
 };
 
