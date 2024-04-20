@@ -15,6 +15,8 @@ import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
+import { Error } from "../../lib/error";
+import { getLanguageIcon } from "@/utils/languageIcons";
 
 
 const GET_PROJECTS = gql`
@@ -43,24 +45,6 @@ mutation DeleteProject($deleteProjectId: ID!) {
 }
 `;
 
-export const getLanguageIcon = (language: any) => {
-  const iconStyle = { fontSize: '22px' };
-  switch (language) {
-    case 'JAVASCRIPT':
-      return <SiJavascript color="yellow" style={iconStyle} />;
-    case 'TYPESCRIPT':
-      return <SiTypescript />;
-    case 'PYTHON':
-      return <SiPython />;
-    case 'CPP':
-      return <SiCplusplus />;
-    case 'CSHARP':
-      return <SiCsharp />;
-    default:
-      return <SiJavascript color="yellow" style={iconStyle} />;
-  }
-};
-
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -80,16 +64,17 @@ const Dashboard = () => {
       children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
       onConfirm: () => confirmDelete(projectId),
     });
-
   };
 
   const confirmDelete = async (projectId: string) => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = data?.getProjects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
+  const newUser = projects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
+  const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
-  if (error) return `Erreur! ${error.message}`;
+
+  if (error) return (<Error />);
 
   return (
     (!newUser && (
@@ -112,7 +97,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && data.getProjects.length > 3 &&
+              {data && projects.length > 3 &&
                 <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
                   <Text cursor="pointer" >Tout voir</Text>
                 </Box>}
@@ -127,19 +112,20 @@ const Dashboard = () => {
                   ))}
                 </Flex>
               ) : (
-                data?.getProjects.slice(-3).map((e, idx) => (
+                sortedProjects.slice(-3).map((e, idx) => (
                   <Tile
                     homePage={false}
                     key={e.id}
                     icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
                     title={e.title}
+                    description={e.description}
                     createdAt={e.createdAt}
                     owner={e.owner.username}
                     onDelete={() => handleDelete(e.id)}
                   />
                 ))
               )}
-              {data && data.getProjects.length === 0 && (
+              {data && projects.length === 0 && (
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                   <Box fontSize="0.9vw" m="2vw">
                     Vous n&apos;avez pas encore de projet.

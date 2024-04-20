@@ -15,7 +15,7 @@ export const NewUser = () => {
             <Box fontSize="1.4vw" mb="20px" mt="6rem">
                 Bienvenue sur votre tableau de bord !
             </Box>
-            <Box fontSize="1.1vw" mb="40px" w="50vw">
+            <Box fontSize="1.1vw" mb="40px" w="30vw">
                 Il semble que vous n'avez pas encore de projets. Commencez votre premier projet maintenant et plongez dans le développement.
             </Box>
             <Link href="/editor" passHref>

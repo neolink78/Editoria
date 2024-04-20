@@ -5,11 +5,13 @@ import { useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
 import { PaginationControls } from '../../lib/pagination';
 import Tile from '../../lib/tile';
-import { getLanguageIcon } from './dashboard';
+import { getLanguageIcon } from '../../utils/languageIcons';
+import { Language } from '@/gql/graphql';
+
 
 export type Project = {
     id: string;
-    codeSnippetsOwned: Array<{ language: string }>;
+    codeSnippetsOwned: Array<{ language: Language }>;
     title: string;
     description: string;
     createdAt: string;
