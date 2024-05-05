@@ -13,7 +13,9 @@ logs-prod:
 
 back-end-test-watch:
 	docker compose exec back npm run test:watch
+
 web-app-test-watch:
 	docker compose exec front npm run test:watch
+	
 web-app-generate-graphql-types:
 	cd web-app && npm run graphql-codegen
