@@ -51,7 +51,7 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   language!: Language;
 
   @ManyToOne(() => Project, (project) => project.codeSnippetsOwned)
-  @Field()
+  @Field(() => Project)
   project!: Project;
 
   constructor(codeSnippet?: CodeSnippetArgs) {

@@ -39,7 +39,7 @@ type ProjectArgs = CreateOrUpdateProjectArgs & {
   codeSnippetsOwned!: CodeSnippet[]
 
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
-  @Field()
+  @Field(() => User)
   owner!: User;
   
   @ManyToMany(() => User, (collaborators) => collaborators.projects)

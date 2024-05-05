@@ -18,7 +18,9 @@ describe("CodeSnippet", () => {
     await database.destroy();
   });
 
-  describe("", () => {
-    it("", async () => {});
+  describe("1+1=2", () => {
+    it("should return 2", () => {
+      expect(1 + 1).toBe(2);
+    });
   });
 });
