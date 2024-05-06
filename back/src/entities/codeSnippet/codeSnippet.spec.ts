@@ -2,7 +2,6 @@ import User from "../user/user";
 import CodeSnippet, { Language } from "./codeSnippet";
 import { getDataSource } from "../../database";
 import { DataSource } from "typeorm";
-import { v4 as uuidv4 } from "uuid"; // Import the UUID generation function from the 'uuid' package
 import Project from "../project/project";
 
 describe("CodeSnippet", () => {
@@ -96,6 +95,37 @@ describe("CodeSnippet", () => {
       await expect(
         CodeSnippet.createCodeSnippet(newSnippetDetails)
       ).rejects.toThrow("Code snippet cannot be empty");
+    });
+  });
+
+  describe("updateCodeSnippet", () => {
+    it("should update the code snippet with the new details", async () => {
+      const newSnippetDetails = {
+        title: "Introduction to Jest",
+        code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
+        language: Language.JAVASCRIPT,
+        projectId: testProjectId,
+        owner: new User(),
+      };
+
+      const savedSnippet = await CodeSnippet.createCodeSnippet(
+        newSnippetDetails
+      );
+
+      const updatedSnippetDetails = {
+        title: "Introduction to Jest - Updated",
+        code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
+        language: Language.JAVASCRIPT,
+        projectId: testProjectId,
+      };
+
+      const updatedSnippet = await CodeSnippet.updateCodeSnippet(
+        savedSnippet.id,
+        updatedSnippetDetails
+      );
+
+      expect(updatedSnippet).toBeDefined();
+      expect(updatedSnippet.title).toBe(updatedSnippetDetails.title);
     });
   });
 });
