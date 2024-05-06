@@ -10,26 +10,21 @@ describe("CodeSnippet", () => {
   let testProjectId: string;
 
   beforeAll(async () => {
-    try {
-      database = await getDataSource();
-      const uniqueEmail = `testuser_${Date.now()}@example.com`;
-      const uniqueUsername = `testuser_${Date.now()}`;
-      const testUser = await database.getRepository(User).save({
-        email: uniqueEmail,
-        password: "securepassword123",
-        username: uniqueUsername,
-        hashedPassword: "somehashedpassword",
-      });
+    database = await getDataSource();
 
-      const testProject = await database.getRepository(Project).save({
-        title: "Test Project",
-        is_public: true,
-        owner: testUser,
-      });
-      testProjectId = testProject.id;
-    } catch (error) {
-      console.error("Error creating test project:", error);
-    }
+    const testUser = await database.getRepository(User).save({
+      email: `testuser_${Date.now()}@example.com`,
+      password: "securepassword123",
+      username: `testuser_${Date.now()}`,
+      hashedPassword: "somehashedpassword",
+    });
+
+    const testProject = await database.getRepository(Project).save({
+      title: "Test Project",
+      is_public: true,
+      owner: testUser,
+    });
+    testProjectId = testProject.id;
   });
 
   beforeEach(async () => {
@@ -50,21 +45,21 @@ describe("CodeSnippet", () => {
   });
 
   describe("saveNewCodeSnippet", () => {
-    it("should create a new code snippet and retrieve it from the database", async () => {
-      const newSnippetDetails: {
-        title: string;
-        code: string;
-        language: Language;
-        projectId: string;
-        owner: User;
-      } = {
-        title: "Introduction to Jest",
-        code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
-        language: Language.JAVASCRIPT,
-        projectId: testProjectId,
-        owner: new User(),
-      };
+    let newSnippetDetails: {
+      title: string;
+      code: string;
+      language: Language;
+      projectId: string;
+      owner: User;
+    } = {
+      title: "Introduction to Jest",
+      code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
+      language: Language.JAVASCRIPT,
+      projectId: testProjectId,
+      owner: new User(),
+    };
 
+    it("should create a new code snippet with correct properties", async () => {
       const savedSnippet = await CodeSnippet.createCodeSnippet(
         newSnippetDetails
       );
@@ -73,7 +68,9 @@ describe("CodeSnippet", () => {
       expect(savedSnippet.title).toBe(newSnippetDetails.title);
       expect(savedSnippet.code).toBe(newSnippetDetails.code);
       expect(savedSnippet.language).toBe(newSnippetDetails.language);
+    });
 
+    it("should retrieve the created code snippet from the database with correct properties", async () => {
       const fetchedSnippet = await database.getRepository(CodeSnippet).findOne({
         relations: ["project"],
         where: { project: { id: newSnippetDetails.projectId } },
