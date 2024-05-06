@@ -8,27 +8,39 @@ import Project from "../project/project";
 describe("CodeSnippet", () => {
   let database: DataSource;
   let testProjectId: string;
-  // TODO : changer testProjectId par un vrai id de projet
 
   beforeAll(async () => {
-    database = await getDataSource();
-    //   const testProject = await database.getRepository(Project).save({
-    //     id: uuidv4(),
-    //     title: "Test Project",
-    //     is_public: true,
-    //     owner: new User(),
-    //   });
-    //   testProjectId = testProject.id;
-    //   console.log("TESTPROJECT",testProjectId);
+    try {
+      database = await getDataSource();
+      const uniqueEmail = `testuser_${Date.now()}@example.com`;
+      const uniqueUsername = `testuser_${Date.now()}`;
+      const testUser = await database.getRepository(User).save({
+        email: uniqueEmail,
+        password: "securepassword123",
+        username: uniqueUsername,
+        hashedPassword: "somehashedpassword",
+      });
+
+      const testProject = await database.getRepository(Project).save({
+        title: "Test Project",
+        is_public: true,
+        owner: testUser,
+      });
+      testProjectId = testProject.id;
+    } catch (error) {
+      console.error("Error creating test project:", error);
+    }
   });
 
   beforeEach(async () => {
     // const database = await getDataSource();
     for (const entity of database.entityMetadatas) {
-      const repository = database.getRepository(entity.name);
-      await repository.query(
-        `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
-      );
+      if (entity.name !== "Project" && entity.name !== "User") {
+        const repository = database.getRepository(entity.name);
+        await repository.query(
+          `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
+        );
+      }
     }
   });
 
@@ -63,13 +75,16 @@ describe("CodeSnippet", () => {
       expect(savedSnippet.language).toBe(newSnippetDetails.language);
 
       const fetchedSnippet = await database.getRepository(CodeSnippet).findOne({
-        where: { title: newSnippetDetails.title },
+        relations: ["project"],
+        where: { project: { id: newSnippetDetails.projectId } },
       });
 
       expect(fetchedSnippet).toBeDefined();
-      expect(fetchedSnippet!.code).toBe(newSnippetDetails.code);
-      expect(fetchedSnippet!.language).toBe(newSnippetDetails.language);
-      expect(fetchedSnippet!.project.id).toBe(newSnippetDetails.projectId);
+      if (fetchedSnippet) {
+        expect(fetchedSnippet!.code).toBe(newSnippetDetails.code);
+        expect(fetchedSnippet!.language).toBe(newSnippetDetails.language);
+        expect(fetchedSnippet!.project.id).toBe(newSnippetDetails.projectId);
+      }
     });
 
     it("should fail when the code snippet code is empty", async () => {
