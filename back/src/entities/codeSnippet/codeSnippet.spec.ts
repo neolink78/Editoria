@@ -99,7 +99,9 @@ describe("CodeSnippet", () => {
   });
 
   describe("updateCodeSnippet", () => {
-    it("should update the code snippet with the new details", async () => {
+    let savedSnippetId: string;
+
+    beforeEach(async () => {
       const newSnippetDetails = {
         title: "Introduction to Jest",
         code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
@@ -111,21 +113,55 @@ describe("CodeSnippet", () => {
       const savedSnippet = await CodeSnippet.createCodeSnippet(
         newSnippetDetails
       );
+      savedSnippetId = savedSnippet.id;
+    });
 
+    it("should update the code snippet with the new details", async () => {
       const updatedSnippetDetails = {
         title: "Introduction to Jest - Updated",
-        code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
-        language: Language.JAVASCRIPT,
+        code: "test('expects 3 to be 3', () => { expect(3).toBe(3); });",
+        language: Language.C,
         projectId: testProjectId,
       };
 
       const updatedSnippet = await CodeSnippet.updateCodeSnippet(
-        savedSnippet.id,
+        savedSnippetId,
         updatedSnippetDetails
       );
 
       expect(updatedSnippet).toBeDefined();
       expect(updatedSnippet.title).toBe(updatedSnippetDetails.title);
+      expect(updatedSnippet.code).toBe(updatedSnippetDetails.code);
+      expect(updatedSnippet.language).toBe(updatedSnippetDetails.language);
+    });
+    it("should retrieve the updated code snippet from the database with correct properties", async () => {
+      const fetchedSnippet = await database.getRepository(CodeSnippet).findOne({
+        where: { project: { id: savedSnippetId } },
+      });
+
+      expect(fetchedSnippet).toBeDefined();
+      if (fetchedSnippet) {
+        expect(fetchedSnippet!.title).toBe("Introduction to Jest - Updated");
+        expect(fetchedSnippet!.code).toBe(
+          "test('expects 3 to be 3', () => { expect(3).toBe(3); });"
+        );
+        expect(fetchedSnippet!.language).toBe(Language.JAVASCRIPT);
+      }
+    });
+
+    it("should fail when the code snippet code is empty", async () => {
+      console.log("Updating for Failure Snippet ID:", savedSnippetId); // Log ID before updating for failure
+
+      const updatedSnippetDetails = {
+        title: "Introduction to Jest - Updated",
+        code: "",
+        language: Language.JAVASCRIPT,
+        projectId: testProjectId,
+      };
+
+      await expect(
+        CodeSnippet.updateCodeSnippet(savedSnippetId, updatedSnippetDetails)
+      ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
 });

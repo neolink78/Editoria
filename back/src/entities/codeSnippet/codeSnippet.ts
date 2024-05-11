@@ -98,7 +98,9 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   static async updateCodeSnippet(id: string, partialCodeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
-    
+    if (codeSnippet.code.length === 0 ) {
+      throw new Error('Code snippet cannot be empty');
+    }
     await codeSnippet.save();
     codeSnippet.reload()
     return codeSnippet;
