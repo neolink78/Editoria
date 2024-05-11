@@ -164,4 +164,45 @@ describe("CodeSnippet", () => {
       ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
+
+  describe("deleteCodeSnippet", () => {
+    let savedSnippetId: string;
+
+    beforeEach(async () => {
+      const newSnippetDetails = {
+        title: "Introduction to Jest",
+        code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
+        language: Language.JAVASCRIPT,
+        projectId: testProjectId,
+        owner: new User(),
+      };
+
+      const savedSnippet = await CodeSnippet.createCodeSnippet(
+        newSnippetDetails
+      );
+      savedSnippetId = savedSnippet.id;
+    });
+
+    it("should delete the code snippet from the database", async () => {
+      const deletedSnippet = await CodeSnippet.deleteCodeSnippet(
+        savedSnippetId
+      );
+
+      expect(deletedSnippet).toBeDefined();
+      expect(deletedSnippet.id).toBe(savedSnippetId);
+    });
+
+    it("should fail when the ID format is invalid", async () => {
+      await expect(CodeSnippet.deleteCodeSnippet("invalid-id")).rejects.toThrow(
+        "Invalid UUID"
+      );
+    });
+
+    it("should fail when the code snippet does not exist", async () => {
+      const nonExistentUUID = "123e4567-e89b-12d3-a456-426614174000";
+      await expect(
+        CodeSnippet.deleteCodeSnippet(nonExistentUUID)
+      ).rejects.toThrow("Code snippet not found");
+    });
+  });
 });

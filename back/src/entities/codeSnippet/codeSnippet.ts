@@ -3,6 +3,7 @@ import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
 import { CreateOrUpdateCodeSnippetArgs } from './codeSnippet.args';
 import User from '../user/user';
 import Project from '../project/project';
+import { checkUUID } from '../../utils/checkUUID';
 
 export enum Language {
   JAVASCRIPT = 'JAVASCRIPT',
@@ -90,6 +91,9 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   }
 
   static async deleteCodeSnippet(id: string): Promise<CodeSnippet> {
+    if (!checkUUID(id)) {
+      throw new Error('Invalid UUID');
+    }
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     await CodeSnippet.delete(id);
     return codeSnippet;
