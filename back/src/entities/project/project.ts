@@ -13,7 +13,7 @@ import CodeSnippet from "../codeSnippet/codeSnippet";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
-type ProjectArgs = CreateOrUpdateProjectArgs & {
+export type ProjectArgs = CreateOrUpdateProjectArgs & {
   owner: User;
   codeSnippetsOwned: CodeSnippet[];
 };
@@ -75,6 +75,8 @@ class Project extends BaseEntity {
     const newProject = new Project(project);
     if (project.codeSnippetsOwned.length === 0) {
       throw new Error("CodeSnippet not found");
+    } else if (project.title === "") {
+      throw new Error("Title is required");
     }
 
     return await Project.save(newProject);
@@ -100,11 +102,15 @@ class Project extends BaseEntity {
 
   static async updateProject(
     id: string,
-    partialProject: CreateOrUpdateProjectArgs
+    partialProject: ProjectArgs
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
-
+    if (project.codeSnippetsOwned.length === 0) {
+      throw new Error("CodeSnippet not found");
+    } else if (partialProject.title === "") {
+      throw new Error("Title cannot be empty");
+    }
     if (partialProject.collaboratorIds) {
       project.collaborators = await Promise.all(
         partialProject.collaboratorIds.map(User.getUserById)
