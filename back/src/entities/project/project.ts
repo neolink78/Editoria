@@ -15,6 +15,7 @@ import { CreateOrUpdateProjectArgs } from "./project.args";
 
 type ProjectArgs = CreateOrUpdateProjectArgs & {
   owner: User;
+  codeSnippetsOwned: CodeSnippet[];
 };
 
 @Entity()
@@ -66,11 +67,15 @@ class Project extends BaseEntity {
       this.description = project.description;
       this.is_public = project.is_public;
       this.owner = project.owner;
+      this.codeSnippetsOwned = [];
     }
   }
 
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
+    if (project.codeSnippetsOwned.length === 0) {
+      throw new Error("CodeSnippet not found");
+    }
 
     return await Project.save(newProject);
   }

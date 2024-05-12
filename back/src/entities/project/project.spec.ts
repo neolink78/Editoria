@@ -2,10 +2,12 @@ import { getDataSource } from "../../database";
 import Project from "./project";
 import User from "../user/user";
 import { DataSource } from "typeorm";
+import CodeSnippet from "../codeSnippet/codeSnippet";
 
 describe("Project", () => {
   let database: DataSource;
   let testUser: User;
+  let codesnippet: CodeSnippet;
 
   beforeAll(async () => {
     database = await getDataSource();
@@ -15,6 +17,13 @@ describe("Project", () => {
       username: `testuser_${Date.now()}`,
       hashedPassword: "somehashedpassword",
     });
+
+    codesnippet = await database.getRepository(CodeSnippet).save({
+      title: "JAVASCRIPT LOADER",
+      code: "console.log('Hello World')",
+      owner: testUser,
+    });
+    // let codeSnippetId = codesnippet.id;
   });
 
   afterAll(async () => {
@@ -22,6 +31,8 @@ describe("Project", () => {
   });
 
   describe("createProject", () => {
+    let fetchProjectId: string;
+
     it("should create a new project successfully", async () => {
       let projectData = {
         title: "JAVASCRIPT LOADER",
@@ -30,9 +41,11 @@ describe("Project", () => {
           "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
         owner: testUser,
         collaboratorIds: [],
+        codeSnippetsOwned: [codesnippet],
       };
-      console.log(projectData);
+
       const project = await Project.createProject(projectData);
+
       expect(project).toBeDefined();
       expect(project.title).toBe(projectData.title);
       expect(project.is_public).toBe(projectData.is_public);
@@ -45,23 +58,38 @@ describe("Project", () => {
       const fetchedProject = await database
         .getRepository(Project)
         .findOne({ where: { title: "JAVASCRIPT LOADER" } });
+      fetchProjectId = fetchedProject!.id;
 
       expect(fetchedProject).toBeDefined();
+      expect(fetchedProject!.id).toBeDefined();
       expect(fetchedProject!.description).toBe(
         "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO"
       );
     });
 
     it("should delete projectData from db successfully", async () => {
-      const fetchedProject = await database
+      const fetchProject = await database
         .getRepository(Project)
-        .findOne({ where: { title: "JAVASCRIPT LOADER" } });
+        .findOne({ where: { id: fetchProjectId } });
 
-      const deletedProject = await Project.deleteProject(fetchedProject!.id);
+      const deletedProject = await Project.deleteProject(fetchProject!.id);
+
       expect(deletedProject).toBeDefined();
-      expect(deletedProject.id).toBe(fetchedProject!.id);
+      expect(deletedProject.id).toBe(fetchProject!.id);
     });
 
-    // TODO : Make sure we don't need at least one codeSnippet to create a project
+    it("should'nt be able to save a project without a codesnippet", async () => {
+      await expect(
+        Project.createProject({
+          title: "JAVASCRIPT LOADER",
+          is_public: true,
+          description:
+            "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
+          owner: testUser,
+          collaboratorIds: [],
+          codeSnippetsOwned: [],
+        })
+      ).rejects.toThrow("CodeSnippet not found");
+    });
   });
 });
