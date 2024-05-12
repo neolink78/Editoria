@@ -23,7 +23,7 @@ describe("Project", () => {
 
   describe("createProject", () => {
     it("should create a new project successfully", async () => {
-      const projectData = {
+      let projectData = {
         title: "JAVASCRIPT LOADER",
         is_public: true,
         description:
@@ -31,7 +31,7 @@ describe("Project", () => {
         owner: testUser,
         collaboratorIds: [],
       };
-
+      console.log(projectData);
       const project = await Project.createProject(projectData);
       expect(project).toBeDefined();
       expect(project.title).toBe(projectData.title);
@@ -41,10 +41,27 @@ describe("Project", () => {
       expect(project.owner.id).toBe(testUser.id);
     });
 
-    it("should retrieve all projects successfully", async () => {
-      const projects = await Project.getProject();
-      expect(projects).toBeDefined();
-      expect(projects.length).toBeGreaterThan(0);
+    it("should retrieve projectData from db successfully", async () => {
+      const fetchedProject = await database
+        .getRepository(Project)
+        .findOne({ where: { title: "JAVASCRIPT LOADER" } });
+
+      expect(fetchedProject).toBeDefined();
+      expect(fetchedProject!.description).toBe(
+        "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO"
+      );
     });
+
+    it("should delete projectData from db successfully", async () => {
+      const fetchedProject = await database
+        .getRepository(Project)
+        .findOne({ where: { title: "JAVASCRIPT LOADER" } });
+
+      const deletedProject = await Project.deleteProject(fetchedProject!.id);
+      expect(deletedProject).toBeDefined();
+      expect(deletedProject.id).toBe(fetchedProject!.id);
+    });
+
+    // TODO : Make sure we don't need at least one codeSnippet to create a project
   });
 });
