@@ -209,4 +209,40 @@ describe("Project", () => {
       ).rejects.toThrow("Title cannot be empty");
     });
   });
+
+  describe("deleteProject", () => {
+    let deleteProjectId: string;
+    beforeEach(async () => {
+      if (!deleteProjectId) {
+        const project = await Project.createProject({
+          title: "Temporary Project",
+          is_public: true,
+          description: "Temp project for delete tests",
+          owner: testUser,
+          collaboratorIds: [],
+          codeSnippetsOwned: [codesnippet],
+        });
+        deleteProjectId = project.id;
+      }
+    });
+
+    it("should delete a project successfully", async () => {
+      const deletedProject = await Project.deleteProject(deleteProjectId);
+
+      expect(deletedProject).toBeDefined();
+      expect(deletedProject.id).toBe(deleteProjectId);
+    });
+
+    it("should not be able to delete a project with a wrong id format", async () => {
+      await expect(Project.deleteProject("123")).rejects.toThrow(
+        'invalid input syntax for type uuid: "123"'
+      );
+    });
+
+    it("should not be able to delete a project with a wrong id", async () => {
+      await expect(
+        Project.deleteProject("123e4567-e89b-12d3-a456-426614174000")
+      ).rejects.toThrow("Project not found");
+    });
+  });
 });
