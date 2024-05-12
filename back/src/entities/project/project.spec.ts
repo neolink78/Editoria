@@ -5,43 +5,46 @@ import { DataSource } from "typeorm";
 
 describe("Project", () => {
   let database: DataSource;
-  let testUserId: string;
+  let testUser: User;
 
   beforeAll(async () => {
     database = await getDataSource();
-    const testUser = await database.getRepository(User).save({
-      email: "user@example.com",
-      username: "testuser",
-      hashedPassword: "hashedpassword123",
+    testUser = await database.getRepository(User).save({
+      email: `testuser_${Date.now()}@example.com`,
+      password: "securepassword123",
+      username: `testuser_${Date.now()}`,
+      hashedPassword: "somehashedpassword",
     });
-    testUserId = testUser.id;
   });
 
   afterAll(async () => {
     await database.destroy();
   });
 
-  //   describe("createProject", () => {
-  //     it("should create a new project successfully", async () => {
-  //       const projectData: {title: string;
-  //         is_public: boolean;
-  //         owner: User | null;
-  //         collaboratorsIds: string[];
+  describe("createProject", () => {
+    it("should create a new project successfully", async () => {
+      const projectData = {
+        title: "JAVASCRIPT LOADER",
+        is_public: true,
+        description:
+          "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
+        owner: testUser,
+        collaboratorIds: [],
+      };
 
-  //     } = {
-  //         title: "New Project",
-  //         is_public: true,
-  //         owner: await database.getRepository(User).findOneBy({ id: testUserId }),
-  //         collaboratorIds: []
-  //       };
+      const project = await Project.createProject(projectData);
+      expect(project).toBeDefined();
+      expect(project.title).toBe(projectData.title);
+      expect(project.is_public).toBe(projectData.is_public);
+      expect(project.description).toBe(projectData.description);
+      expect(project.owner).toBeDefined();
+      expect(project.owner.id).toBe(testUser.id);
+    });
 
-  //       console.log(projectData);
-
-  //       const project = await Project.createProject(projectData);
-  //       expect(project).toBeDefined();
-  //       expect(project.title).toBe(projectData.title);
-  //       expect(project.is_public).toBe(projectData.is_public);
-  //       expect(project.owner.id).toBe(testUserId);
-  //     });
-  //   });
+    it("should retrieve all projects successfully", async () => {
+      const projects = await Project.getProject();
+      expect(projects).toBeDefined();
+      expect(projects.length).toBeGreaterThan(0);
+    });
+  });
 });
