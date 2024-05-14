@@ -7,6 +7,7 @@ import { PaginationControls } from '../../lib/pagination';
 import Tile from '../../lib/tile';
 import { getLanguageIcon } from '../../utils/languageIcons';
 import { Language } from '@/gql/graphql';
+import { useRouter } from 'next/router';
 
 
 export type Project = {
@@ -26,7 +27,8 @@ interface DashboardProjectsProps {
 }
 
 const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }: DashboardProjectsProps) => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const router = useRouter();
+    const currentPage = parseInt(router.query.page as string) || 1;
     const projectsPerPage = 8;
 
     const indexOfLastProject = currentPage * projectsPerPage;
@@ -64,7 +66,6 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                 ))}
             </Box>
             <PaginationControls
-                setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 totalItems={projects.length}
                 itemsPerPage={projectsPerPage}

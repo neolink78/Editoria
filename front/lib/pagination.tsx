@@ -1,28 +1,32 @@
 import { Flex, IconButton, Text } from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
+import { useRouter } from 'next/router';
 import ArrowLeftIcon from "../icons/arrowLeftIcon";
 import ArrowRightIcon from "../icons/arrowRightIcon";
 
 interface PaginationControlsProps {
-    setCurrentPage: Dispatch<SetStateAction<number>>;
     currentPage: number;
     totalItems: number;
     itemsPerPage: number;
 }
+
 export const PaginationControls = ({
-    setCurrentPage,
-    currentPage,
     totalItems,
     itemsPerPage
 }: PaginationControlsProps) => {
+    const router = useRouter();
+    const currentPage = parseInt(router.query.page as string) || 1;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const goToPage = (pageNumber: number) => {
+        router.push(`?page=${pageNumber}`);
+    };
+
 
     return (
         <Flex mt="8" justifyContent="center" alignItems="center">
             <IconButton
                 icon={<ArrowLeftIcon />}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => goToPage(Math.max(currentPage - 1, 1))}
                 isDisabled={currentPage === 1}
                 aria-label="Page précédente"
                 mx="2"
@@ -39,23 +43,21 @@ export const PaginationControls = ({
                     cursor="pointer"
                     fontWeight={currentPage === index + 1 ? "bold" : "lighter"}
                     color={currentPage === index + 1 ? "white" : "gray.500"}
-
-                    onClick={() => paginate(index + 1)}
+                    onClick={() => goToPage(index + 1)}
                     _hover={{ bg: 'gray.100', color: 'black', borderRadius: '20%' }}
                 >
                     {index + 1}
                 </Text>
             ))}
-
             <IconButton
                 icon={<ArrowRightIcon />}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() => goToPage(Math.min(currentPage + 1, totalPages))}
                 isDisabled={currentPage === totalPages}
                 aria-label="Page suivante"
                 mx="2"
-                variant="unstyled" 
-                _hover={{ color: 'blue.500' }} 
-                color={currentPage === 1 ? 'black' : 'gray.300'}
+                variant="unstyled"
+                _hover={{ color: 'blue.500' }}
+                color={currentPage === totalPages ? 'gray.300' : 'black'}
             />
         </Flex>
     );
