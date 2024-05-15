@@ -17,6 +17,7 @@ import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
+import Router, { useRouter } from "next/router";
 
 
 const GET_PROJECTS = gql`
@@ -56,6 +57,8 @@ const Dashboard = () => {
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_PROJECTS }],
   });
+
+  const router = useRouter()
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -133,7 +136,7 @@ const Dashboard = () => {
                   <SubmitButton
                     w="13vw"
                     bg="#1574EF"
-                    onClick={() => alert("redirecting to IDE...")}
+                    onClick={() => router.push("/editor")}
                   >
                     Commencez à coder
                   </SubmitButton>
@@ -179,7 +182,7 @@ const Dashboard = () => {
                   <SubmitButton
                     w="11vw"
                     bg="#1574EF"
-                    onClick={() => alert("redirecting to all projects...")}
+                    onClick={() => router.push("/projects")}
                   >
                     Tous les projets
                   </SubmitButton>

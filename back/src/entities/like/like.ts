@@ -14,7 +14,7 @@ class Like extends BaseEntity {
   @Field(() => User)
   user!: User;
 
-  @ManyToOne(() => Project, project => project.likedBy)
+  @ManyToOne(() => Project, project => project.likedBy, { onDelete: "CASCADE" })
   @Field(() => Project)
   project!: Project;
 
