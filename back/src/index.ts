@@ -9,6 +9,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { getUserSessionIdFromCookie } from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
+import 'dotenv/config';
 
 export type Context = { res: Response; user: User | null, userSessionId: string | undefined};
 

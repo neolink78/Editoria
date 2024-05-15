@@ -1,18 +1,31 @@
-import { transporter } from './mailer';
-
 async function sendPasswordResetEmail(email: string, resetToken: string): Promise<void> {
-  try {
-    const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: 'Réinitialisation du mot de passe',
-      html: `<p>Cliquez sur le lien suivant pour réinitialiser votre mot de passe : <a href="http://localhost:3000/reset/password?token=${resetToken}">Réinitialiser le mot de passe</a></p>`,
-    };
+  const mailjetClient = require('node-mailjet').apiConnect(process.env.APIKEY_PUBLIC, process.env.APIKEY_PRIVATE);
 
-    await transporter.sendMail(mailOptions);
+  const request = mailjetClient
+    .post('send', { version: 'v3.1' })
+    .request({
+      Messages: [
+        {
+          From: {
+            Email: process.env.EMAIL,
+            Name: 'Editoria - reset password'
+          },
+          To: [
+            {
+              Email: email,
+            },
+          ],
+          Subject: 'Réinitialisation du mot de passe',
+          HTMLPart: `<p>Cliquez sur le lien suivant pour réinitialiser votre mot de passe : <a href="${process.env.URL}?token=${resetToken}">Réinitialiser le mot de passe</a></p>`,
+        },
+      ],
+    });
+
+  try {
+    const result = await request;
+    console.log(result.body);
     console.log('E-mail envoyé avec succès');
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de l\'e-mail :', error);
     throw error;
   }
 }
