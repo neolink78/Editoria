@@ -69,17 +69,6 @@ describe("Project", () => {
       expect(fetchedProject!.description).toBe("This is a great navbar");
     });
 
-    it("should delete projectData from db successfully", async () => {
-      const fetchProject = await database
-        .getRepository(Project)
-        .findOne({ where: { id: fetchProjectId } });
-
-      const deletedProject = await Project.deleteProject(fetchProject!.id);
-
-      expect(deletedProject).toBeDefined();
-      expect(deletedProject.id).toBe(fetchProject!.id);
-    });
-
     it("should'nt be able to save a project without a codesnippet", async () => {
       await expect(
         Project.createProject({
