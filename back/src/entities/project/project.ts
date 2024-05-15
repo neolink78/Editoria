@@ -60,6 +60,10 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
+  @ManyToMany(() => User, (user) => user.likedProjects)
+  @Field(() => [User])
+  likedBy!: User[];
+
   constructor(project?: ProjectArgs) {
     super();
 
