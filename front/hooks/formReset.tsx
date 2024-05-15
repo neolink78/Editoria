@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { ResetUserMutation, ResetUserMutationVariables } from "../gql/graphql";
+import { useState } from "react";
 
 const RESET_EMAIL_FORM = gql`
   mutation ResetUser($email: String!) {
@@ -16,6 +17,7 @@ const RESET_EMAIL_FORM = gql`
 
 export const useResetFormik = (isEmail: boolean) => {
   const router = useRouter();
+  const [showMessage, setShowMessage] = useState(false);
 
   const [ResetEmailMutation] = useMutation<
     ResetUserMutation,
@@ -44,7 +46,7 @@ export const useResetFormik = (isEmail: boolean) => {
           },
         });
         if (data && data.ResetUser) {
-          router.push(`/reset/password`);
+          setShowMessage(true);
         }
       } catch (error: any) {
         formik.setErrors({
@@ -83,5 +85,5 @@ export const useResetFormik = (isEmail: boolean) => {
     validationSchema,
     onSubmit,
   });
-  return formik;
+  return { formik, showMessage };
 };
