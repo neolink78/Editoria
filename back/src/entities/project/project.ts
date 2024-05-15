@@ -59,6 +59,10 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
+  @ManyToMany(() => User, (user) => user.likedProjects)
+  @Field(() => [User])
+  likedBy!: User[];
+
   constructor(project?: ProjectArgs) {
     super();
 
@@ -83,7 +87,11 @@ class Project extends BaseEntity {
   }
 
   static async getProject(): Promise<Project[]> {
-    return await Project.find();
+    return await Project.find({
+      order: {
+        createdAt: "DESC",
+      },
+    });
   }
 
   static async getProjectById(id: string): Promise<Project> {

@@ -53,10 +53,10 @@ const Tile = ({
     >
       <Flex alignItems="center" gap="2vw">
         {icon}
-        <Text isTruncated minWidth="10vw" maxWidth="10vw">{title} azddzdzadazd</Text>
+        <Text isTruncated minWidth="10vw" maxWidth="10vw">{title}</Text>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">description</Text>
+        <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}</Text>
       </Flex>
       {/* {description} */}
       <Flex gap="1vw">
