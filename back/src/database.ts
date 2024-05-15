@@ -11,10 +11,10 @@ export const getDataSource = async () => {
   if (!dataSource) {
     dataSource = new DataSource({
       type: "postgres",
-      url: process.env.DATABASE_URL,
-        // process.env.NODE_ENV === "test"
-        //   ? process.env.TEST_DATABASE_URL
-        //   : process.env.DATABASE_URL,
+      url: 
+        process.env.NODE_ENV === "test"
+          ? process.env.TEST_DATABASE_URL
+          : process.env.DATABASE_URL,
       entities: [CodeSnippet, User, UserSession, Project, UserResetSession],
       synchronize: true,
     });
