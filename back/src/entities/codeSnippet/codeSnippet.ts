@@ -51,7 +51,7 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field(type => Language)
   language!: Language;
 
-  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned)
+  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { onDelete: 'CASCADE' })
   @Field(() => Project)
   project!: Project;
 

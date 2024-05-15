@@ -1,16 +1,20 @@
 
-import { Box, Button, Flex, IconButton, Skeleton } from '@chakra-ui/react';
+import { Box, Skeleton } from '@chakra-ui/react';
 
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
-import ArrowRightIcon from '../../icons/arrowRightIcon';
+import { PaginationControls } from '../../lib/pagination';
 import Tile from '../../lib/tile';
-import { getLanguageIcon } from './dashboard';
+import { getLanguageIcon } from '../../utils/languageIcons';
+import { Language } from '@/gql/graphql';
+import { useRouter } from 'next/router';
 
-type Project = {
+
+export type Project = {
     id: string;
-    codeSnippetsOwned: Array<{ language: string }>;
+    codeSnippetsOwned: Array<{ language: Language }>;
     title: string;
+    description: string;
     createdAt: string;
     owner: { username: string };
 };
@@ -23,40 +27,13 @@ interface DashboardProjectsProps {
 }
 
 const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }: DashboardProjectsProps) => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const router = useRouter();
+    const currentPage = parseInt(router.query.page as string) || 1;
     const projectsPerPage = 8;
 
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
-
-    const paginate = (pageNumber: SetStateAction<number>) => setCurrentPage(pageNumber);
-    const totalPages = Math.ceil(projects.length / projectsPerPage);
-
-    const PaginationControls = () => (
-        <Flex mt="8" justifyContent="center" alignItems="center">
-            <IconButton
-                icon={<ArrowLeftIcon color={currentPage === 1 ? 'gray' : 'black'} />}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                isDisabled={currentPage === 1}
-                aria-label="Page précédente"
-                mx="2"
-            />
-            {Array.from({ length: totalPages }, (_, index) => (
-                <Button key={index} mx="1" onClick={() => paginate(index + 1)} variant={currentPage === index + 1 ? "solid" : "ghost"}>
-                    {index + 1}
-                </Button>
-            ))}
-
-            <IconButton
-                icon={<ArrowRightIcon color={currentPage === totalPages ? 'gray' : 'black'} />}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                isDisabled={currentPage === totalPages}
-                aria-label="Page suivante"
-                mx="2"
-            />
-        </Flex>
-    );
 
     return (
         <Box mb={10}>
@@ -78,6 +55,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             projectId={project.id}
                             icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
                             title={project.title}
+                            description={project.description}
                             createdAt={project.createdAt}
                             owner={project.owner.username}
                             onDelete={() => {
@@ -87,7 +65,11 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                     </Skeleton>
                 ))}
             </Box>
-            <PaginationControls />
+            <PaginationControls
+                currentPage={currentPage}
+                totalItems={projects.length}
+                itemsPerPage={projectsPerPage}
+            />
         </Box>
     );
 };

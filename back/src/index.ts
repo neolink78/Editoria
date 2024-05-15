@@ -9,6 +9,8 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { getUserSessionIdFromCookie } from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
+import { Like } from "typeorm";
+import { LikeResolver } from "./resolvers/LikeResolver";
 
 export type Context = { res: Response; user: User | null, userSessionId: string | undefined};
 
@@ -19,7 +21,7 @@ const authChecker: AuthChecker<Context> = ({ context }) => {
 const PORT = 4000;
 const startApolloServer = async () => {
   const schema = await buildSchema({
-    resolvers: [CodeSnippetResolver, UserResolver, ProjectResolver],
+    resolvers: [CodeSnippetResolver, UserResolver, ProjectResolver, LikeResolver],
     validate: true,
     authChecker,
   });
