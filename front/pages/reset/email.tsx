@@ -55,7 +55,7 @@ export default function GetEmail() {
                 </FormControl>
                 {showMessage && (
                   <Text mt="20px" textAlign="center">
-                    Un mail vous a été envoyé à l&apos;adresse indiquée.
+                    An e-mail has been sent to the indicated address.
                   </Text>
                 )}
               </Flex>
