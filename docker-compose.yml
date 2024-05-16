@@ -7,8 +7,10 @@ services:
       target: dev
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - TEST_DATABASE_URL=postgres://postgres:password@test-database:5432/postgres
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     ports:
       - 4000:4000
     develop:
@@ -35,10 +37,15 @@ services:
 
   database:
     image: postgres:15
-    ports: 
-      - 5432:5432
     volumes:
       - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: pg_isready -U postgres
+  
+  test-database:
+    image: postgres:15
     environment:
       - POSTGRES_PASSWORD=password
 

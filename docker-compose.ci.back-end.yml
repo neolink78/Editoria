@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  back:
+    build:
+      context: ./back
+      target: ci
+    environment:
+      - TEST_DATABASE_URL=postgres://postgres:password@test-database:5432/postgres
+    depends_on:
+      - test-database
+
+  test-database:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=password

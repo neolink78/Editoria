@@ -62,6 +62,11 @@ class User extends BaseEntity {
   @ManyToMany(() => Project, (code) => code.collaborators)
   @Field(() => [Project])
   projects!: Project[];
+
+  @ManyToMany(() => Project)
+  @JoinTable({ name: "user_likes_project" }) 
+  @Field(() => [Project])
+  likedProjects!: Project[];
   
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
