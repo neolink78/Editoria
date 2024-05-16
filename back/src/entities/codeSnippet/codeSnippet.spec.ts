@@ -150,8 +150,6 @@ describe("CodeSnippet", () => {
     });
 
     it("should fail when the code snippet code is empty", async () => {
-      console.log("Updating for Failure Snippet ID:", savedSnippetId); // Log ID before updating for failure
-
       const updatedSnippetDetails = {
         title: "Introduction to Jest - Updated",
         code: "",
