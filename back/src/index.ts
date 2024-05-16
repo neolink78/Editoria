@@ -6,12 +6,12 @@ import { AuthChecker, buildSchema } from "type-graphql";
 import { CodeSnippetResolver } from "./resolvers/CodeSnippetResolver";
 import User from "./entities/user/user";
 import { UserResolver } from "./resolvers/UserResolver";
-import { getUserSessionIdFromCookie } from "./utils/cookie";
+import { getUserResetSessionIdFromCookie, getUserSessionIdFromCookie } from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
 import 'dotenv/config';
 
-export type Context = { res: Response; user: User | null, userSessionId: string | undefined};
+export type Context = { res: Response; user: User | null, userSessionId: string | undefined, userResetSessionId?: string | undefined};
 
 const authChecker: AuthChecker<Context> = ({ context }) => {
   return Boolean(context.user);
@@ -30,10 +30,20 @@ const startApolloServer = async () => {
     listen: { port: PORT },
     context: async ({ req, res }): Promise<Context> => {
       const userSessionId = getUserSessionIdFromCookie(req);
-      const user = userSessionId
-        ? await User.getUserWithSessionId(userSessionId)
-        : null;
-      return { res: res as Response, user, userSessionId };
+      const userResetSessionId = getUserResetSessionIdFromCookie(req);
+
+      let user = null;
+      let sessionId: string | undefined;
+
+      if (userSessionId) {
+        user = await User.getUserWithSessionId(userSessionId);
+        sessionId = userSessionId;
+      } else if (userResetSessionId) {
+        user = await User.getUserResetWithSessionId(userResetSessionId);
+        sessionId = userResetSessionId;
+      }
+
+      return { res: res as Response, user, userSessionId: sessionId };
     },
   });
 

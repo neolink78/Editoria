@@ -9,7 +9,7 @@ import {
   ManyToMany
 } from "typeorm";
 import { compare, hash } from "bcrypt";
-import { CreateOrUpdateUser, ResetUser, SignInUser } from "./user.args";
+import { CreateOrUpdateUser, ResetPassword, ResetUser, SignInUser } from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
 import Project from "../project/project";
@@ -181,6 +181,24 @@ class User extends BaseEntity {
     }
     return resetSession.user;
   }
+
+  static async updatePassword(userResetSessionId: string, userData: ResetPassword): Promise<User> {
+    const user = await User.getUserResetWithSessionId(userResetSessionId);
+    
+    if (!user) {
+      throw new Error("User not found for the given reset session ID");
+  }
+
+    if (userData.newPassword && userData.newPassword !== user.hashedPassword) {
+        userData.newPassword = await hash(userData.newPassword, 10);
+    }
+    user.hashedPassword = userData.newPassword;
+    console.log(user);
+
+    await user.save();
+    user.reload()
+    return user;
+    }
 }
 
 export default User;
