@@ -28,7 +28,7 @@ export default function SignIn() {
             mb="40px"
             textAlign="center"
           >
-            Sign up & get started with us!
+            Sign in & get started with us!
           </Heading>
           <Box w="25%">
             <form onSubmit={formik.handleSubmit}>
