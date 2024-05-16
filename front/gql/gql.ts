@@ -13,13 +13,14 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-
     "\nquery GetProjects {\n  getProjects {\n    id\n    title\n    description\n    updatedAt\n    createdAt\n    codeSnippetsOwned {\n      language\n    }\n    owner {\n      username\n    }\n  }\n}\n": types.GetProjectsDocument,
     "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n": types.DeleteProjectDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n": types.GetUsersDocument,
     "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n": types.SignUpDocument,
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
     "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
+    "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n": types.CreateProjectDocument,
+    "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n": types.AddFileDocument,
 };
 
 /**
@@ -60,6 +61,14 @@ export function graphql(source: "\n  mutation SignIn($email: String!, $password:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

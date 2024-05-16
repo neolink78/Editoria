@@ -26,9 +26,9 @@ const SIDEBAR_TABS = ["Info", "Files", "Comments"]
 const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
 
   const [showTabs, setShowTabs] = useState<ShowTabs>({
-    Files: false,
-    Comments: false,
-    Info: false,
+    Files: true,
+    Comments: true,
+    Info: true,
   });
 
   const displayTabContent = (tab: string) => {
