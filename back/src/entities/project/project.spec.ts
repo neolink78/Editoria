@@ -69,20 +69,6 @@ describe("Project", () => {
       expect(fetchedProject!.description).toBe("This is a great navbar");
     });
 
-    it("should'nt be able to save a project without a codesnippet", async () => {
-      await expect(
-        Project.createProject({
-          title: "JAVASCRIPT LOADER",
-          is_public: true,
-          description:
-            "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
-          collaboratorIds: [],
-          codeSnippetsOwned: [],
-        })
-      ).rejects.toThrow("CodeSnippet not found");
-    });
-
     it("should'nt be able to save a project without a title", async () => {
       await expect(
         Project.createProject({
@@ -142,19 +128,6 @@ describe("Project", () => {
       expect(fetchedProject!.title).toBe("HTML LOADER");
     });
 
-    it("should'nt be able to update a project without a codesnippet", async () => {
-      await expect(
-        Project.updateProject(updateProjectId, {
-          title: "JAVASCRIPT LOADER",
-          is_public: true,
-          description:
-            "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
-          collaboratorIds: [],
-          codeSnippetsOwned: [],
-        })
-      ).rejects.toThrow("CodeSnippet not found");
-    });
 
     it("should not be able to update a project with a wrong id format", async () => {
       await expect(

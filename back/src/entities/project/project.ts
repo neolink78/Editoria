@@ -77,9 +77,7 @@ class Project extends BaseEntity {
 
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
-    if (project.codeSnippetsOwned.length === 0) {
-      throw new Error("CodeSnippet not found");
-    } else if (project.title === "") {
+    if (project.title === "") {
       throw new Error("Title is required");
     }
 
@@ -114,9 +112,8 @@ class Project extends BaseEntity {
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
-    if (project.codeSnippetsOwned.length === 0) {
-      throw new Error("CodeSnippet not found");
-    } else if (partialProject.title === "") {
+
+    if (partialProject.title === "") {
       throw new Error("Title cannot be empty");
     }
     if (partialProject.collaboratorIds) {
