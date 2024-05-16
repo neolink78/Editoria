@@ -17,7 +17,4 @@ export class CreateOrUpdateCodeSnippetArgs {
 
   @Field()
   projectId!: string;
-
-  @Field({ nullable: true })
-  description!: string;
 }
