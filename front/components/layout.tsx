@@ -13,13 +13,11 @@ const Layout = ({ children, user = true }: Props) => {
   return (
     <Box bg="#14181F" color="#fbfbfb" fontFamily="body" minH="100vh">
       <Flex className="header_home_page">
-        <Link href="/">
-          EDITORIA
-        </Link>
+        <Link href="/">EDITORIA</Link>
         <Flex gap="1.5vw" align="center">
           <SubmitButton
             onClick={() =>
-              alert(user ? "Redirecting to account" : "redirecting to IDE...")
+              user ? router.push("/projects") : alert("redirecting to IDE...")
             }
           >
             {user ? "All projects" : "Sign In"}
@@ -36,7 +34,13 @@ const Layout = ({ children, user = true }: Props) => {
         </Flex>
       </Flex>
       {children}
-      <Flex bg="#111113" p="3.2vw 0 3.2vw 7.8vw" fontSize="1vw" w="100%" mt="5vw">
+      <Flex
+        bg="#111113"
+        p="3.2vw 0 3.2vw 7.8vw"
+        fontSize="1vw"
+        w="100%"
+        mt="5vw"
+      >
         © 2024 Editoria. All rights reserved.
       </Flex>
     </Box>

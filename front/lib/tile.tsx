@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { fr } from 'date-fns/locale';
-
+import { fr } from "date-fns/locale";
+import ReactIcon from "@/icons/reactIcon";
 import { ReactNode } from "react";
 //import LikeIcon from "../icons/likeIcon"
 import { AiOutlineLike } from "react-icons/ai";
@@ -22,8 +22,6 @@ type TileProps = {
   onDelete?: (e: any) => void;
 };
 
-
-
 const Tile = ({
   icon,
   label,
@@ -37,7 +35,9 @@ const Tile = ({
   projectId,
   onDelete,
 }: TileProps) => {
-  const relativeDate = createdAt ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr }) : '';
+  const relativeDate = createdAt
+    ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
+    : "";
 
   return (
     <Flex
@@ -52,15 +52,18 @@ const Tile = ({
       fontSize="0.9vw"
     >
       <Flex alignItems="center" gap="2vw">
-        {icon}
-        <Text isTruncated minWidth="10vw" maxWidth="10vw">{title}</Text>
+        {icon || <ReactIcon width="2vw" />}
+        <Text isTruncated minWidth="10vw" maxWidth="10vw">
+          {title}
+        </Text>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}</Text>
+        <Text isTruncated minWidth="30vw" maxWidth="30vw">
+          {description}
+        </Text>
       </Flex>
       {/* {description} */}
-      <Flex gap="1vw">
-      </Flex>
+      <Flex gap="1vw"></Flex>
       <Flex gap="1vw">
         <Flex alignItems="center">
           <AiOutlineLike /> 1
@@ -70,9 +73,18 @@ const Tile = ({
         </Flex>
         {/* {date}
          */}
-        <Text isTruncated minWidth="16vw" maxWidth="16vw">{relativeDate} par {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}</Text>
+        <Text isTruncated minWidth="16vw" maxWidth="16vw">
+          {relativeDate} par{" "}
+          {owner ? (
+            <span style={{ color: "#1574EF" }}>{owner}</span>
+          ) : (
+            "Unknown"
+          )}
+        </Text>
       </Flex>
-      {!homePage && <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />}
+      {!homePage && (
+        <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />
+      )}
     </Flex>
   );
 };
