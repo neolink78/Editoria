@@ -37,3 +37,10 @@ export class ResetUser {
   @IsEmail()
   email!: string;
 }
+
+@ArgsType()
+export class ResetPassword {
+  @Field()
+  @MinLength(12)
+  newPassword!: string;
+}
