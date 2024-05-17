@@ -12,7 +12,7 @@ import SubmitButton from "../../lib/submitButton";
 import { useResetFormik } from "../../hooks/formReset";
 
 export default function GetEmail() {
-  const formik = useResetFormik(true);
+  const { formik, showMessage } = useResetFormik(true);
 
   return (
     <Layout>
@@ -53,6 +53,11 @@ export default function GetEmail() {
                     <Text>Enter</Text>
                   </SubmitButton>
                 </FormControl>
+                {showMessage && (
+                  <Text mt="20px" textAlign="center">
+                    An e-mail has been sent to the indicated address.
+                  </Text>
+                )}
               </Flex>
             </form>
           </Box>

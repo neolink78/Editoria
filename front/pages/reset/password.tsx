@@ -10,12 +10,9 @@ import Layout from "../../components/layout";
 import InputForm from "../../components/input";
 import SubmitButton from "../../lib/submitButton";
 import { useResetFormik } from "../../hooks/formReset";
-import { useRouter } from "next/router";
-import Link from "next/link";
 
 export default function ResetPassword() {
-  const formik = useResetFormik(false);
-  const router = useRouter();
+  const { formik, showMessage } = useResetFormik(false);
 
   return (
     <Layout>
@@ -40,7 +37,7 @@ export default function ResetPassword() {
                 >
                   <InputForm
                     placeholder="New password"
-                    type="text"
+                    type="password"
                     name="password"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -57,8 +54,8 @@ export default function ResetPassword() {
                   }
                 >
                   <InputForm
-                    placeholder="Cnfirm password"
-                    type="text"
+                    placeholder="Confirm password"
+                    type="password"
                     name="confirmPassword"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -78,6 +75,11 @@ export default function ResetPassword() {
                     <Text>Reset password</Text>
                   </SubmitButton>
                 </FormControl>
+                {showMessage && (
+                  <Text mt="20px" textAlign="center">
+                    The password has been changed.
+                  </Text>
+                )}
               </Flex>
             </form>
           </Box>
