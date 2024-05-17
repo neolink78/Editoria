@@ -39,7 +39,7 @@ const Header = () => {
         )}
         <SubmitButton
           bg="#1574EF"
-          onClick={() => alert("redirecting to IDE...")}
+          onClick={() => router.push("/editor")}
         >
           Start coding
         </SubmitButton>
