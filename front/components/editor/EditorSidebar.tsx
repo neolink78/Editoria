@@ -1,9 +1,9 @@
 import { Box, Flex, Input, Text } from "@chakra-ui/react";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
-import { File } from "../../pages/editor";
+import { File, ProjectInfo } from "../../pages/editor";
 import FilesList from "./FilesList";
-import ProjectInfo from "./ProjectInfo";
+import ProjectInfoTab from "./ProjectInfoTab";
 import EditorComments from "./EditorComments";
 
 type EditorSidebarProps = {
@@ -13,6 +13,7 @@ type EditorSidebarProps = {
   setFileName: Dispatch<SetStateAction<string | null>>;
   setFilesInTabs: Dispatch<SetStateAction<string[]>>;
   filesInTabs: string[];
+  projectInfo: ProjectInfo
 }
 
 type ShowTabs = {
@@ -23,7 +24,7 @@ type ShowTabs = {
 
 const SIDEBAR_TABS = ["Info", "Files", "Comments"]
 
-const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
+const EditorSidebar = ({ projectInfo, project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
 
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
@@ -40,14 +41,14 @@ const EditorSidebar = ({ project, setProject, fileName, setFileName, setFilesInT
         return <EditorComments />;
         
       default:
-        return <ProjectInfo />
+        return <ProjectInfoTab info={projectInfo} />
     }
   }
 
 return (
   <Flex
     className="editor-sidebar"
-    w="260px"
+    w="240px"
     direction={"column"}
     backgroundColor={"#212227"}
     color="white"

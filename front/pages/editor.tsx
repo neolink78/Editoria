@@ -1,9 +1,10 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
 import { IoClose } from "react-icons/io5";
 import { FaCss3Alt, FaHtml5, FaRegFile } from "react-icons/fa";
+import { MdOutlineEdit } from "react-icons/md";
 import { IoLogoJavascript } from "react-icons/io5";
 import SubmitButton from "../lib/submitButton";
 import { LuSave } from "react-icons/lu";
@@ -16,12 +17,21 @@ import {
   Language,
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
+import EditModal from "@/components/editor/EditModal";
+import { isClickOutside } from '../utils/event'
 
 export type File = {
   name: string;
   language: Language;
   value: string;
 };
+
+export type ProjectInfo = {
+  id: string;
+  title: string;
+  description: string;
+  isPublic: boolean;
+}
 
 const CREATE_PROJECT = gql`
   mutation CreateProject(
@@ -59,8 +69,10 @@ const ADD_FILE = gql`
 
 function CodeEditor() {
   const isUserLoggedIn = true;
+  const modalRef = useRef<HTMLInputElement | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
   const [fileName, setFileName] = useState<string | null>("index.html");
-  const [projectInfo, setProjectInfo] = useState({
+  const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     id: "",
     title: "Nouveau projet",
     description: "",
@@ -77,9 +89,7 @@ function CodeEditor() {
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
   const selectedFile = project.find((file) => file.name === fileName);
-useEffect(() => {
-console.log(selectedFile)
-}, [selectedFile])
+
   const router = useRouter();
 
   const [
@@ -112,7 +122,6 @@ console.log(selectedFile)
   };
 
   const addProject = async (id: string) => {
-    console.log(projectInfo)
     try {
       for (const file of project) {
         await addFileMutation({
@@ -223,6 +232,25 @@ console.log(selectedFile)
       return updatedTabs;
     });
   };
+
+  /**
+ * Handler for document click event that is outside $root element
+ * @param event
+ */
+const clickOutsideHandler = (event: MouseEvent) => {
+  if (isEditOpen && modalRef && isClickOutside(event, modalRef.current)) {
+    setIsEditOpen(false)
+  }
+}
+
+useEffect(() => {
+  document.addEventListener("mousedown", clickOutsideHandler);
+  
+  return () => {
+    document.removeEventListener("mousedown", clickOutsideHandler);
+  };
+})
+
   return (
     <>
       <Flex
@@ -250,7 +278,15 @@ console.log(selectedFile)
         )}
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {isUserLoggedIn ? (
-            <Text>{projectInfo.title}</Text>
+            <>
+            <Flex align={'center'} gap={4} position={'relative'}>
+              <Text>{projectInfo.title}</Text>
+              <MdOutlineEdit className="cursor-pointer"onClick={() => setIsEditOpen(true)} />
+            </Flex>
+            {isEditOpen && <div ref={modalRef} className="absolute left-1/2 translate-x-[-50%]">
+              <EditModal info={projectInfo} setProjectInfo={setProjectInfo} />
+            </div>}
+            </>
           ) : (
             <SubmitButton bg="#1574EF">
               Sign in to save your project
@@ -259,7 +295,6 @@ console.log(selectedFile)
         </Box>
       </Flex>
       <Flex w="100%" className="editor-container">
-        <Box w="65px" bg="#2F3138" className="editor-toolbar p-4"></Box>
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -267,8 +302,9 @@ console.log(selectedFile)
           setProject={setProject}
           setFilesInTabs={setFilesInTabs}
           filesInTabs={filesInTabs}
+          projectInfo={projectInfo}
         />
-        <Flex direction={"column"} w="100%">
+        <Flex direction={"column"} w="calc(100% - 240px)">
           <Flex className="min-h-9">
             <Flex
               backgroundColor={project.length > 0 ? "#212227" : "#14181F"}
@@ -302,7 +338,7 @@ console.log(selectedFile)
               blablabla
             </Box>
           </Flex>
-          <Flex>
+          <Flex className="z-[-1]">
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
