@@ -2,7 +2,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { ResetUserMutation, ResetUserMutationVariables } from "../gql/graphql";
+import {
+  ResetPasswordMutation,
+  ResetPasswordMutationVariables,
+  ResetUserMutation,
+  ResetUserMutationVariables,
+} from "../gql/graphql";
+import { useState } from "react";
 
 const RESET_EMAIL_FORM = gql`
   mutation ResetUser($email: String!) {
@@ -14,13 +20,29 @@ const RESET_EMAIL_FORM = gql`
   }
 `;
 
+const RESET_PASSWORD_FORM = gql`
+  mutation ResetPassword($newPassword: String!) {
+    ResetPassword(newPassword: $newPassword) {
+      email
+      id
+      username
+    }
+  }
+`;
+
 export const useResetFormik = (isEmail: boolean) => {
   const router = useRouter();
+  const [showMessage, setShowMessage] = useState(false);
 
   const [ResetEmailMutation] = useMutation<
     ResetUserMutation,
     ResetUserMutationVariables
   >(RESET_EMAIL_FORM);
+
+  const [ResetPasswordMutation] = useMutation<
+    ResetPasswordMutation,
+    ResetPasswordMutationVariables
+  >(RESET_PASSWORD_FORM);
 
   const validationSchema = isEmail
     ? Yup.object({
@@ -44,33 +66,23 @@ export const useResetFormik = (isEmail: boolean) => {
           },
         });
         if (data && data.ResetUser) {
-          router.push(`/reset/password`);
+          setShowMessage(true);
         }
       } catch (error: any) {
         formik.setErrors({
           email: "Wrong email",
         });
       }
-      // } else {
-      //   const { data } = await signUpMutation({
-      //     variables: {
-      //       email: formik.values.email,
-      //       username: formik.values.username,
-      //       password: formik.values.password,
-      //     },
-      //   });
+    } else {
+      const { data } = await ResetPasswordMutation({
+        variables: {
+          newPassword: formik.values.password,
+        },
+      });
 
-      //   if (data && data.signUp) {
-      //     const signInData = await signInMutation({
-      //       variables: {
-      //         email: formik.values.email,
-      //         password: formik.values.password,
-      //       },
-      //     });
-      //     if (signInData && signInData.data?.signIn) {
-      //       router.push(`/sign-in`);
-      //     }
-      //   }
+      if (data && data.ResetPassword) {
+        router.push(`/sign-in`);
+      }
     }
   };
 
@@ -83,5 +95,5 @@ export const useResetFormik = (isEmail: boolean) => {
     validationSchema,
     onSubmit,
   });
-  return formik;
+  return { formik, showMessage };
 };

@@ -1,38 +1,14 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
-import SubmitButton from "../lib/submitButton";
-import UserIcon from "../icons/userIcon";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import { Flex, Box } from "@chakra-ui/react";
+import Header from "./header";
+
 type Props = {
   children: React.ReactNode;
-  user?: boolean;
 };
 
-const Layout = ({ children, user = true }: Props) => {
-  const router = useRouter();
+const Layout = ({ children }: Props) => {
   return (
     <Box bg="#14181F" color="#fbfbfb" fontFamily="body" minH="100vh">
-      <Flex className="header_home_page">
-        <Link href="/">EDITORIA</Link>
-        <Flex gap="1.5vw" align="center">
-          <SubmitButton
-            onClick={() =>
-              user ? router.push("/projects") : alert("redirecting to IDE...")
-            }
-          >
-            {user ? "All projects" : "Sign In"}
-          </SubmitButton>
-          <SubmitButton
-            bg="#1574EF"
-            onClick={() => alert("redirecting to IDE...")}
-          >
-            Start coding
-          </SubmitButton>
-          <Box onClick={() => router.push("/user/account")} cursor="pointer">
-            {user && <UserIcon />}
-          </Box>
-        </Flex>
-      </Flex>
+      <Header />
       {children}
       <Flex
         bg="#111113"

@@ -4,6 +4,7 @@ import { FaCss3Alt, FaHtml5, FaRegTrashAlt, FaRegFile } from "react-icons/fa";
 import { IoLogoJavascript } from "react-icons/io5";
 import { File } from "../../pages/editor";
 import { isClickOutside } from '../../utils/event'
+import { Language } from "@/gql/graphql";
 
 
 type FilesListProps = {
@@ -26,15 +27,15 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
     const [newFileName, setNewFileName] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const getLanguage = (fileName: string) => {
+    const getLanguage = (fileName: string): Language => {
     if (fileName.endsWith(".js")) {
-      return "javascript";
+      return Language.Javascript;
     } else if (fileName.endsWith(".css")) {
-      return "css";
+      return Language.Css;
     } else if (fileName.endsWith(".html")){
-      return "html";
+      return Language.Html;
     } else {
-      return "unknown";
+      return Language.Unknown;
     }
   };
 
@@ -43,11 +44,11 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
       let language = getLanguage(newFileName);
       let fileValue;
 
-      if (language === "javascript") {
+      if (language === Language.Javascript) {
         fileValue = "// Write your JavaScript";
-      } else if (language === "css") {
+      } else if (language === Language.Css) {
         fileValue = "/* Write your CSS */";
-      } else if (language === "html"){
+      } else if (language === Language.Html){
         fileValue = "<!-- Write your HTML -->";
       } else {
         fileValue = "// Write your code";
@@ -68,13 +69,13 @@ const FilesList = ({project, fileName, setProject, showTabs, setFileName, setFil
     }
   };
 
-  const showIcon = (language: string) => {
+  const showIcon = (language: Language) => {
     switch (language) {
-      case "html":
+      case Language.Html:
         return <FaHtml5 color="#F76904" />;
-      case "css":
+      case Language.Css:
         return <FaCss3Alt color="#1D84C1" />;
-      case "javascript":
+      case Language.Javascript:
         return <IoLogoJavascript color="#F0DB4F" />;
 
       default: 

@@ -13,6 +13,9 @@ export enum Language {
   C = 'C',
   CPP = 'C++',
   CSHARP = 'C#',
+  HTML = 'HTML',
+  CSS = 'CSS',
+  UNKNOWN = 'UNKNOWN',
 }
 
 registerEnumType(Language, {

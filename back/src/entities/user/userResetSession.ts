@@ -26,7 +26,7 @@ class UserResetSession extends BaseEntity {
     return savedSession;
   }
 
-  static async deleteSession(userResetSessionId: string): Promise<void> {
+  static async deleteResetSession(userResetSessionId: string): Promise<void> {
     await UserResetSession.delete({ id: userResetSessionId });
   }
 }
