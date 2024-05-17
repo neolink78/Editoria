@@ -103,6 +103,7 @@ function CodeEditor() {
     useMutation<AddFileMutation, AddFileMutationVariables>(ADD_FILE);
 
   const createProject = async () => {
+    if(router.query.project) return
     try {
       const { data } = await createProjectMutation({
         variables: {
@@ -304,7 +305,7 @@ useEffect(() => {
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
         />
-        <Flex direction={"column"} w="calc(100% - 240px)">
+        <Flex direction={"column"} w="calc(100% - 240px)" className={isEditOpen ? "z-[-1]" : ""}>
           <Flex className="min-h-9">
             <Flex
               backgroundColor={project.length > 0 ? "#212227" : "#14181F"}
@@ -338,7 +339,7 @@ useEffect(() => {
               blablabla
             </Box>
           </Flex>
-          <Flex className="z-[-1]">
+          <Flex>
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
