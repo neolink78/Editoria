@@ -36,3 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 .tool-versions
+
+./gql/graphql.ts
+./gql/gql.ts
