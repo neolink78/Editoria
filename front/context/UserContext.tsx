@@ -5,8 +5,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { MyProfileQuery } from "../gql/graphql";
-import { gql, useQuery } from "@apollo/client";
+import { MyProfileQuery, SignOUtMutation } from "../gql/graphql";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 type User = {
   email: string;
@@ -18,12 +18,14 @@ interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   refetch: () => void;
+  signOut: () => Promise<void>;
 }
 
 const defaultValue: UserContextType = {
   user: null,
   setUser: () => {},
   refetch: () => {},
+  signOut: () => Promise.resolve(),
 };
 
 const AuthContext = createContext<UserContextType>(defaultValue);
@@ -45,9 +47,17 @@ const GET_MY_PROFIL = gql`
   }
 `;
 
+const SIGN_OUT = gql`
+  mutation SignOUt {
+    signOut
+  }
+`;
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const { data, refetch } = useQuery<MyProfileQuery>(GET_MY_PROFIL);
+
+  const [signOutMutation] = useMutation<SignOUtMutation>(SIGN_OUT);
 
   useEffect(() => {
     if (data && data.myProfile) {
@@ -55,8 +65,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [data]);
 
+  const signOut = async () => {
+    try {
+      signOutMutation();
+      setUser(null);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, refetch }}>
+    <AuthContext.Provider value={{ user, setUser, refetch, signOut }}>
       {children}
     </AuthContext.Provider>
   );
