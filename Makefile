@@ -11,11 +11,11 @@ run-prod:
 logs-prod:
 	docker compose -f docker-compose.prod.yml logs -f
 
-back-end-test-watch:
+back-test-watch:
 	docker compose exec back npm run test:watch
 
-web-app-test-watch:
+front-test-watch:
 	docker compose exec front npm run test:watch
 	
-web-app-generate-graphql-types:
-	cd web-app && npm run graphql-codegen
+codegen:
+	cd front && npm run graphql-codegen
