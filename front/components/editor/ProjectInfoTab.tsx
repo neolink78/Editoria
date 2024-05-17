@@ -7,7 +7,7 @@ type ProjectInfoProps = {
   info : ProjectInfo
 }
 
-const ProjectInfo = ({ info } : ProjectInfoProps) => {
+const ProjectInfoTab = ({ info } : ProjectInfoProps) => {
   return (
     <Flex direction={"column"} className="px-5 py-3" >
       <Flex gap={4}>
@@ -30,4 +30,4 @@ const ProjectInfo = ({ info } : ProjectInfoProps) => {
   );
 }
 
-export default ProjectInfo;
+export default ProjectInfoTab;
