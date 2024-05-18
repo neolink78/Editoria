@@ -69,4 +69,10 @@ export class ProjectResolver {
       codeSnippetsOwned: [],
     });
   }
+
+  @Authorized()
+  @Query(() => [Project])
+  async getProjectsByUser(@Ctx() { user }: Context) {
+    return Project.find({ where: { owner: { id: user?.id } } });
+  }
 }

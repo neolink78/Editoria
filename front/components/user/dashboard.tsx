@@ -1,15 +1,12 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
-import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
-import modal from "../../lib/modal";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { GetProjectsQuery } from "../../gql/graphql";
+import { GetUserProjectsQuery } from "../../gql/graphql";
 
-import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
@@ -17,25 +14,24 @@ import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
-
-const GET_PROJECTS = gql`
-query GetProjects {
-  getProjects {
-    id
-    title
-    description
-    updatedAt
-    createdAt
-    codeSnippetsOwned {
-      language
-    }
-    owner {
-      username
+const GET_USER_PROJECTS = gql`
+  query GetUserProjects {
+    getProjectsByUser {
+      id
+      title
+      description
+      updatedAt
+      createdAt
+      codeSnippetsOwned {
+        language
+      }
+      owner {
+        username
+      }
     }
   }
-}
 `;
 
 export const DELETE_PROJECT = gql`
@@ -52,10 +48,10 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
-  const projects = data?.getProjects || [];
+  const { data, loading, error } = useQuery<GetUserProjectsQuery>(GET_USER_PROJECTS);
+  const projects = data?.getProjectsByUser || [];
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_PROJECTS }],
+    refetchQueries: [{ query: GET_USER_PROJECTS }],
   });
 
   const router = useRouter()
