@@ -204,6 +204,15 @@ class User extends BaseEntity {
     user.reload()
     return user;
     }
+
+  async isProjectOwner(ProjectId: string): Promise<boolean> {
+    try {
+      const project = await Project.getProjectById(ProjectId);
+      return this.id === project.owner.id;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 export default User;

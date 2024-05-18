@@ -2,6 +2,7 @@ import {
   Arg,
   Args,
   Authorized,
+  createMethodDecorator,
   Ctx,
   ID,
   Mutation,
@@ -9,10 +10,18 @@ import {
   Resolver,
 } from "type-graphql";
 import { Context } from "..";
-import CodeSnippet from "../entities/codeSnippet/codeSnippet";
 import Project from "../entities/project/project";
 import { CreateOrUpdateProjectArgs } from "../entities/project/project.args";
 import User from "../entities/user/user";
+
+export function ProjectOwner() {
+  return createMethodDecorator(async ({ args, context }, next) => {
+    if (await (context as Context).user?.isProjectOwner(args.id)) {
+      return next();
+    }
+    throw new Error("You must own the project to perform this action.");
+  });
+}
 
 @Resolver()
 export class ProjectResolver {
@@ -39,21 +48,34 @@ export class ProjectResolver {
     return Project.getProjectById(id);
   }
 
+  @Authorized()
+  @ProjectOwner()
   @Mutation(() => Project)
-  async deleteProject(@Arg("id", () => ID) id: string) {
-    return Project.deleteProject(id);
+  async deleteProject(
+    @Arg("id", () => ID) id: string,
+    @Ctx() { user }: Context
+  ) {
+    if (await user?.isProjectOwner(id)) {
+      return Project.deleteProject(id);
+    }
+    throw new Error("Only the project owner can delete the project");
   }
 
+  @Authorized()
+  @ProjectOwner()
   @Mutation(() => Project)
-  updateProject(
+  async updateProject(
     @Arg("id", () => ID) id: string,
     @Args() args: CreateOrUpdateProjectArgs,
     @Ctx() { user }: Context
   ) {
-    return Project.updateProject(id, {
-      ...args,
-      owner: user as User,
-      codeSnippetsOwned: [],
-    });
+    if (await user?.isProjectOwner(id)) {
+      return Project.updateProject(id, {
+        ...args,
+        owner: user as User,
+        codeSnippetsOwned: [],
+      });
+    }
+    throw new Error("Only the project owner can update the project");
   }
 }
