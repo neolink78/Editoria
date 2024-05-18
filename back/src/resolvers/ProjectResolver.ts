@@ -51,14 +51,8 @@ export class ProjectResolver {
   @Authorized()
   @ProjectOwner()
   @Mutation(() => Project)
-  async deleteProject(
-    @Arg("id", () => ID) id: string,
-    @Ctx() { user }: Context
-  ) {
-    if (await user?.isProjectOwner(id)) {
-      return Project.deleteProject(id);
-    }
-    throw new Error("Only the project owner can delete the project");
+  async deleteProject(@Arg("id", () => ID) id: string) {
+    return Project.deleteProject(id);
   }
 
   @Authorized()
@@ -69,13 +63,10 @@ export class ProjectResolver {
     @Args() args: CreateOrUpdateProjectArgs,
     @Ctx() { user }: Context
   ) {
-    if (await user?.isProjectOwner(id)) {
-      return Project.updateProject(id, {
-        ...args,
-        owner: user as User,
-        codeSnippetsOwned: [],
-      });
-    }
-    throw new Error("Only the project owner can update the project");
+    return Project.updateProject(id, {
+      ...args,
+      owner: user as User,
+      codeSnippetsOwned: [],
+    });
   }
 }
