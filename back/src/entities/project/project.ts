@@ -45,7 +45,6 @@ class Project extends BaseEntity {
   @CreateDateColumn()
   @Field()
   updatedAt!: Date;
-  
 
   @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, {
     eager: true,
@@ -54,7 +53,7 @@ class Project extends BaseEntity {
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
-  @OneToMany(() => Comment, (comment) => comment.project)
+  @OneToMany(() => Comment, (comment) => comment.project, { eager: true })
   @Field(() => [Comment])
   comments!: Comment[];
 

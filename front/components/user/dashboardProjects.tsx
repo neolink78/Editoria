@@ -17,6 +17,7 @@ export type Project = {
     description: string;
     createdAt: string;
     owner: { username: string };
+    comments: Array<{ id: string; content: string }>;
 };
 
 interface DashboardProjectsProps {
@@ -58,6 +59,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             description={project.description}
                             createdAt={project.createdAt}
                             owner={project.owner.username}
+                            commentCount={project?.comments.length}
                             onDelete={() => {
                                 onDelete(project.id);
                             }}

@@ -21,7 +21,7 @@ class Comment extends BaseEntity {
   @Field()
   content!: string;
 
-  @ManyToOne(() => Project, (project) => project.comments, { eager: true })
+  @ManyToOne(() => Project, (project) => project.comments)
   @Field(() => Project)
   project!: Project;
 

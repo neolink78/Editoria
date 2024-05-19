@@ -18,7 +18,7 @@ export function CommentOwner() {
     if (await (context as Context).user?.isCommentOwner(args.id)) {
       return next();
     }
-    throw new Error("You must own the ad to perform this action.");
+    throw new Error("You must be the comment owner to perform this action.");
   });
 }
 

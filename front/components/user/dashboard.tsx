@@ -1,15 +1,12 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
-import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
-import modal from "../../lib/modal";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GetProjectsQuery } from "../../gql/graphql";
 
-import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
@@ -17,7 +14,7 @@ import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 
 const GET_PROJECTS = gql`
@@ -34,9 +31,14 @@ query GetProjects {
     owner {
       username
     }
+    comments {
+      id
+      content
+    }
   }
 }
 `;
+
 
 export const DELETE_PROJECT = gql`
 mutation DeleteProject($deleteProjectId: ID!) {
@@ -46,14 +48,14 @@ mutation DeleteProject($deleteProjectId: ID!) {
 }
 `;
 
-
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
-  const projects = data?.getProjects || [];
+  const { data: projectData, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  const projects = projectData?.getProjects || [];
+
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_PROJECTS }],
   });
@@ -100,7 +102,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && projects.length > 3 &&
+              {projectData && projects.length > 3 &&
                 <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
                   <Text cursor="pointer" >Tout voir</Text>
                 </Box>}
@@ -124,11 +126,12 @@ const Dashboard = () => {
                     description={e.description}
                     createdAt={e.createdAt}
                     owner={e.owner.username}
+                    commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
                   />
                 ))
               )}
-              {data && projects.length === 0 && (
+              {projectData && projects.length === 0 && (
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                   <Box fontSize="0.9vw" m="2vw">
                     Vous n&apos;avez pas encore de projet.

@@ -19,6 +19,7 @@ type TileProps = {
   createdAt?: string;
   owner?: string;
   projectId?: string;
+  commentCount?: number;
   onDelete?: (e: any) => void;
 };
 
@@ -36,6 +37,7 @@ const Tile = ({
   owner,
   projectId,
   onDelete,
+  commentCount,
 }: TileProps) => {
   const relativeDate = createdAt ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr }) : '';
 
@@ -66,7 +68,7 @@ const Tile = ({
           <AiOutlineLike /> 1
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
-          <CiChat1 /> 4
+          <CiChat1 /> {commentCount}
         </Flex>
         {/* {date}
          */}
