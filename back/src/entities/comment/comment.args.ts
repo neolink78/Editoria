@@ -7,9 +7,9 @@ export class CreateOrUpdateCommentArgs {
   @MinLength(2)
   content!: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   projectId!: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   userId!: string;
 }

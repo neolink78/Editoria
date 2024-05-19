@@ -12,14 +12,15 @@ import {
 } from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
-import CommentResolver from "./resolvers/CommentResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
 import "dotenv/config";
+import CommentResolver from "./resolvers/CommentResolver";
 
 export type Context = {
   res: Response;
   user: User | null;
   userSessionId: string | undefined;
+  userResetSessionId?: string | undefined;
 };
 
 const authChecker: AuthChecker<Context> = ({ context }) => {
@@ -33,8 +34,8 @@ const startApolloServer = async () => {
       CodeSnippetResolver,
       UserResolver,
       ProjectResolver,
-      CommentResolver,
       LikeResolver,
+      CommentResolver,
     ],
     validate: true,
     authChecker,

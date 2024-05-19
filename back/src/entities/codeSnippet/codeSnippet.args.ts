@@ -12,9 +12,6 @@ export class CreateOrUpdateCodeSnippetArgs {
   @MinLength(2)
   code!: string;
 
-  @Field()
-  is_public!: boolean;
-
   @Field(() => Language)
   language!: Language;
 

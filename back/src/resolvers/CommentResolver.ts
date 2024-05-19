@@ -6,11 +6,22 @@ import {
   Args,
   Query,
   Arg,
+  createMethodDecorator,
+  ID,
 } from "type-graphql";
 import { Context } from "..";
 import Comment, { CommentArgs } from "../entities/comment/comment";
 import { CreateOrUpdateCommentArgs } from "../entities/comment/comment.args";
 import User from "../entities/user/user";
+
+export function CommentOwner() {
+  return createMethodDecorator(async ({ args, context }, next) => {
+    if (await (context as Context).user?.isCommentOwner(args.id)) {
+      return next();
+    }
+    throw new Error("You must own the ad to perform this action.");
+  });
+}
 
 @Resolver()
 export class CommentResolver {
@@ -24,14 +35,23 @@ export class CommentResolver {
       throw new Error("Authentication required");
     }
 
-    return Comment.createComment({ ...args, userId: user.id});
+    return Comment.createComment({ ...args, owner: user });
   }
 
+  @Authorized()
   @Query(() => [Comment])
   async getCommentsbyProjectId(
-    @Arg("projectId", () => String) projectId: string
+    @Arg("projectId") projectId: string
   ): Promise<Comment[]> {
-    return Comment.getCommentByProjectId(projectId);
+    return await Comment.getCommentByProjectId(projectId);
+  }
+
+  @Authorized()
+  @Query(() => [Comment])
+  async getCommentsByUserId(
+    @Arg("userId", () => ID) userId: string
+  ): Promise<Comment[]> {
+    return await Comment.getCommentByUserId(userId);
   }
 
   // Optional: Fetch comments by user

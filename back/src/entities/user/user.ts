@@ -76,7 +76,7 @@ class User extends BaseEntity {
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.owner)
   comments!: Comment[];
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
@@ -218,6 +218,14 @@ class User extends BaseEntity {
     await user.save();
     user.reload();
     return user;
+  }
+
+  async isCommentOwner(commentId: string): Promise<boolean> {
+    const comments = await Comment.findOne({
+      where: { id: commentId },
+      relations: ["owner"],
+    });
+    return comments ? comments.owner.id === this.id : false;
   }
 }
 

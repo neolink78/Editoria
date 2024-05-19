@@ -11,16 +11,16 @@ import Project from "../project/project";
 import User from "../user/user";
 
 export type CommentArgs = CreateOrUpdateCommentArgs & {
-  projectId: string;
-  userId: string;
+  project: Project;
+  owner: User;
 };
 
 @Entity()
 @ObjectType()
 class Comment extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   @Field(() => ID)
-  id!: number;
+  id!: string;
 
   @Column()
   @Field()
@@ -32,30 +32,44 @@ class Comment extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.comments, { eager: true })
   @Field(() => User)
-  user!: User;
+  owner!: User;
 
   constructor(comment?: CommentArgs) {
     super();
 
     if (comment) {
       this.content = comment.content;
+      this.owner = comment.owner;
+      this.project = comment.project;
     }
   }
 
   static async createComment(comment: CommentArgs): Promise<Comment> {
-    const project = await Project.findOne({ where: { id: comment.projectId } });
-    const user = await User.findOne({ where: { id: comment.userId } });
+    const project = await Project.findOne({
+      where: { id: comment?.project?.id },
+    });
+    const user = await User.findOne({ where: { id: comment?.owner.id } });
 
     if (!project || !user) {
       throw new Error("Project or User not found.");
     }
-    const newComment = new Comment(comment);
+    const newComment = new Comment({
+      ...comment,
+      project,
+      owner: user,
+    });
     return await Comment.save(newComment);
   }
 
   static async getCommentByProjectId(projectId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { project: { id: projectId } },
+    });
+  }
+
+  static async getCommentByUserId(userId: string): Promise<Comment[]> {
+    return await Comment.find({
+      where: { owner: { id: userId } },
     });
   }
 }
