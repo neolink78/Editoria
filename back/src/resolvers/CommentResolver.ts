@@ -63,17 +63,18 @@ export class CommentResolver {
     return Comment.updateComment(id, content);
   }
 
-  // Optional: Fetch comments by user
-  //   @Query(() => [Comment])
-  //   async getCommentsByUser(@Arg("userId") userId: string): Promise<Comment[]> {
-  //     const user = await User.findOne(userId, { relations: ["comments"] });
+  @Authorized()
+  @Query(() => Comment)
+  async getCommentById(@Arg("id", () => ID) id: string): Promise<Comment> {
+    return Comment.getCommentById(id);
+  }
 
-  //     if (!user) {
-  //       throw new Error("User not found");
-  //     }
-
-  //     return user.comments;
-  //   }
+  @Authorized()
+  @CommentOwner()
+  @Mutation(() => Comment)
+  async deleteComment(@Arg("id", () => ID) id: string): Promise<Comment> {
+    return Comment.deleteComment(id);
+  }
 }
 
 export default CommentResolver;

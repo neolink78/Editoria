@@ -221,11 +221,8 @@ class User extends BaseEntity {
   }
 
   async isCommentOwner(commentId: string): Promise<boolean> {
-    const comments = await Comment.findOne({
-      where: { id: commentId },
-      relations: ["owner"],
-    });
-    return comments ? comments.owner.id === this.id : false;
+    const comment = await Comment.getCommentById(commentId);
+    return comment.owner.id === this.id;
   }
 }
 

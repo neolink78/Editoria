@@ -59,13 +59,7 @@ class Comment extends BaseEntity {
     commentId: string,
     content: string
   ): Promise<Comment> {
-    const comment = await Comment.findOne({
-      where: { id: commentId },
-    });
-
-    if (!comment) {
-      throw new Error("Comment not found.");
-    }
+    const comment = await Comment.getCommentById(commentId);
 
     comment.content = content;
     return await Comment.save(comment);
@@ -81,6 +75,22 @@ class Comment extends BaseEntity {
     return await Comment.find({
       where: { owner: { id: userId } },
     });
+  }
+
+  static async getCommentById(commentId: string): Promise<Comment> {
+    const comment = await Comment.findOne({
+      where: { id: commentId },
+    });
+    if (!comment) {
+      throw new Error("Comment not found.");
+    }
+    return comment;
+  }
+
+  static async deleteComment(commentId: string): Promise<Comment> {
+    const comment = await Comment.getCommentById(commentId);
+    await Comment.delete(commentId);
+    return comment;
   }
 }
 
