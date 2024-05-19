@@ -55,6 +55,22 @@ class Comment extends BaseEntity {
     return await Comment.save(newComment);
   }
 
+  static async updateComment(
+    commentId: string,
+    content: string
+  ): Promise<Comment> {
+    const comment = await Comment.findOne({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      throw new Error("Comment not found.");
+    }
+
+    comment.content = content;
+    return await Comment.save(comment);
+  }
+
   static async getCommentByProjectId(projectId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { project: { id: projectId } },

@@ -53,6 +53,16 @@ export class CommentResolver {
     return await Comment.getCommentByUserId(userId);
   }
 
+  @Authorized()
+  @CommentOwner()
+  @Mutation(() => Comment)
+  async updateComment(
+    @Arg("id", () => ID) id: string,
+    @Arg("content") content: string
+  ): Promise<Comment> {
+    return Comment.updateComment(id, content);
+  }
+
   // Optional: Fetch comments by user
   //   @Query(() => [Comment])
   //   async getCommentsByUser(@Arg("userId") userId: string): Promise<Comment[]> {
