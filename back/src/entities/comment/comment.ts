@@ -10,11 +10,6 @@ import { CreateOrUpdateCommentArgs } from "./comment.args";
 import Project from "../project/project";
 import User from "../user/user";
 
-export type CommentArgs = CreateOrUpdateCommentArgs & {
-  project: Project;
-  owner: User;
-};
-
 @Entity()
 @ObjectType()
 class Comment extends BaseEntity {
@@ -34,30 +29,29 @@ class Comment extends BaseEntity {
   @Field(() => User)
   owner!: User;
 
-  constructor(comment?: CommentArgs) {
+  constructor(comment?: CreateOrUpdateCommentArgs) {
     super();
 
     if (comment) {
       this.content = comment.content;
-      this.owner = comment.owner;
-      this.project = comment.project;
     }
   }
 
-  static async createComment(comment: CommentArgs): Promise<Comment> {
+  static async createComment(
+    commentArgs: CreateOrUpdateCommentArgs
+  ): Promise<Comment> {
     const project = await Project.findOne({
-      where: { id: comment?.project?.id },
+      where: { id: commentArgs.projectId },
     });
-    const user = await User.findOne({ where: { id: comment?.owner.id } });
+    const user = await User.findOne({ where: { id: commentArgs.userId } });
 
     if (!project || !user) {
       throw new Error("Project or User not found.");
     }
-    const newComment = new Comment({
-      ...comment,
-      project,
-      owner: user,
-    });
+    const newComment = new Comment(commentArgs);
+    newComment.project = project;
+    newComment.owner = user;
+
     return await Comment.save(newComment);
   }
 

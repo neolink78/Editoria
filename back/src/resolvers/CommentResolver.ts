@@ -10,9 +10,8 @@ import {
   ID,
 } from "type-graphql";
 import { Context } from "..";
-import Comment, { CommentArgs } from "../entities/comment/comment";
+import Comment from "../entities/comment/comment";
 import { CreateOrUpdateCommentArgs } from "../entities/comment/comment.args";
-import User from "../entities/user/user";
 
 export function CommentOwner() {
   return createMethodDecorator(async ({ args, context }, next) => {
@@ -28,14 +27,14 @@ export class CommentResolver {
   @Authorized()
   @Mutation(() => Comment)
   async createComment(
-    @Args(() => CreateOrUpdateCommentArgs) args: CommentArgs,
+    @Args(() => CreateOrUpdateCommentArgs) args: CreateOrUpdateCommentArgs,
     @Ctx() { user }: Context
   ): Promise<Comment> {
     if (!user) {
       throw new Error("Authentication required");
     }
 
-    return Comment.createComment({ ...args, owner: user });
+    return Comment.createComment(args);
   }
 
   @Authorized()

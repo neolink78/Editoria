@@ -1,5 +1,5 @@
-import { Field, Float, Int, ArgsType, ID } from "type-graphql";
-import { Min, MinLength } from "class-validator";
+import { Field, ArgsType } from "type-graphql";
+import { MinLength } from "class-validator";
 
 @ArgsType()
 export class CreateOrUpdateCommentArgs {
@@ -7,9 +7,9 @@ export class CreateOrUpdateCommentArgs {
   @MinLength(2)
   content!: string;
 
-  @Field({ nullable: true })
+  @Field()
   projectId!: string;
 
-  @Field({ nullable: true })
+  @Field()
   userId!: string;
 }
