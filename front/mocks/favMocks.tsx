@@ -8,6 +8,7 @@ const favMocks: MockType[] = [
     label: "Navbar responsive",
     description: "Navbar responsive using chakra-ui and react, with a toggle button",
     date: "2 months ago",
+    user: "John Doe",
   },
 ];
 

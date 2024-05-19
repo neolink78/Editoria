@@ -1,0 +1,79 @@
+import { Box, Flex, Input, Text } from "@chakra-ui/react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import { BiChevronRight } from "react-icons/bi";
+import { File, ProjectInfo } from "../../pages/editor";
+import FilesList from "./FilesList";
+import ProjectInfoTab from "./ProjectInfoTab";
+import EditorComments from "./EditorComments";
+
+type EditorSidebarProps = {
+  project: File[];
+  setProject: Dispatch<SetStateAction<File[]>>;
+  fileName: string | null;
+  setFileName: Dispatch<SetStateAction<string | null>>;
+  setFilesInTabs: Dispatch<SetStateAction<string[]>>;
+  filesInTabs: string[];
+  projectInfo: ProjectInfo
+}
+
+type ShowTabs = {
+  Files: boolean;
+  Comments: boolean;
+  Info: boolean;
+}
+
+const SIDEBAR_TABS = ["Info", "Files", "Comments"]
+
+const EditorSidebar = ({ projectInfo, project, setProject, fileName, setFileName, setFilesInTabs, filesInTabs }: EditorSidebarProps) => {
+
+  const [showTabs, setShowTabs] = useState<ShowTabs>({
+    Files: true,
+    Comments: true,
+    Info: true,
+  });
+
+  const displayTabContent = (tab: string) => {
+    switch (tab) {
+      case "Files":
+        return <FilesList project={project} fileName={fileName} setProject={setProject} showTabs={showTabs} setFileName={setFileName} setFilesInTabs={setFilesInTabs} filesInTabs={filesInTabs} />;
+      
+      case "Comments":
+        return <EditorComments />;
+        
+      default:
+        return <ProjectInfoTab info={projectInfo} />
+    }
+  }
+
+return (
+  <Flex
+    className="editor-sidebar"
+    w="240px"
+    direction={"column"}
+    backgroundColor={"#212227"}
+    color="white"
+  >
+    <Text className="p-4">PROJECT</Text>
+    {SIDEBAR_TABS.map((tab) => {
+      return (
+        <Fragment key={tab}>
+        <Flex
+          alignItems="center"
+          bg="#2F3138"
+          className="p-1 cursor-pointer"
+          onClick={() => setShowTabs({ ...showTabs, [tab]: !showTabs[tab as keyof ShowTabs] })}
+        >
+          <BiChevronRight
+            style={{ transform: showTabs[tab as keyof ShowTabs] ? "rotate(90deg)" : "" }}
+          />
+          {tab}
+        </Flex>
+        {showTabs[tab as keyof ShowTabs] && <Box>{displayTabContent(tab)}</Box>}
+        </Fragment>
+      )
+    })}
+  </Flex>
+)
+}
+
+export default EditorSidebar;

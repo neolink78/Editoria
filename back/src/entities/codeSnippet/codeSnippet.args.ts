@@ -16,8 +16,8 @@ export class CreateOrUpdateCodeSnippetArgs {
   is_public!: boolean;
 
   @Field(() => Language)
-  language!: Language
+  language!: Language;
 
   @Field()
-  projectId!: string
+  projectId!: string;
 }

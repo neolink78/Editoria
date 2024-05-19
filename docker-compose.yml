@@ -2,11 +2,15 @@ version: "3.8"
 
 services:
   back:
-    build: ./back
+    build: 
+      context: ./back
+      target: dev
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - TEST_DATABASE_URL=postgres://postgres:password@test-database:5432/postgres
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     ports:
       - 4000:4000
     develop:
@@ -18,7 +22,9 @@ services:
           path: back/package.json
 
   front:
-    build: ./front
+    build: 
+      context: ./front
+      target: dev
     ports:
       - 3000:3000
     develop:
@@ -31,10 +37,15 @@ services:
 
   database:
     image: postgres:15
-    ports: 
-      - 5432:5432
     volumes:
       - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: pg_isready -U postgres
+  
+  test-database:
+    image: postgres:15
     environment:
       - POSTGRES_PASSWORD=password
 

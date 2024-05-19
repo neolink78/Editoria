@@ -42,7 +42,7 @@ export default function HomePage() {
           />
         ))}
       </Box>
-      <Flex justifyContent="center" mt="3vw">
+      <Flex justifyContent="center" mt="3vw" mb="4vw">
         <SubmitButton onClick={() => alert("redirecting to IDE...")} w="10vw">
           See all projects
         </SubmitButton>

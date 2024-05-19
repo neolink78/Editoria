@@ -6,24 +6,29 @@ import {
   JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
-  ManyToMany
+  ManyToMany,
 } from "typeorm";
 import { compare, hash } from "bcrypt";
-import { CreateOrUpdateUser, SignInUser } from "./user.args";
+import {
+  CreateOrUpdateUser,
+  ResetPassword,
+  ResetUser,
+  SignInUser,
+} from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
 import Project from "../project/project";
 import Comment from "../comment/comment";
-
+import UserResetSession from "./userResetSession";
 
 export enum Role {
-    USER = 'USER',
-    ADMIN = 'ADMIN',
-  }
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
 
-  registerEnumType(Role, {
-    name: "Role",
-  });
+registerEnumType(Role, {
+  name: "Role",
+});
 
 @Entity("AppUser")
 @ObjectType()
@@ -34,20 +39,20 @@ class User extends BaseEntity {
 
   @Column({ unique: true })
   @Field()
-  email!: string
+  email!: string;
 
   @Column({ unique: true })
   @Field()
-  username!: string
+  username!: string;
 
-  @Column()
+  @Column({ default: "" })
   @Field()
   description!: string;
 
   @Column()
   hashedPassword!: string;
 
-  @Column({default: Role.USER})
+  @Column({ default: Role.USER })
   @Field(() => Role)
   role!: Role;
 
@@ -57,18 +62,25 @@ class User extends BaseEntity {
 
   @OneToMany(() => Project, (project) => project.owner)
   projectsOwned!: Project[];
-  
+
   @JoinTable({ name: "user_project" })
   @ManyToMany(() => Project, (code) => code.collaborators)
   @Field(() => [Project])
   projects!: Project[];
-  
+
+  @ManyToMany(() => Project)
+  @JoinTable({ name: "user_likes_project" })
+  @Field(() => [Project])
+  likedProjects!: Project[];
+
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments!: Comment[];
 
+  @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
+  sessionsReset!: UserResetSession[];
 
   constructor(user?: CreateOrUpdateUser) {
     super();
@@ -77,7 +89,7 @@ class User extends BaseEntity {
       this.email = user.email;
       this.username = user.username;
       this.hashedPassword = user.password;
-      this.description = user.description;
+      this.description = user.description || "";
     }
   }
 
@@ -93,37 +105,47 @@ class User extends BaseEntity {
   static async getUsers(): Promise<User[]> {
     const users = await User.find();
     return users;
-    }
-  
+  }
+
   static async getUserById(id: string): Promise<User> {
     const user = await User.findOne({ where: { id } });
     if (!user) {
-        throw new Error("USER_NOT_FOUND");
+      throw new Error("USER_NOT_FOUND");
     }
     return user;
-    }
+  }
 
-  static async updateUser(id: string, userData: CreateOrUpdateUser): Promise<User> {
+  static async getUserByEmail(email: string): Promise<User> {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+    return user;
+  }
+
+  static async updateUser(
+    id: string,
+    userData: CreateOrUpdateUser
+  ): Promise<User> {
     const user = await User.getUserById(id);
-    
+
     if (userData.password && userData.password !== user.hashedPassword) {
-        userData.password = await hash(userData.password, 10);
+      userData.password = await hash(userData.password, 10);
     }
     user.hashedPassword = userData.password;
     console.log(user);
     Object.assign(user, userData);
 
-
     await user.save();
-    user.reload()
+    user.reload();
     return user;
-    }
+  }
 
   static async deleteUser(id: string): Promise<User> {
     const user = await User.getUserById(id);
     await User.delete(id);
     return user;
-    }
+  }
 
   static async getUserWithEmailAndPassword({
     email,
@@ -145,7 +167,13 @@ class User extends BaseEntity {
     return { user, session };
   }
 
-  
+  static async resetUser({
+    email,
+  }: ResetUser): Promise<{ user: User; session: UserSession }> {
+    const user = await this.getUserByEmail(email);
+    const session = await UserResetSession.saveNewSession(user);
+    return { user, session };
+  }
 
   static async getUserWithSessionId(sessionId: string): Promise<User | null> {
     const session = await UserSession.findOne({
@@ -156,6 +184,40 @@ class User extends BaseEntity {
       return null;
     }
     return session.user;
+  }
+
+  static async getUserResetWithSessionId(
+    resetSessionId: string
+  ): Promise<User | null> {
+    const resetSession = await UserResetSession.findOne({
+      where: { id: resetSessionId },
+      relations: { user: true },
+    });
+    if (!resetSession) {
+      return null;
+    }
+    return resetSession.user;
+  }
+
+  static async updatePassword(
+    userResetSessionId: string,
+    userData: ResetPassword
+  ): Promise<User> {
+    const user = await User.getUserResetWithSessionId(userResetSessionId);
+
+    if (!user) {
+      throw new Error("User not found for the given reset session ID");
+    }
+
+    if (userData.newPassword && userData.newPassword !== user.hashedPassword) {
+      userData.newPassword = await hash(userData.newPassword, 10);
+    }
+    user.hashedPassword = userData.newPassword;
+    console.log(user);
+
+    await user.save();
+    user.reload();
+    return user;
   }
 }
 

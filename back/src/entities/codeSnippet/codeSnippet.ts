@@ -6,6 +6,7 @@ import Comment  from '../comment/comment';
 // import { Like } from './Like';
 import User from '../user/user';
 import Project from '../project/project';
+import { checkUUID } from '../../utils/checkUUID';
 
 export enum Language {
   JAVASCRIPT = 'JAVASCRIPT',
@@ -15,6 +16,9 @@ export enum Language {
   C = 'C',
   CPP = 'C++',
   CSHARP = 'C#',
+  HTML = 'HTML',
+  CSS = 'CSS',
+  UNKNOWN = 'UNKNOWN',
 }
 
 registerEnumType(Language, {
@@ -65,8 +69,8 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   @Field(type => Language)
   language!: Language;
 
-  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { eager: true })
-  @Field()
+  @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, { onDelete: 'CASCADE' })
+  @Field(() => Project)
   project!: Project;
 
   constructor(codeSnippet?: CodeSnippetArgs) {
@@ -105,6 +109,9 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   }
 
   static async deleteCodeSnippet(id: string): Promise<CodeSnippet> {
+    if (!checkUUID(id)) {
+      throw new Error('Invalid UUID');
+    }
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     await CodeSnippet.delete(id);
     return codeSnippet;
@@ -113,7 +120,9 @@ type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
   static async updateCodeSnippet(id: string, partialCodeSnippet: CreateOrUpdateCodeSnippetArgs): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });
-    
+    if (codeSnippet.code.length === 0 ) {
+      throw new Error('Code snippet cannot be empty');
+    }
     await codeSnippet.save();
     codeSnippet.reload()
     return codeSnippet;

@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  back:
+    build:
+      context: ./back
+      target: prod
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - NODE_ENV=production
+    depends_on:
+      - database
+    expose:
+      - 4000
+    restart: always
+
+  front:
+    build:
+      context: ./front
+      target: prod
+    environment:
+      - NODE_ENV=production
+    expose:
+      - 3000
+    restart: always
+
+  database:
+    image: postgres:15
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+    restart: always
+  
+  gateway:
+    image: nginx
+    depends_on:
+      - back
+      - front
+    ports:
+      - ${GATEWAY_PORT}:80
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+
+volumes:
+  database-data:

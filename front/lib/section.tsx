@@ -1,6 +1,6 @@
 import SubmitButton from "./submitButton";
-import ArrowDownIcon from "../icons/arrowDownIcon";
 import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 type sectionTypeProps = {
   title?: string;
@@ -9,6 +9,7 @@ type sectionTypeProps = {
 };
 
 const Section = ({ title, children, buttonText }: sectionTypeProps) => {
+  const router = useRouter()
   return (
     <Box color="white" width="32vw">
       <Box className="section_title">{title}</Box>
@@ -18,7 +19,7 @@ const Section = ({ title, children, buttonText }: sectionTypeProps) => {
           <SubmitButton
             bg="#1574EF"
             w="10vw"
-            onClick={() => alert("redirecting to IDE...")}
+            onClick={() => router.push("/editor")}
           >
             {buttonText}
           </SubmitButton>
