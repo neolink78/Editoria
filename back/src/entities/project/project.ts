@@ -53,7 +53,10 @@ class Project extends BaseEntity {
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
-  @OneToMany(() => Comment, (comment) => comment.project, { eager: true })
+  @OneToMany(() => Comment, (comment) => comment.project, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
   @Field(() => [Comment])
   comments!: Comment[];
 
