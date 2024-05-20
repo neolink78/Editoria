@@ -29,6 +29,14 @@ export type CodeSnippet = {
   updatedAt: Scalars['DateTimeISO']['output'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  content: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  owner: User;
+  project: Project;
+};
+
 export enum Language {
   C = 'C',
   Cpp = 'CPP',
@@ -47,8 +55,10 @@ export type Mutation = {
   ResetPassword: User;
   ResetUser: User;
   createCodeSnippet: CodeSnippet;
+  createComment: Comment;
   createProject: Project;
   deleteCodeSnippet: CodeSnippet;
+  deleteComment: Comment;
   deleteProject: Project;
   deleteUser: User;
   signIn: User;
@@ -56,6 +66,7 @@ export type Mutation = {
   signUp: User;
   toggleLike: Scalars['Boolean']['output'];
   updateCodeSnippet: CodeSnippet;
+  updateComment: Comment;
   updateProject: Project;
   updateUser: User;
 };
@@ -79,6 +90,13 @@ export type MutationCreateCodeSnippetArgs = {
 };
 
 
+export type MutationCreateCommentArgs = {
+  content: Scalars['String']['input'];
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+
 export type MutationCreateProjectArgs = {
   collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -88,6 +106,11 @@ export type MutationCreateProjectArgs = {
 
 
 export type MutationDeleteCodeSnippetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteCommentArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -131,6 +154,12 @@ export type MutationUpdateCodeSnippetArgs = {
 };
 
 
+export type MutationUpdateCommentArgs = {
+  content: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateProjectArgs = {
   collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -151,6 +180,7 @@ export type MutationUpdateUserArgs = {
 export type Project = {
   __typename?: 'Project';
   codeSnippetsOwned: Array<CodeSnippet>;
+  comments: Array<Comment>;
   createdAt: Scalars['DateTimeISO']['output'];
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -165,9 +195,12 @@ export type Query = {
   __typename?: 'Query';
   codeSnippet: CodeSnippet;
   codeSnippets: Array<CodeSnippet>;
+  getCommentById: Comment;
+  getCommentsByUserId: Array<Comment>;
+  getCommentsbyProjectId: Array<Comment>;
+  getOwnProject: Array<Project>;
   getProjectById: Project;
   getProjects: Array<Project>;
-  getProjectsByUser: Array<Project>;
   getUser: User;
   getUserByEmail: User;
   getUsers: Array<User>;
@@ -179,6 +212,21 @@ export type Query = {
 
 export type QueryCodeSnippetArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetCommentByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetCommentsByUserIdArgs = {
+  userId: Scalars['ID']['input'];
+};
+
+
+export type QueryGetCommentsbyProjectIdArgs = {
+  projectId: Scalars['String']['input'];
 };
 
 
@@ -218,15 +266,10 @@ export type User = {
   username: Scalars['String']['output'];
 };
 
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetProjectsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, title: string, description: string, updatedAt: any, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', language: Language }>, owner: { __typename?: 'User', username: string } }> };
-
-export type GetUserProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUserProjectsQuery = { __typename?: 'Query', getProjectsByUser: Array<{ __typename?: 'Project', id: string, title: string, description: string, updatedAt: any, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', language: Language }>, owner: { __typename?: 'User', username: string } }> };
+export type GetProjectsByUserQuery = { __typename?: 'Query', getOwnProject: Array<{ __typename?: 'Project', id: string, title: string, description: string, is_public: boolean, createdAt: any, updatedAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', id: string, title: string, code: string, language: Language }>, comments: Array<{ __typename?: 'Comment', id: string, content: string, owner: { __typename?: 'User', id: string }, project: { __typename?: 'Project', id: string } }>, owner: { __typename?: 'User', id: string, email: string, username: string } }> };
 
 export type DeleteProjectMutationVariables = Exact<{
   deleteProjectId: Scalars['ID']['input'];
@@ -301,8 +344,7 @@ export type AddFileMutationVariables = Exact<{
 export type AddFileMutation = { __typename?: 'Mutation', createCodeSnippet: { __typename?: 'CodeSnippet', id: string } };
 
 
-export const GetProjectsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"codeSnippetsOwned"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
-export const GetUserProjectsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getProjectsByUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"codeSnippetsOwned"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserProjectsQuery, GetUserProjectsQueryVariables>;
+export const GetProjectsByUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectsByUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOwnProject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"is_public"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"codeSnippetsOwned"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"project"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<GetProjectsByUserQuery, GetProjectsByUserQueryVariables>;
 export const DeleteProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteProjectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteProject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteProjectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const GetUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const MyProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MyProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]} as unknown as DocumentNode<MyProfileQuery, MyProfileQueryVariables>;

@@ -6,14 +6,22 @@ import { AuthChecker, buildSchema } from "type-graphql";
 import { CodeSnippetResolver } from "./resolvers/CodeSnippetResolver";
 import User from "./entities/user/user";
 import { UserResolver } from "./resolvers/UserResolver";
-import { getUserResetSessionIdFromCookie, getUserSessionIdFromCookie } from "./utils/cookie";
+import {
+  getUserResetSessionIdFromCookie,
+  getUserSessionIdFromCookie,
+} from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
-import { Like } from "typeorm";
 import { LikeResolver } from "./resolvers/LikeResolver";
-import 'dotenv/config';
+import "dotenv/config";
+import CommentResolver from "./resolvers/CommentResolver";
 
-export type Context = { res: Response; user: User | null, userSessionId: string | undefined, userResetSessionId?: string | undefined};
+export type Context = {
+  res: Response;
+  user: User | null;
+  userSessionId: string | undefined;
+  userResetSessionId?: string | undefined;
+};
 
 const authChecker: AuthChecker<Context> = ({ context }) => {
   return Boolean(context.user);
@@ -22,7 +30,13 @@ const authChecker: AuthChecker<Context> = ({ context }) => {
 const PORT = 4000;
 const startApolloServer = async () => {
   const schema = await buildSchema({
-    resolvers: [CodeSnippetResolver, UserResolver, ProjectResolver, LikeResolver],
+    resolvers: [
+      CodeSnippetResolver,
+      UserResolver,
+      ProjectResolver,
+      LikeResolver,
+      CommentResolver,
+    ],
     validate: true,
     authChecker,
   });

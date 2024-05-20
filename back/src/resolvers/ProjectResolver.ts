@@ -72,7 +72,11 @@ export class ProjectResolver {
 
   @Authorized()
   @Query(() => [Project])
-  async getProjectsByUser(@Ctx() { user }: Context) {
-    return Project.find({ where: { owner: { id: user?.id } } });
+  async getOwnProject(@Ctx() { user }: Context) {
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const projects = await Project.getProjectsByUserId(user.id);
+    return projects;
   }
 }

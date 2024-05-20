@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
+import Comment from "../comment/comment";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
@@ -52,6 +53,10 @@ class Project extends BaseEntity {
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
+  @OneToMany(() => Comment, (comment) => comment.project, { eager: true })
+  @Field(() => [Comment])
+  comments!: Comment[];
+
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
   @Field(() => User)
   owner!: User;
@@ -90,6 +95,23 @@ class Project extends BaseEntity {
         createdAt: "DESC",
       },
     });
+  }
+
+  static async getProjectsByUserId(userId: string): Promise<Project[]> {
+    const projects = await Project.find({
+      where: { owner: { id: userId } },
+      order: {
+        createdAt: "DESC",
+      },
+      relations: [
+        "owner",
+        "comments",
+        "codeSnippetsOwned",
+        "comments.owner",
+        "comments.project",
+      ],
+    });
+    return projects;
   }
 
   static async getProjectById(id: string): Promise<Project> {

@@ -1,7 +1,4 @@
-
 import { Box, Skeleton } from '@chakra-ui/react';
-
-import { useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
 import { PaginationControls } from '../../lib/pagination';
 import Tile from '../../lib/tile';
@@ -17,6 +14,7 @@ export type Project = {
     description: string;
     createdAt: string;
     owner: { username: string };
+    comments: Array<{ id: string; content: string }>;
 };
 
 interface DashboardProjectsProps {
@@ -58,6 +56,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             description={project.description}
                             createdAt={project.createdAt}
                             owner={project.owner.username}
+                            commentCount={project?.comments.length}
                             onDelete={() => {
                                 onDelete(project.id);
                             }}

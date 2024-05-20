@@ -5,7 +5,6 @@ import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { GetUserProjectsQuery } from "../../gql/graphql";
 
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
@@ -15,24 +14,42 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
+import { GetProjectsByUserQuery } from "@/gql/graphql";
 
 const GET_USER_PROJECTS = gql`
-  query GetUserProjects {
-    getProjectsByUser {
+query GetProjectsByUser {
+  getOwnProject {
+    id
+    title
+    description
+    is_public
+    createdAt
+    updatedAt
+    codeSnippetsOwned {
       id
       title
-      description
-      updatedAt
-      createdAt
-      codeSnippetsOwned {
-        language
-      }
+      code
+      language
+    }
+    comments {
+      id
+      content
       owner {
-        username
+        id
+      }
+      project {
+        id
       }
     }
+    owner {
+      id
+      email
+      username
+    }
   }
+}
 `;
+
 
 export const DELETE_PROJECT = gql`
 mutation DeleteProject($deleteProjectId: ID!) {
@@ -42,14 +59,14 @@ mutation DeleteProject($deleteProjectId: ID!) {
 }
 `;
 
-
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data, loading, error } = useQuery<GetUserProjectsQuery>(GET_USER_PROJECTS);
-  const projects = data?.getProjectsByUser || [];
+  const { data, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
+  const projects = data?.getOwnProject || [];
+
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
   });
@@ -120,6 +137,7 @@ const Dashboard = () => {
                     description={e.description}
                     createdAt={e.createdAt}
                     owner={e.owner.username}
+                    commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
                   />
                 ))
