@@ -76,7 +76,7 @@ class User extends BaseEntity {
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
 
-  @OneToMany(() => Comment, (comment) => comment.owner)
+  @OneToMany(() => Comment, (comment) => comment.owner, { eager: true })
   comments!: Comment[];
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)

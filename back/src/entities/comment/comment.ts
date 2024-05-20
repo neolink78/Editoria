@@ -25,7 +25,7 @@ class Comment extends BaseEntity {
   @Field(() => Project)
   project!: Project;
 
-  @ManyToOne(() => User, (user) => user.comments, { eager: true })
+  @ManyToOne(() => User, (user) => user.comments)
   @Field(() => User)
   owner!: User;
 
@@ -68,12 +68,14 @@ class Comment extends BaseEntity {
   static async getCommentByProjectId(projectId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { project: { id: projectId } },
+      relations: ["owner", "project"],
     });
   }
 
   static async getCommentByUserId(userId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { owner: { id: userId } },
+      relations: ["owner", "project"],
     });
   }
 
