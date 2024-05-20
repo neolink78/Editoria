@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n  }\n}\n": types.GetProjectsByUserDocument,
     "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n": types.DeleteProjectDocument,
+    "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n": types.GetOwnCommentsDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n": types.GetUsersDocument,
     "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.MyProfileDocument,
     "\n  mutation SignOUt {\n    signOut\n  }\n": types.SignOUtDocument,
@@ -48,6 +49,10 @@ export function graphql(source: "\nquery GetProjectsByUser {\n  getOwnProject {\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"): (typeof documents)["\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

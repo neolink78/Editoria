@@ -14,7 +14,7 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
-import { GetProjectsByUserQuery } from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery } from "@/gql/graphql";
 
 const GET_USER_PROJECTS = gql`
 query GetProjectsByUser {
@@ -59,13 +59,32 @@ mutation DeleteProject($deleteProjectId: ID!) {
 }
 `;
 
+export const GET_OWN_COMMENTS = gql`
+query GetOwnComments {
+  getOwnComments {
+    id
+    content
+    project {
+      id
+      title
+    }
+    owner {
+      id
+      username
+    }
+  }
+}
+`;
+
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
-  const projects = data?.getOwnProject || [];
+  const { data: projectData, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
+  const projects = projectData?.getOwnProject || [];
+  const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const comments = commentData?.getOwnComments || [];
 
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
@@ -113,7 +132,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && projects.length > 3 &&
+              {projectData && projects.length > 3 &&
                 <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
                   <Text cursor="pointer" >Tout voir</Text>
                 </Box>}
@@ -142,7 +161,7 @@ const Dashboard = () => {
                   />
                 ))
               )}
-              {data && projects.length === 0 && (
+              {projectData && projects.length === 0 && (
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                   <Box fontSize="0.9vw" m="2vw">
                     Vous n&apos;avez pas encore de projet.
@@ -248,23 +267,20 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes derniers commentaires
-              {emptyMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {comments.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
             <Box mb={12}>
-              {emptyMocks.length > 0
-                ? emptyMocks.slice(-2).map((e, idx) => (
-                  <Tile
-                    homePage
-                    key={idx}
-                    marginTop={e.marginTop}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                  />
-                )) :
+              {commentData && comments.length > 0 ? comments.map((e, idx) => (
+                <Tile
+                  homePage
+                  key={idx}
+                  title={e.project.title}
+                  description={e.content}
+                  content
+                />
+              )) :
                 <Flex
                   flexDirection="column"
                   justifyContent="center"

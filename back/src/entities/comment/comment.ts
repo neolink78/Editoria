@@ -21,6 +21,11 @@ class Comment extends BaseEntity {
   @Field()
   content!: string;
 
+  //TODO: Add createdAt field
+  // @Column()
+  // @Field()
+  // createdAt!: Date;
+
   @ManyToOne(() => Project, (project) => project.comments)
   @Field(() => Project)
   project!: Project;

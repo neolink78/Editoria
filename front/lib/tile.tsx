@@ -20,16 +20,13 @@ type TileProps = {
   owner?: string;
   projectId?: string;
   commentCount?: number;
+  content?: boolean
   onDelete?: (e: any) => void;
 };
 
-
-
 const Tile = ({
   icon,
-  label,
   description,
-  date,
   marginTop,
   homePage,
   title,
@@ -38,6 +35,7 @@ const Tile = ({
   projectId,
   onDelete,
   commentCount,
+  content,
 }: TileProps) => {
   const relativeDate = createdAt ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr }) : '';
 
@@ -58,10 +56,12 @@ const Tile = ({
         <Text isTruncated minWidth="10vw" maxWidth="10vw">{title}</Text>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}</Text>
-      </Flex>
-      {/* {description} */}
-      <Flex gap="1vw">
+        {content ?
+          <Text isTruncated minWidth="30vw" maxWidth="30vw"> Commentaire : {description}
+          </Text> :
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}
+          </Text>
+        }
       </Flex>
       <Flex gap="1vw">
         <Flex alignItems="center">
@@ -70,9 +70,15 @@ const Tile = ({
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> {commentCount}
         </Flex>
-        {/* {date}
-         */}
-        <Text isTruncated minWidth="16vw" maxWidth="16vw">{relativeDate} par {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}</Text>
+        {content ? "" :
+          <Text
+            isTruncated
+            minWidth="16vw"
+            maxWidth="16vw">
+            {relativeDate} par &nbsp;
+            {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}
+          </Text>
+        }
       </Flex>
       {!homePage && <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />}
     </Flex>
