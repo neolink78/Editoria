@@ -16,7 +16,7 @@ const documents = {
     "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n  }\n}\n": types.GetProjectsByUserDocument,
     "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n": types.DeleteProjectDocument,
     "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n": types.GetOwnCommentsDocument,
-    "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n  }\n}\n": types.LikedProjectsDocument,
+    "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n": types.LikedProjectsDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n": types.GetUsersDocument,
     "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.MyProfileDocument,
     "\n  mutation SignOUt {\n    signOut\n  }\n": types.SignOUtDocument,
@@ -57,7 +57,7 @@ export function graphql(source: "\nquery GetOwnComments {\n  getOwnComments {\n 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n  }\n}\n"];
+export function graphql(source: "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"): (typeof documents)["\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

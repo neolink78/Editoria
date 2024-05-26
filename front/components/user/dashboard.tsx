@@ -86,9 +86,13 @@ query LikedProjects {
       id
       username
     }
+    likes {
+      id
+    }
   }
 }
 `;
+
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -215,6 +219,9 @@ const Dashboard = () => {
                     description={e.description}
                     content
                   />
+                  <Box>
+                    Likes: {e.likes.length}
+                  </Box>
                 </Skeleton>
 
               )) :
