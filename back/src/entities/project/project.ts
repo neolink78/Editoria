@@ -68,7 +68,9 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
-  @OneToMany(() => Like, (like) => like.project)
+  @OneToMany(() => Like, (like) => like.project, {
+    eager: true,
+  })
   @Field(() => [Like])
   likes!: Like[];
 

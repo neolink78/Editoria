@@ -25,7 +25,7 @@ export class LikeResolver {
     if (!user) {
       throw new Error("Authentication required");
     }
-    return Like.toggleLike(args.userId, args.projectId);
+    return Like.toggleLike(user, args.projectId);
   }
 
   @Query(() => [Project])
@@ -33,24 +33,13 @@ export class LikeResolver {
     if (!user) {
       throw new Error("Authentication required");
     }
-
-    const likes = await Like.find({
-      where: { user: { id: user.id } },
-      relations: ["project"],
-    });
-
-    return likes.map((like) => like.project);
+    return Like.likedProjects(user.id);
   }
 
   @Query(() => [User])
   async projectLikes(
     @Arg("projectId", () => ID) projectId: string
   ): Promise<User[]> {
-    const likes = await Like.find({
-      where: { project: { id: projectId } },
-      relations: ["user"],
-    });
-
-    return likes.map((like) => like.user);
+    return Like.projectLikes(projectId);
   }
 }

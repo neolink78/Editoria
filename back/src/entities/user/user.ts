@@ -69,7 +69,7 @@ class User extends BaseEntity {
   @Field(() => [Project])
   projects!: Project[];
 
-  @OneToMany(() => Like, (like) => like.user)
+  @OneToMany(() => Like, (like) => like.user, { eager: true })
   @Field(() => [Like])
   likes!: Like[];
 
