@@ -14,7 +14,7 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
-import { GetOwnCommentsQuery, GetProjectsByUserQuery } from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery } from "@/gql/graphql";
 
 const GET_USER_PROJECTS = gql`
 query GetProjectsByUser {
@@ -76,6 +76,20 @@ query GetOwnComments {
 }
 `;
 
+export const GET_LIKED_PROJECTS = gql`
+query LikedProjects {
+  likedProjects {
+    id
+    title
+    description
+    owner {
+      id
+      username
+    }
+  }
+}
+`;
+
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -85,6 +99,8 @@ const Dashboard = () => {
   const projects = projectData?.getOwnProject || [];
   const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const comments = commentData?.getOwnComments || [];
+  const { data: likedProjectsData } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
+  const likedProjects = likedProjectsData?.likedProjects || [];
 
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
@@ -185,20 +201,19 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets likés
-              {favMocks && favMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {likedProjects && likedProjects.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
             <Box mb={12}>
-              {favMocks ? favMocks.slice(-2).map((e, idx) => (
+              {likedProjects ? likedProjects.slice(-2).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
                     key={idx}
-                    icon={e.icon}
-                    label={e.label}
+                    title={e.title}
                     description={e.description}
-                    date={e.date}
+                    content
                   />
                 </Skeleton>
 
