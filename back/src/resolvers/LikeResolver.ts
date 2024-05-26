@@ -33,21 +33,24 @@ export class LikeResolver {
     if (!user) {
       throw new Error("Authentication required");
     }
-    const userEntity = await User.findOne({
-      where: { id: user.id },
-      relations: ["likedProjects"],
+
+    const likes = await Like.find({
+      where: { user: { id: user.id } },
+      relations: ["project"],
     });
-    return userEntity ? userEntity.likedProjects : [];
+
+    return likes.map((like) => like.project);
   }
 
   @Query(() => [User])
   async projectLikes(
     @Arg("projectId", () => ID) projectId: string
   ): Promise<User[]> {
-    const project = await Project.findOne({
-      where: { id: projectId },
-      relations: ["likedBy"],
+    const likes = await Like.find({
+      where: { project: { id: projectId } },
+      relations: ["user"],
     });
-    return project ? project.likedBy : [];
+
+    return likes.map((like) => like.user);
   }
 }
