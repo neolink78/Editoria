@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import Comment from "../comment/comment";
+import Like from "../like/like";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
@@ -67,9 +68,9 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
-  @ManyToMany(() => User, (user) => user.likedProjects)
-  @Field(() => [User])
-  likedBy!: User[];
+  @OneToMany(() => Like, (like) => like.project)
+  @Field(() => [Like])
+  likes!: Like[];
 
   constructor(project?: ProjectArgs) {
     super();

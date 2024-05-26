@@ -20,6 +20,7 @@ import UserSession from "./userSession";
 import Project from "../project/project";
 import Comment from "../comment/comment";
 import UserResetSession from "./userResetSession";
+import Like from "../like/like";
 
 export enum Role {
   USER = "USER",
@@ -68,10 +69,9 @@ class User extends BaseEntity {
   @Field(() => [Project])
   projects!: Project[];
 
-  @ManyToMany(() => Project)
-  @JoinTable({ name: "user_likes_project" })
-  @Field(() => [Project])
-  likedProjects!: Project[];
+  @OneToMany(() => Like, (like) => like.user)
+  @Field(() => [Like])
+  likes!: Like[];
 
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
