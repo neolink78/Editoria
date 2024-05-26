@@ -14,8 +14,9 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
-import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery } from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
 
+// TODO : Change GET_USER_PROJECTS to fetch like and so that can get like count
 const GET_USER_PROJECTS = gql`
 query GetProjectsByUser {
   getOwnProject {
@@ -94,6 +95,12 @@ query LikedProjects {
 `;
 
 
+export const TOGGLE_LIKE = gql`
+mutation ToggleLike($projectId: String!) {
+  toggleLike(projectId: $projectId)
+}
+`;
+
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -105,6 +112,13 @@ const Dashboard = () => {
   const comments = commentData?.getOwnComments || [];
   const { data: likedProjectsData } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
+  const [toggleLike, { loading: toggleLikeLoading }] = useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(TOGGLE_LIKE, {
+    refetchQueries: [{ query: GET_LIKED_PROJECTS }],
+    onError: (error) => console.error("Toggle like mutation error:", error),
+    onCompleted: (data) => console.log("Toggle like mutation completed. Response:", data),
+  });
+  console.log("toggleLike:", toggleLike);
+  console.log("toggleLikeLoading:", toggleLikeLoading);
 
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
@@ -178,6 +192,11 @@ const Dashboard = () => {
                     owner={e.owner.username}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
+
+                    toggleLike={() => {
+                      console.log("Toggle like button clicked for project ID:", e.id);
+                      toggleLike({ variables: { projectId: e.id } });
+                    }}
                   />
                 ))
               )}
@@ -217,11 +236,13 @@ const Dashboard = () => {
                     key={idx}
                     title={e.title}
                     description={e.description}
+                    likeCount={e.likes.length}
                     content
+                    toggleLike={() => {
+                      console.log("Toggle like button clicked for project ID:", e.id);
+                      toggleLike({ variables: { projectId: e.id } });
+                    }}
                   />
-                  <Box>
-                    Likes: {e.likes.length}
-                  </Box>
                 </Skeleton>
 
               )) :

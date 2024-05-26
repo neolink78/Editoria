@@ -22,6 +22,8 @@ type TileProps = {
   commentCount?: number;
   content?: boolean
   onDelete?: (e: any) => void;
+  toggleLike?: () => void;
+  likeCount?: number;
 };
 
 const Tile = ({
@@ -36,12 +38,24 @@ const Tile = ({
   onDelete,
   commentCount,
   content,
+  toggleLike,
+  likeCount
 }: TileProps) => {
   const relativeDate = createdAt ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr }) : '';
+  const handleToggleLike = async (projectId: string) => {
+    try {
+      if (toggleLike && projectId)
+        await toggleLike();
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
+  console.log("Rendering Tile component with likeCount:", likeCount); // Add this line
+
 
   return (
     <Flex
-      cursor="pointer"
       justifyContent="space-between"
       alignItems="center"
       p="0.8vw 1.5vw"
@@ -64,8 +78,9 @@ const Tile = ({
         }
       </Flex>
       <Flex gap="1vw">
-        <Flex alignItems="center">
-          <AiOutlineLike /> 1
+        <Flex alignItems="center"  >
+          <AiOutlineLike onClick={() => handleToggleLike} cursor="pointer" />
+          {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> {commentCount}
