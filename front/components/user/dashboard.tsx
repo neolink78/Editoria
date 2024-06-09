@@ -22,6 +22,7 @@ import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
+// TODO : Creer page pour likedprojects (sur clic de Toutvoir)
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -74,6 +75,7 @@ const Dashboard = () => {
               onDelete={handleDelete}
               setShowAllProjects={setShowAllProjects}
               isLoading={loading}
+              toggleLike={toggleLike}
             />
           </>
         ) : (
@@ -147,7 +149,7 @@ const Dashboard = () => {
               </Box>}
             </Box>
             <Box mb={12}>
-              {likedProjects ? likedProjects.slice(-2).map((e, idx) => (
+              {likedProjects ? likedProjects.slice(-3).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
