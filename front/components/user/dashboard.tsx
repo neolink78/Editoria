@@ -15,95 +15,13 @@ import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
 import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
+import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
+import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
+import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
+import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
-
-const GET_USER_PROJECTS = gql`
-query GetProjectsByUser {
-  getOwnProject {
-    id
-    title
-    description
-    is_public
-    createdAt
-    updatedAt
-    codeSnippetsOwned {
-      id
-      title
-      code
-      language
-    }
-    comments {
-      id
-      content
-      owner {
-        id
-      }
-      project {
-        id
-      }
-    }
-    owner {
-      id
-      email
-      username
-    }
-    likes {
-      id
-    }
-  }
-}
-`;
-
-
-export const DELETE_PROJECT = gql`
-mutation DeleteProject($deleteProjectId: ID!) {
-  deleteProject(id: $deleteProjectId) {
-    id
-  }
-}
-`;
-
-export const GET_OWN_COMMENTS = gql`
-query GetOwnComments {
-  getOwnComments {
-    id
-    content
-    project {
-      id
-      title
-    }
-    owner {
-      id
-      username
-    }
-  }
-}
-`;
-
-export const GET_LIKED_PROJECTS = gql`
-query LikedProjects {
-  likedProjects {
-    id
-    title
-    description
-    owner {
-      id
-      username
-    }
-    likes {
-      id
-    }
-  }
-}
-`;
-
-
-export const TOGGLE_LIKE = gql`
-mutation ToggleLike($projectId: String!) {
-  toggleLike(projectId: $projectId)
-}
-`;
 
 const Dashboard = () => {
   const { openModal } = useModal();
