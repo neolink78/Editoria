@@ -1,11 +1,8 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
-import emptyMocks from "../../mocks/emptyMocks";
-import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
-import { gql, useMutation, useQuery } from "@apollo/client";
-
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
@@ -37,8 +34,6 @@ const Dashboard = () => {
   const likedProjects = likedProjectsData?.likedProjects || [];
   const [toggleLike, { loading: toggleLikeLoading }] = useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(TOGGLE_LIKE, {
     refetchQueries: [{ query: GET_LIKED_PROJECTS }, { query: GET_USER_PROJECTS }],
-    onError: (error) => console.error("Toggle like mutation error:", error),
-    onCompleted: (data) => console.log("Toggle like mutation completed. Response:", data),
   });
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
@@ -59,7 +54,7 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
+  const newUser = projects.length === 0 && indexMock.length === 0 
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
