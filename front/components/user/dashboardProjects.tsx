@@ -15,6 +15,7 @@ export type Project = {
     createdAt: string;
     owner: { username: string };
     comments: Array<{ id: string; content: string }>;
+    likes: Array<{ id: string }>;
 };
 
 interface DashboardProjectsProps {
@@ -22,9 +23,10 @@ interface DashboardProjectsProps {
     onDelete: (projectId: string) => void;
     setShowAllProjects: (show: boolean) => void;
     isLoading: boolean;
+    toggleLike: (options: { variables: { projectId: string } }) => void;
 }
 
-const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }: DashboardProjectsProps) => {
+const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, toggleLike }: DashboardProjectsProps) => {
     const router = useRouter();
     const currentPage = parseInt(router.query.page as string) || 1;
     const projectsPerPage = 8;
@@ -32,6 +34,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
 
     return (
         <Box mb={10}>
@@ -57,6 +60,10 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             createdAt={project.createdAt}
                             owner={project.owner.username}
                             commentCount={project?.comments.length}
+                            likeCount={project.likes.length}
+                            toggleLike={() => {
+                                toggleLike({ variables: { projectId: project.id } });
+                            }}
                             onDelete={() => {
                                 onDelete(project.id);
                             }}
