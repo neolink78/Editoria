@@ -13,10 +13,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n  }\n}\n": types.GetProjectsByUserDocument,
+    "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n": types.GetProjectsByUserDocument,
     "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n": types.DeleteProjectDocument,
     "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n": types.GetOwnCommentsDocument,
     "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n": types.LikedProjectsDocument,
+    "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n": types.ToggleLikeDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n": types.GetUsersDocument,
     "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.MyProfileDocument,
     "\n  mutation SignOUt {\n    signOut\n  }\n": types.SignOUtDocument,
@@ -24,7 +25,6 @@ const documents = {
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
     "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
     "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n": types.ResetPasswordDocument,
-    "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n": types.ToggleLikeDocument,
     "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n": types.AddFileDocument,
 };
@@ -46,7 +46,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n  }\n}\n"): (typeof documents)["\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n  }\n}\n"];
+export function graphql(source: "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"): (typeof documents)["\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -59,6 +59,10 @@ export function graphql(source: "\nquery GetOwnComments {\n  getOwnComments {\n 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"): (typeof documents)["\nquery LikedProjects {\n  likedProjects {\n    id\n    title\n    description\n    owner {\n      id\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"): (typeof documents)["\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -87,10 +91,6 @@ export function graphql(source: "\n  mutation ResetUser($email: String!) {\n    
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n"): (typeof documents)["\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"): (typeof documents)["\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
