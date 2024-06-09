@@ -16,7 +16,8 @@ import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
 import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
 
-// TODO : Change GET_USER_PROJECTS to fetch like and so that can get like count
+// TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
+
 const GET_USER_PROJECTS = gql`
 query GetProjectsByUser {
   getOwnProject {
@@ -46,6 +47,9 @@ query GetProjectsByUser {
       id
       email
       username
+    }
+    likes {
+      id
     }
   }
 }
@@ -113,13 +117,10 @@ const Dashboard = () => {
   const { data: likedProjectsData } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
   const [toggleLike, { loading: toggleLikeLoading }] = useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(TOGGLE_LIKE, {
-    refetchQueries: [{ query: GET_LIKED_PROJECTS }],
+    refetchQueries: [{ query: GET_LIKED_PROJECTS }, { query: GET_USER_PROJECTS }],
     onError: (error) => console.error("Toggle like mutation error:", error),
     onCompleted: (data) => console.log("Toggle like mutation completed. Response:", data),
   });
-  console.log("toggleLike:", toggleLike);
-  console.log("toggleLikeLoading:", toggleLikeLoading);
-
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
   });
@@ -192,9 +193,8 @@ const Dashboard = () => {
                     owner={e.owner.username}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
-
+                    likeCount={e.likes.length}
                     toggleLike={() => {
-                      console.log("Toggle like button clicked for project ID:", e.id);
                       toggleLike({ variables: { projectId: e.id } });
                     }}
                   />
