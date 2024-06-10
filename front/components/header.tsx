@@ -29,7 +29,7 @@ const Header = () => {
       <Link href="/">EDITORIA</Link>
       <Flex gap="1.5vw" align="center">
         {user ? (
-          <SubmitButton onClick={() => alert("redirecting to all projects...")}>
+          <SubmitButton onClick={() => router.push("/projects")}>
             All projects
           </SubmitButton>
         ) : (
@@ -37,10 +37,7 @@ const Header = () => {
             Sign In
           </SubmitButton>
         )}
-        <SubmitButton
-          bg="#1574EF"
-          onClick={() => router.push("/editor")}
-        >
+        <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
           Start coding
         </SubmitButton>
         {user ? (

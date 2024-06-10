@@ -1,51 +1,44 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
-import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import emptyMocks from "../../mocks/emptyMocks";
 import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
-import modal from "../../lib/modal";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GetProjectsQuery } from "../../gql/graphql";
-
-import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
-import { getLanguageIcon } from "@/utils/languageIcons";
-import Router, { useRouter } from "next/router";
-
+import { useRouter } from "next/router";
 
 const GET_PROJECTS = gql`
-query GetProjects {
-  getProjects {
-    id
-    title
-    description
-    updatedAt
-    createdAt
-    codeSnippetsOwned {
-      language
-    }
-    owner {
-      username
+  query GetProjects {
+    getProjects {
+      id
+      title
+      description
+      updatedAt
+      createdAt
+      codeSnippetsOwned {
+        language
+      }
+      owner {
+        username
+      }
     }
   }
-}
 `;
 
 export const DELETE_PROJECT = gql`
-mutation DeleteProject($deleteProjectId: ID!) {
-  deleteProject(id: $deleteProjectId) {
-    id
+  mutation DeleteProject($deleteProjectId: ID!) {
+    deleteProject(id: $deleteProjectId) {
+      id
+    }
   }
-}
 `;
-
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -54,11 +47,12 @@ const Dashboard = () => {
 
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
   const projects = data?.getProjects || [];
-  const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_PROJECTS }],
-  });
+  const [deleteProject, { loading: deleting, error: deleteError }] =
+    useMutation(DELETE_PROJECT, {
+      refetchQueries: [{ query: GET_PROJECTS }],
+    });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -73,11 +67,19 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
-  const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
+  const newUser =
+    projects.length === 0 &&
+    indexMock.length === 0 &&
+    emptyMocks.length === 0 &&
+    favMocks.length === 0;
+  const sortedProjects = [...projects]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 3);
 
-
-  if (error) return (<Error />);
+  if (error) return <Error />;
 
   return (
     (!newUser && (
@@ -100,14 +102,24 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && projects.length > 3 &&
-                <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
-                  <Text cursor="pointer" >Tout voir</Text>
-                </Box>}
+              {data && projects.length > 3 && (
+                <Box
+                  fontSize="1vw"
+                  ml="2vw"
+                  onClick={() => setShowAllProjects(true)}
+                >
+                  <Text cursor="pointer">Tout voir</Text>
+                </Box>
+              )}
             </Flex>
             <Box mb={10}>
               {loading ? (
-                <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw">
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  width="78.8vw"
+                >
                   {Array.from({ length: 3 }).map((_, idx) => (
                     <Box key={idx} width="100%" mb="10px">
                       <Skeleton height="56px" width="100%" />
@@ -115,21 +127,28 @@ const Dashboard = () => {
                   ))}
                 </Flex>
               ) : (
-                sortedProjects.slice(-3).map((e, idx) => (
-                  <Tile
-                    homePage={false}
-                    key={e.id}
-                    icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
-                    title={e.title}
-                    description={e.description}
-                    createdAt={e.createdAt}
-                    owner={e.owner.username}
-                    onDelete={() => handleDelete(e.id)}
-                  />
-                ))
+                sortedProjects
+                  .slice(-3)
+                  .map((e, idx) => (
+                    <Tile
+                      homePage={false}
+                      key={e.id}
+                      icon={e.codeSnippetsOwned[0]?.language}
+                      title={e.title}
+                      description={e.description}
+                      createdAt={e.createdAt}
+                      owner={e.owner.username}
+                      onDelete={() => handleDelete(e.id)}
+                    />
+                  ))
               )}
               {data && projects.length === 0 && (
-                <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
                   <Box fontSize="0.9vw" m="2vw">
                     Vous n&apos;avez pas encore de projet.
                   </Box>
@@ -152,24 +171,27 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets likés
-              {favMocks && favMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
-                Tout voir
-              </Box>}
+              {favMocks && favMocks.length > 3 && (
+                <Box fontSize="1vw" ml="2vw">
+                  Tout voir
+                </Box>
+              )}
             </Box>
             <Box mb={12}>
-              {favMocks ? favMocks.slice(-2).map((e, idx) => (
-                <Skeleton isLoaded={!loading} key={idx}>
-                  <Tile
-                    homePage
-                    key={idx}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                  />
-                </Skeleton>
-
-              )) :
+              {favMocks ? (
+                favMocks.slice(-2).map((e, idx) => (
+                  <Skeleton isLoaded={!loading} key={idx}>
+                    <Tile
+                      homePage
+                      key={idx}
+                      icon={e.icon}
+                      label={e.label}
+                      description={e.description}
+                      date={e.date}
+                    />
+                  </Skeleton>
+                ))
+              ) : (
                 <Flex
                   flexDirection="column"
                   justifyContent="center"
@@ -186,7 +208,8 @@ const Dashboard = () => {
                   >
                     Tous les projets
                   </SubmitButton>
-                </Flex>}
+                </Flex>
+              )}
             </Box>
 
             <Box
@@ -197,23 +220,27 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets en collaboration
-              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
-                Tout voir
-              </Box>}
+              {indexMock && indexMock.length > 3 && (
+                <Box fontSize="1vw" ml="2vw">
+                  Tout voir
+                </Box>
+              )}
             </Box>
             <Box mb={12}>
-              {indexMock ? indexMock.slice(-2).map((e, idx) => (
-                <Skeleton isLoaded={!loading} key={idx}>
-                  <Tile
-                    homePage
-                    key={idx}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                  />
-                </Skeleton>
-              )) :
+              {indexMock ? (
+                indexMock.slice(-2).map((e, idx) => (
+                  <Skeleton isLoaded={!loading} key={idx}>
+                    <Tile
+                      homePage
+                      key={idx}
+                      icon={e.icon}
+                      label={e.label}
+                      description={e.description}
+                      date={e.date}
+                    />
+                  </Skeleton>
+                ))
+              ) : (
                 <Flex
                   flexDirection="column"
                   justifyContent="center"
@@ -224,7 +251,7 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet en collaboration.{" "}
                   </Box>
                 </Flex>
-              }
+              )}
             </Box>
             <Box
               fontSize="1.4vw"
@@ -234,23 +261,28 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes derniers commentaires
-              {emptyMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
-                Tout voir
-              </Box>}
+              {emptyMocks.length > 3 && (
+                <Box fontSize="1vw" ml="2vw">
+                  Tout voir
+                </Box>
+              )}
             </Box>
             <Box mb={12}>
-              {emptyMocks.length > 0
-                ? emptyMocks.slice(-2).map((e, idx) => (
-                  <Tile
-                    homePage
-                    key={idx}
-                    marginTop={e.marginTop}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                  />
-                )) :
+              {emptyMocks.length > 0 ? (
+                emptyMocks
+                  .slice(-2)
+                  .map((e, idx) => (
+                    <Tile
+                      homePage
+                      key={idx}
+                      marginTop={e.marginTop}
+                      icon={e.icon}
+                      label={e.label}
+                      description={e.description}
+                      date={e.date}
+                    />
+                  ))
+              ) : (
                 <Flex
                   flexDirection="column"
                   justifyContent="center"
@@ -261,15 +293,13 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de commentaire.{" "}
                   </Box>
                 </Flex>
-              }
+              )}
             </Box>
           </>
         )}
         <ConfirmModal />
       </>
-    )) || (
-      <NewUser />
-    )
+    )) || <NewUser />
   );
 };
 

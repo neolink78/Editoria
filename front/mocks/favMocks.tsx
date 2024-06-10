@@ -4,9 +4,10 @@ import { MockType } from "./indexMock";
 const favMocks: MockType[] = [
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Navbar responsive",
-    description: "Navbar responsive using chakra-ui and react, with a toggle button",
+    description:
+      "Navbar responsive using chakra-ui and react, with a toggle button",
     date: "2 months ago",
     user: "John Doe",
   },
