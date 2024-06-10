@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 import { gql, useQuery } from "@apollo/client";
-import { GetProjectsQuery } from "@/gql/graphql";
+import { GetProjectsQuery, Language } from "@/gql/graphql";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
@@ -10,6 +10,9 @@ import { useRouter } from "next/router";
 const GETPROJECTS = gql`
   query GETPROJECTS {
     getProjects {
+      codeSnippetsOwned {
+        language
+      }
       owner {
         username
       }
@@ -24,11 +27,13 @@ type projectType = {
   owner: {
     username: string;
   };
+  codeSnippetsOwned: Array<{ language: Language }>;
+  title: string;
   description: string;
   createdAt: string;
 };
 const Projects = () => {
-  const { data, loading } = useQuery<GetProjectsQuery>(GETPROJECTS);
+  const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
   console.log(data?.getProjects);
   const router = useRouter();
 
@@ -75,7 +80,7 @@ const Projects = () => {
       }
       setFilteredProjects(filtered);
     }
-  }, [value, data, activePage]);
+  }, [value, data, activePage, router]);
 
   useEffect(() => {
     setCurrentPage(parseInt(router.query.page as string));
@@ -124,11 +129,12 @@ const Projects = () => {
                 .map((project: projectType, idx) => (
                   <Tile
                     homePage
+                    icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
-                    //icon={e.icon}
+                    title={project.title}
                     owner={project.owner.username}
                     description={project.description}
-                    date={project.createdAt}
+                    createdAt={project.createdAt}
                   />
                 ))}
             </Box>
@@ -147,6 +153,7 @@ const Projects = () => {
                 .map((project: projectType, idx) => (
                   <Tile
                     homePage
+                    icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
                     owner={project.owner.username}
                     description={project.description}

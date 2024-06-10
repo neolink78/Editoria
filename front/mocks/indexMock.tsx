@@ -1,8 +1,9 @@
+import { Language } from "@/gql/graphql";
 import ReactIcon from "../icons/reactIcon";
 
 export interface MockType {
   marginTop: string;
-  icon: JSX.Element;
+  icon: Language;
   label: string;
   description: string;
   date: string;
@@ -12,7 +13,7 @@ export interface MockType {
 const indexMock = [
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -20,7 +21,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -28,7 +29,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -36,7 +37,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -44,7 +45,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -52,7 +53,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -60,7 +61,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -68,7 +69,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -76,7 +77,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -84,7 +85,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -92,7 +93,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -100,7 +101,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -108,7 +109,7 @@ const indexMock = [
   },
   {
     marginTop: "1.8vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -116,7 +117,7 @@ const indexMock = [
   },
   {
     marginTop: "1.2vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
@@ -124,7 +125,7 @@ const indexMock = [
   },
   {
     marginTop: "1.2vw",
-    icon: <ReactIcon width="2vw" />,
+    icon: "JAVASCRIPT",
     label: "Amazing paralaX effect",
     description:
       "this is a parallax effect, using different algorithms and react",
