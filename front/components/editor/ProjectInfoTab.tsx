@@ -1,5 +1,5 @@
 import { ProjectInfo } from "@/pages/editor";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 
@@ -11,8 +11,8 @@ const ProjectInfoTab = ({ info } : ProjectInfoProps) => {
   return (
     <Flex direction={"column"} className="px-5 py-3" >
       <Flex gap={4}>
-        <Box>PP</Box>
-        <Box>Author</Box>
+        <Box>Photo bg</Box>
+        <Link href={`/profile?user=${info.owner.id}`}>{ info.owner.username }</Link>
       </Flex>
       <Box fontSize="sm" className="mt-4">{info.title}</Box>
       <Text fontSize="xs" className="opacity-60">{info.description}</Text>

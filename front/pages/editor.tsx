@@ -19,6 +19,8 @@ import {
   Language,
   UpdateFileMutation,
   UpdateFileMutationVariables,
+  UpdateProjectMutation,
+  UpdateProjectMutationVariables,
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
@@ -36,10 +38,10 @@ export type ProjectInfo = {
   title: string;
   description: string;
   isPublic: boolean;
-  owner : {
-    id : string;
-    username : string;
-  }
+  owner: {
+    id: string;
+    username: string;
+  };
 };
 
 const CREATE_PROJECT = gql`
@@ -116,7 +118,28 @@ const GET_PROJECT = gql`
   }
 `;
 
+const UPDATE_PROJECT = gql`
+  mutation UpdateProject(
+    $title: String!
+    $isPublic: Boolean!
+    $updateProjectId: ID!
+    $description: String
+  ) {
+    updateProject(
+      title: $title
+      is_public: $isPublic
+      id: $updateProjectId
+      description: $description
+    ) {
+      id
+    }
+  }
+`;
+
 function CodeEditor() {
+  const router = useRouter();
+
+  const { project: projectId } = router.query;
   const isUserLoggedIn = true;
   const modalRef = useRef<HTMLInputElement | null>(null);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
@@ -126,10 +149,10 @@ function CodeEditor() {
     title: "Nouveau projet",
     description: "",
     isPublic: false,
-    owner : {
-      id : "",
-      username : ""
-    }
+    owner: {
+      id: "",
+      username: "",
+    },
   });
   const [project, setProject] = useState<File[]>([
     {
@@ -143,8 +166,6 @@ function CodeEditor() {
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
   const selectedFile = project.find((file) => file.name === fileName);
-
-  const router = useRouter();
 
   const [
     createProjectMutation,
@@ -161,22 +182,27 @@ function CodeEditor() {
     UpdateFileMutationVariables
   >(UPDATE_FILE);
 
-  const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
-    GET_PROJECT,
-    { variables: { getProjectByIdId : router.query.project as string } }
-  );
+  const [UpdateProjectMutation] = useMutation<
+    UpdateProjectMutation,
+    UpdateProjectMutationVariables
+  >(UPDATE_PROJECT);
+
+  const { data, loading, error } = useQuery<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >(GET_PROJECT, { variables: { getProjectByIdId: projectId as string } });
 
   useEffect(() => {
     if (data) {
       setProjectInfo({
-        id: router.query.project as string,
+        id: projectId as string,
         title: data.getProjectById.title,
         description: data.getProjectById.description,
         isPublic: false,
-        owner : {
-          id : data.getProjectById.owner.id,
-          username : data.getProjectById.owner.username
-        }
+        owner: {
+          id: data.getProjectById.owner.id,
+          username: data.getProjectById.owner.username,
+        },
       });
       setProject(
         data.getProjectById.codeSnippetsOwned.map((snippet) => ({
@@ -186,9 +212,11 @@ function CodeEditor() {
           value: snippet.code,
         }))
       );
-      setFilesInTabs(data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title));
+      setFilesInTabs(
+        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
+      );
     }
-  }, [data, router.query.project]);
+  }, [data, projectId]);
 
   const createProject = async () => {
     try {
@@ -241,6 +269,15 @@ function CodeEditor() {
 
   const updateProject = async () => {
     try {
+      await UpdateProjectMutation({
+        variables: {
+          title: projectInfo.title,
+          isPublic: projectInfo.isPublic,
+          updateProjectId: projectId as string,
+          description: projectInfo.description,
+        },
+      });
+
       for (const file of project) {
         await updateFileMutation({
           variables: {
@@ -248,7 +285,7 @@ function CodeEditor() {
             code: file.value,
             title: file.name,
             language: file.language,
-            projectId: router.query.project as string,
+            projectId: projectId as string,
           },
         });
       }
