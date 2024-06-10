@@ -25,6 +25,7 @@ const documents = {
     "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n": types.AddFileDocument,
     "\n  mutation UpdateFile(\n    $updateCodeSnippetId: ID!\n    $code: String!\n    $title: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    updateCodeSnippet(\n      id: $updateCodeSnippetId\n      code: $code\n      title: $title\n      language: $language\n      projectId: $projectId\n    ) {\n      code\n      id\n    }\n  }\n": types.UpdateFileDocument,
+    "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n": types.GetProjectDocument,
 };
 
 /**
@@ -89,6 +90,10 @@ export function graphql(source: "\n  mutation AddFile(\n    $title: String!\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateFile(\n    $updateCodeSnippetId: ID!\n    $code: String!\n    $title: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    updateCodeSnippet(\n      id: $updateCodeSnippetId\n      code: $code\n      title: $title\n      language: $language\n      projectId: $projectId\n    ) {\n      code\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateFile(\n    $updateCodeSnippetId: ID!\n    $code: String!\n    $title: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    updateCodeSnippet(\n      id: $updateCodeSnippetId\n      code: $code\n      title: $title\n      language: $language\n      projectId: $projectId\n    ) {\n      code\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

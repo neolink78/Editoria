@@ -8,12 +8,14 @@ import { MdOutlineEdit } from "react-icons/md";
 import { IoLogoJavascript } from "react-icons/io5";
 import SubmitButton from "../lib/submitButton";
 import { LuSave } from "react-icons/lu";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   AddFileMutation,
   AddFileMutationVariables,
   CreateProjectMutation,
   CreateProjectMutationVariables,
+  GetProjectQuery,
+  GetProjectQueryVariables,
   Language,
   UpdateFileMutation,
   UpdateFileMutationVariables,
@@ -34,6 +36,10 @@ export type ProjectInfo = {
   title: string;
   description: string;
   isPublic: boolean;
+  owner : {
+    id : string;
+    username : string;
+  }
 };
 
 const CREATE_PROJECT = gql`
@@ -91,6 +97,25 @@ const UPDATE_FILE = gql`
   }
 `;
 
+const GET_PROJECT = gql`
+  query GetProject($getProjectByIdId: ID!) {
+    getProjectById(id: $getProjectByIdId) {
+      codeSnippetsOwned {
+        code
+        id
+        language
+        title
+      }
+      description
+      title
+      owner {
+        username
+        id
+      }
+    }
+  }
+`;
+
 function CodeEditor() {
   const isUserLoggedIn = true;
   const modalRef = useRef<HTMLInputElement | null>(null);
@@ -101,6 +126,10 @@ function CodeEditor() {
     title: "Nouveau projet",
     description: "",
     isPublic: false,
+    owner : {
+      id : "",
+      username : ""
+    }
   });
   const [project, setProject] = useState<File[]>([
     {
@@ -131,6 +160,35 @@ function CodeEditor() {
     UpdateFileMutation,
     UpdateFileMutationVariables
   >(UPDATE_FILE);
+
+  const { data } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
+    GET_PROJECT,
+    { variables: { getProjectByIdId : router.query.project as string } }
+  );
+
+  useEffect(() => {
+    if (data) {
+      setProjectInfo({
+        id: router.query.project as string,
+        title: data.getProjectById.title,
+        description: data.getProjectById.description,
+        isPublic: false,
+        owner : {
+          id : data.getProjectById.owner.id,
+          username : data.getProjectById.owner.username
+        }
+      });
+      setProject(
+        data.getProjectById.codeSnippetsOwned.map((snippet) => ({
+          id: snippet.id,
+          name: snippet.title,
+          language: snippet.language,
+          value: snippet.code,
+        }))
+      );
+      setFilesInTabs(data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title));
+    }
+  }, [data, router.query.project]);
 
   const createProject = async () => {
     try {
