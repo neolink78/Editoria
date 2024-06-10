@@ -80,7 +80,7 @@ const Projects = () => {
       }
       setFilteredProjects(filtered);
     }
-  }, [value, data, activePage, router]);
+  }, [value, data, activePage]);
 
   useEffect(() => {
     setCurrentPage(parseInt(router.query.page as string));
@@ -153,11 +153,12 @@ const Projects = () => {
                 .map((project: projectType, idx) => (
                   <Tile
                     homePage
+                    title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
                     owner={project.owner.username}
                     description={project.description}
-                    date={project.createdAt}
+                    createdAt={project.createdAt}
                   />
                 ))}
             </Box>
