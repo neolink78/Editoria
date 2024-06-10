@@ -15,12 +15,15 @@ import {
   CreateProjectMutation,
   CreateProjectMutationVariables,
   Language,
+  UpdateFileMutation,
+  UpdateFileMutationVariables,
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
-import { isClickOutside } from '../utils/event'
+import { isClickOutside } from "../utils/event";
 
 export type File = {
+  id: string;
   name: string;
   language: Language;
   value: string;
@@ -31,7 +34,7 @@ export type ProjectInfo = {
   title: string;
   description: string;
   isPublic: boolean;
-}
+};
 
 const CREATE_PROJECT = gql`
   mutation CreateProject(
@@ -67,10 +70,31 @@ const ADD_FILE = gql`
   }
 `;
 
+const UPDATE_FILE = gql`
+  mutation UpdateFile(
+    $updateCodeSnippetId: ID!
+    $code: String!
+    $title: String!
+    $language: Language!
+    $projectId: String!
+  ) {
+    updateCodeSnippet(
+      id: $updateCodeSnippetId
+      code: $code
+      title: $title
+      language: $language
+      projectId: $projectId
+    ) {
+      code
+      id
+    }
+  }
+`;
+
 function CodeEditor() {
   const isUserLoggedIn = true;
   const modalRef = useRef<HTMLInputElement | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>("index.html");
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     id: "",
@@ -80,12 +104,13 @@ function CodeEditor() {
   });
   const [project, setProject] = useState<File[]>([
     {
+      id: "",
       name: "index.html",
       language: Language.Html,
       value: "<!-- Write your HTML -->",
     },
   ]);
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
   const selectedFile = project.find((file) => file.name === fileName);
@@ -102,8 +127,12 @@ function CodeEditor() {
   const [addFileMutation, { loading: loadingAddFiles, error: errorAddFiles }] =
     useMutation<AddFileMutation, AddFileMutationVariables>(ADD_FILE);
 
+  const [updateFileMutation] = useMutation<
+    UpdateFileMutation,
+    UpdateFileMutationVariables
+  >(UPDATE_FILE);
+
   const createProject = async () => {
-    if(router.query.project) return
     try {
       const { data } = await createProjectMutation({
         variables: {
@@ -125,7 +154,7 @@ function CodeEditor() {
   const addProject = async (id: string) => {
     try {
       for (const file of project) {
-        await addFileMutation({
+        const { data } = await addFileMutation({
           variables: {
             title: file.name,
             code: file.value,
@@ -133,9 +162,48 @@ function CodeEditor() {
             projectId: id,
           },
         });
+        if (data && data.createCodeSnippet?.id) {
+          setProject((prevState) =>
+            prevState.map((el) => {
+              if (el.name === file.name) {
+                return {
+                  ...el,
+                  id: data.createCodeSnippet.id,
+                };
+              }
+              return el;
+            })
+          );
+        }
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const updateProject = async () => {
+    try {
+      for (const file of project) {
+        await updateFileMutation({
+          variables: {
+            updateCodeSnippetId: file.id,
+            code: file.value,
+            title: file.name,
+            language: file.language,
+            projectId: router.query.project as string,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (router.query.project) {
+      await updateProject();
+    } else {
+      await createProject();
     }
   };
 
@@ -235,22 +303,22 @@ function CodeEditor() {
   };
 
   /**
- * Handler for document click event that is outside $root element
- * @param event
- */
-const clickOutsideHandler = (event: MouseEvent) => {
-  if (isEditOpen && modalRef && isClickOutside(event, modalRef.current)) {
-    setIsEditOpen(false)
-  }
-}
-
-useEffect(() => {
-  document.addEventListener("mousedown", clickOutsideHandler);
-  
-  return () => {
-    document.removeEventListener("mousedown", clickOutsideHandler);
+   * Handler for document click event that is outside $root element
+   * @param event
+   */
+  const clickOutsideHandler = (event: MouseEvent) => {
+    if (isEditOpen && modalRef && isClickOutside(event, modalRef.current)) {
+      setIsEditOpen(false);
+    }
   };
-})
+
+  useEffect(() => {
+    document.addEventListener("mousedown", clickOutsideHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", clickOutsideHandler);
+    };
+  });
 
   return (
     <>
@@ -272,7 +340,7 @@ useEffect(() => {
             py={1}
             px={2}
             className="hover:outline hover:outline-1 hover:outline-gray-400 hover:bg-gray-600 cursor-pointer transition-colors ease-out"
-            onClick={createProject}
+            onClick={handleSave}
           >
             <LuSave color="white" /> <Text>Save</Text>
           </Flex>
@@ -280,13 +348,24 @@ useEffect(() => {
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {isUserLoggedIn ? (
             <>
-            <Flex align={'center'} gap={4} position={'relative'}>
-              <Text>{projectInfo.title}</Text>
-              <MdOutlineEdit className="cursor-pointer"onClick={() => setIsEditOpen(true)} />
-            </Flex>
-            {isEditOpen && <div ref={modalRef} className="absolute left-1/2 translate-x-[-50%]">
-              <EditModal info={projectInfo} setProjectInfo={setProjectInfo} />
-            </div>}
+              <Flex align={"center"} gap={4} position={"relative"}>
+                <Text>{projectInfo.title}</Text>
+                <MdOutlineEdit
+                  className="cursor-pointer"
+                  onClick={() => setIsEditOpen(true)}
+                />
+              </Flex>
+              {isEditOpen && (
+                <div
+                  ref={modalRef}
+                  className="absolute left-1/2 translate-x-[-50%]"
+                >
+                  <EditModal
+                    info={projectInfo}
+                    setProjectInfo={setProjectInfo}
+                  />
+                </div>
+              )}
             </>
           ) : (
             <SubmitButton bg="#1574EF">
@@ -305,7 +384,11 @@ useEffect(() => {
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
         />
-        <Flex direction={"column"} w="calc(100% - 240px)" className={isEditOpen ? "z-[-1]" : ""}>
+        <Flex
+          direction={"column"}
+          w="calc(100% - 240px)"
+          className={isEditOpen ? "z-[-1]" : ""}
+        >
           <Flex className="min-h-9">
             <Flex
               backgroundColor={project.length > 0 ? "#212227" : "#14181F"}
