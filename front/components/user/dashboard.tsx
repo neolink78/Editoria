@@ -28,9 +28,9 @@ const Dashboard = () => {
 
   const { data: projectData, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
-  const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const { data: commentData, loading: commentLoading } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const comments = commentData?.getOwnComments || [];
-  const { data: likedProjectsData } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
+  const { data: likedProjectsData, loading: likedProjectsLoading } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
   const [toggleLike, { loading: toggleLikeLoading }] = useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(TOGGLE_LIKE, {
     refetchQueries: [{ query: GET_LIKED_PROJECTS }, { query: GET_USER_PROJECTS }],
@@ -54,16 +54,16 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0
+  const newUser = projects.length === 0 && comments.length === 0 && likedProjects.length === 0;
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
   if (error) return (<Error />);
-  if (loading) return (
-    <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw" mt="40px">
+  if (loading || commentLoading || likedProjectsLoading) return (
+    <Flex flexDirection="column" justifyContent="center" alignItems="center" width="70vw" mt="50px">
       {Array.from({ length: 10 }).map((_, idx) => (
         <Box key={idx} width="100%" mb="10px">
-          <Skeleton height="56px" width="100%" borderRadius="30px"/>
+          <Skeleton height="46px" width="100%" borderRadius="30px" />
         </Box>
       ))}
     </Flex>
@@ -157,7 +157,7 @@ const Dashboard = () => {
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
-                    icon = {e.codeSnippetsOwned[0]?.language}
+                    icon={e.codeSnippetsOwned[0]?.language}
                     key={idx}
                     title={e.title}
                     description={e.description}
