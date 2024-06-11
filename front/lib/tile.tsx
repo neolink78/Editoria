@@ -11,7 +11,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { Language } from "@/gql/graphql";
 
 type TileProps = {
-  icon: Language;
+  icon?: string;
   label?: string;
   description?: string;
   date?: string;
@@ -21,12 +21,15 @@ type TileProps = {
   createdAt?: string;
   owner?: string;
   projectId?: string;
+  commentCount?: number;
+  content?: boolean
   onDelete?: (e: any) => void;
+  toggleLike?: () => void;
+  likeCount?: number;
 };
 
 const Tile = ({
   icon,
-  label,
   description,
   marginTop,
   homePage,
@@ -35,14 +38,18 @@ const Tile = ({
   owner,
   projectId,
   onDelete,
+  commentCount,
+  content,
+  toggleLike,
+  likeCount
 }: TileProps) => {
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
 
+
   return (
     <Flex
-      cursor="pointer"
       justifyContent="space-between"
       alignItems="center"
       p="0.8vw 1.5vw"
@@ -53,34 +60,38 @@ const Tile = ({
       fontSize="0.9vw"
     >
       <Flex alignItems="center" gap="2vw">
-        {getLanguageIcon(icon)}
+        {getLanguageIcon(icon as Language)}
         <Text isTruncated minWidth="10vw" maxWidth="10vw">
           {title}
         </Text>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">
-          {description}
-        </Text>
+        {content ?
+          <Text isTruncated minWidth="30vw" maxWidth="30vw"> Commentaire : {description}
+          </Text> :
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}
+          </Text>
+        }
       </Flex>
-      {/* {description} */}
-      <Flex gap="1vw"></Flex>
       <Flex gap="1vw">
-        <Flex alignItems="center">
-          <AiOutlineLike /> 1
+        <Flex alignItems="center"  >
+          <AiOutlineLike onClick={() => {
+            toggleLike?.();
+          }} cursor="pointer" />
+          {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
-          <CiChat1 /> 4
+          <CiChat1 /> {commentCount}
         </Flex>
-
-        <Text isTruncated minWidth="16vw" maxWidth="16vw">
-          {relativeDate} par{" "}
-          {owner ? (
-            <span style={{ color: "#1574EF" }}>{owner}</span>
-          ) : (
-            "Unknown"
-          )}
-        </Text>
+        {content ? "" :
+          <Text
+            isTruncated
+            minWidth="16vw"
+            maxWidth="16vw">
+            {relativeDate} par &nbsp;
+            {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}
+          </Text>
+        }
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

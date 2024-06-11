@@ -10,6 +10,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
+import Comment from "../comment/comment";
+import Like from "../like/like";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
@@ -52,6 +54,13 @@ class Project extends BaseEntity {
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
+  @OneToMany(() => Comment, (comment) => comment.project, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Comment])
+  comments!: Comment[];
+
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
   @Field(() => User)
   owner!: User;
@@ -59,9 +68,11 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
-  @ManyToMany(() => User, (user) => user.likedProjects)
-  @Field(() => [User])
-  likedBy!: User[];
+  @OneToMany(() => Like, (like) => like.project, {
+    eager: true,
+  })
+  @Field(() => [Like])
+  likes!: Like[];
 
   constructor(project?: ProjectArgs) {
     super();
@@ -90,6 +101,23 @@ class Project extends BaseEntity {
         createdAt: "DESC",
       },
     });
+  }
+
+  static async getProjectsByUserId(userId: string): Promise<Project[]> {
+    const projects = await Project.find({
+      where: { owner: { id: userId } },
+      order: {
+        createdAt: "DESC",
+      },
+      relations: [
+        "owner",
+        "comments",
+        "codeSnippetsOwned",
+        "comments.owner",
+        "comments.project",
+      ],
+    });
+    return projects;
   }
 
   static async getProjectById(id: string): Promise<Project> {

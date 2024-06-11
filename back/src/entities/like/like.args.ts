@@ -5,9 +5,5 @@ import { IsUUID } from "class-validator";
 export class ToggleLikeArgs {
   @Field()
   @IsUUID(4)
-  userId!: string;
-
-  @Field()
-  @IsUUID(4)
   projectId!: string;
 }
