@@ -88,8 +88,8 @@ const Tile = ({
             isTruncated
             minWidth="16vw"
             maxWidth="16vw">
-            {relativeDate} par &nbsp;
-            {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}
+            
+            {owner ? <div>{relativeDate} par &nbsp; <span style={{ color: "#1574EF" }}>{owner}</span></div>: ""}
           </Text>
         }
       </Flex>

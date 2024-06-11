@@ -114,7 +114,6 @@ const Dashboard = () => {
                     title={e.title}
                     description={e.description}
                     createdAt={e.createdAt}
-                    owner={e.owner.username}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
                     likeCount={e.likes.length}
@@ -157,12 +156,14 @@ const Dashboard = () => {
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
-                    icon={e.codeSnippetsOwned[0]?.language}
                     key={idx}
+                    icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
                     description={e.description}
+                    createdAt={e.createdAt}
+                    owner={e.owner.username}
                     likeCount={e.likes.length}
-                    content
+                    commentCount={e.comments.length}
                     toggleLike={() => {
                       console.log("Toggle like button clicked for project ID:", e.id);
                       toggleLike({ variables: { projectId: e.id } });

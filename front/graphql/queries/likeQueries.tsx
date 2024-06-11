@@ -17,6 +17,10 @@ export const GET_LIKED_PROJECTS = gql`
         id
         language
       }
+      createdAt
+      comments {
+      id
+    }
     }
   }
 `;
