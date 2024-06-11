@@ -1,5 +1,5 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
-import indexMock from "../../mocks/indexMock";
+// import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
@@ -11,12 +11,12 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
-import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
@@ -54,11 +54,20 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0 && indexMock.length === 0 
+  const newUser = projects.length === 0
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
   if (error) return (<Error />);
+  if (loading) return (
+    <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw" mt="40px">
+      {Array.from({ length: 10 }).map((_, idx) => (
+        <Box key={idx} width="100%" mb="10px">
+          <Skeleton height="56px" width="100%" borderRadius="30px"/>
+        </Box>
+      ))}
+    </Flex>
+  );
 
   return (
     (!newUser && (
@@ -101,7 +110,7 @@ const Dashboard = () => {
                   <Tile
                     homePage={false}
                     key={e.id}
-                    icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                    icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
                     description={e.description}
                     createdAt={e.createdAt}
@@ -148,6 +157,7 @@ const Dashboard = () => {
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
+                    icon = {e.codeSnippetsOwned[0]?.language}
                     key={idx}
                     title={e.title}
                     description={e.description}
@@ -188,12 +198,12 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets en collaboration
-              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {/* {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
-              </Box>}
+              </Box>} */}
             </Box>
             <Box mb={12}>
-              {indexMock ? indexMock.slice(-2).map((e, idx) => (
+              {/* {indexMock ? indexMock.slice(-2).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
@@ -215,7 +225,7 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet en collaboration.{" "}
                   </Box>
                 </Flex>
-              }
+              } */}
             </Box>
             <Box
               fontSize="1.4vw"

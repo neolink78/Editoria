@@ -51,7 +51,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, 
                 </Box>
                 {currentProjects.map((project, idx) => (
                     <Skeleton isLoaded={!isLoading} key={idx}>
-                        <Tile
+                        {/* <Tile
                             homePage={false}
                             projectId={project.id}
                             icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
@@ -67,7 +67,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, 
                             onDelete={() => {
                                 onDelete(project.id);
                             }}
-                        />
+                        /> */}
                     </Skeleton>
                 ))}
             </Box>
