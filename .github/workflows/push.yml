@@ -1,0 +1,26 @@
+on: push
+
+permissions:
+  contents: write
+
+jobs:
+  ci-back-end:
+    name: Build and test back
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -f docker-compose.ci.back.yml up --build --exit-code-from back
+
+  format-fix:
+    name: Fix source code format with Prettier
+    needs: ci-back
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm run format:fix
+      - run: git add .
+      - run: git config --global user.email "<>"
+      - run: git config --global user.name "GitHub Actions (format-fix)"
+      - run: git commit -m "[AUTO] Fix source code format with Prettier" || echo "Files already correctly formatted."
+      - run: git push
