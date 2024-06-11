@@ -1,15 +1,8 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
-import ArrowLeftIcon from "../../icons/arrowLeftIcon";
-import indexMock from "../../mocks/indexMock";
+// import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
-import emptyMocks from "../../mocks/emptyMocks";
-import favMocks from "../../mocks/favMocks";
 import SubmitButton from "../../lib/submitButton";
-import modal from "../../lib/modal";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { GetProjectsQuery } from "../../gql/graphql";
-
-import { SiJavascript, SiTypescript, SiPython, SiCplusplus, SiCsharp } from 'react-icons/si';
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
@@ -17,45 +10,33 @@ import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
+import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
+import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
+import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
+import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
 
-
-const GET_PROJECTS = gql`
-query GetProjects {
-  getProjects {
-    id
-    title
-    description
-    updatedAt
-    createdAt
-    codeSnippetsOwned {
-      language
-    }
-    owner {
-      username
-    }
-  }
-}
-`;
-
-export const DELETE_PROJECT = gql`
-mutation DeleteProject($deleteProjectId: ID!) {
-  deleteProject(id: $deleteProjectId) {
-    id
-  }
-}
-`;
-
+// TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
+// TODO : Creer page pour likedprojects (sur clic de Toutvoir)
 
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
-  const projects = data?.getProjects || [];
+  const { data: projectData, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
+  const projects = projectData?.getOwnProject || [];
+  const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const comments = commentData?.getOwnComments || [];
+  const { data: likedProjectsData } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
+  const likedProjects = likedProjectsData?.likedProjects || [];
+  const [toggleLike, { loading: toggleLikeLoading }] = useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(TOGGLE_LIKE, {
+    refetchQueries: [{ query: GET_LIKED_PROJECTS }, { query: GET_USER_PROJECTS }],
+  });
   const [deleteProject, { loading: deleting, error: deleteError }] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_PROJECTS }],
+    refetchQueries: [{ query: GET_USER_PROJECTS }],
   });
 
   const router = useRouter()
@@ -73,11 +54,20 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0 && indexMock.length === 0 && emptyMocks.length === 0 && favMocks.length === 0;
+  const newUser = projects.length === 0
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
   if (error) return (<Error />);
+  if (loading) return (
+    <Flex flexDirection="column" justifyContent="center" alignItems="center" width="78.8vw" mt="40px">
+      {Array.from({ length: 10 }).map((_, idx) => (
+        <Box key={idx} width="100%" mb="10px">
+          <Skeleton height="56px" width="100%" borderRadius="30px"/>
+        </Box>
+      ))}
+    </Flex>
+  );
 
   return (
     (!newUser && (
@@ -89,6 +79,7 @@ const Dashboard = () => {
               onDelete={handleDelete}
               setShowAllProjects={setShowAllProjects}
               isLoading={loading}
+              toggleLike={toggleLike}
             />
           </>
         ) : (
@@ -100,7 +91,7 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               <Box>Mes projets récents</Box>
-              {data && projects.length > 3 &&
+              {projectData && projects.length > 3 &&
                 <Box fontSize="1vw" ml="2vw" onClick={() => setShowAllProjects(true)}>
                   <Text cursor="pointer" >Tout voir</Text>
                 </Box>}
@@ -119,16 +110,21 @@ const Dashboard = () => {
                   <Tile
                     homePage={false}
                     key={e.id}
-                    icon={getLanguageIcon(e.codeSnippetsOwned[0]?.language)}
+                    icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
                     description={e.description}
                     createdAt={e.createdAt}
                     owner={e.owner.username}
+                    commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
+                    likeCount={e.likes.length}
+                    toggleLike={() => {
+                      toggleLike({ variables: { projectId: e.id } });
+                    }}
                   />
                 ))
               )}
-              {data && projects.length === 0 && (
+              {projectData && projects.length === 0 && (
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                   <Box fontSize="0.9vw" m="2vw">
                     Vous n&apos;avez pas encore de projet.
@@ -152,20 +148,25 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets likés
-              {favMocks && favMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {likedProjects && likedProjects.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
             <Box mb={12}>
-              {favMocks ? favMocks.slice(-2).map((e, idx) => (
+              {likedProjects ? likedProjects.slice(-3).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
+                    icon = {e.codeSnippetsOwned[0]?.language}
                     key={idx}
-                    icon={e.icon}
-                    label={e.label}
+                    title={e.title}
                     description={e.description}
-                    date={e.date}
+                    likeCount={e.likes.length}
+                    content
+                    toggleLike={() => {
+                      console.log("Toggle like button clicked for project ID:", e.id);
+                      toggleLike({ variables: { projectId: e.id } });
+                    }}
                   />
                 </Skeleton>
 
@@ -197,12 +198,12 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets en collaboration
-              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {/* {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
-              </Box>}
+              </Box>} */}
             </Box>
             <Box mb={12}>
-              {indexMock ? indexMock.slice(-2).map((e, idx) => (
+              {/* {indexMock ? indexMock.slice(-2).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
@@ -224,7 +225,7 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet en collaboration.{" "}
                   </Box>
                 </Flex>
-              }
+              } */}
             </Box>
             <Box
               fontSize="1.4vw"
@@ -234,23 +235,20 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes derniers commentaires
-              {emptyMocks.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {comments.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>}
             </Box>
             <Box mb={12}>
-              {emptyMocks.length > 0
-                ? emptyMocks.slice(-2).map((e, idx) => (
-                  <Tile
-                    homePage
-                    key={idx}
-                    marginTop={e.marginTop}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                  />
-                )) :
+              {commentData && comments.length > 0 ? comments.map((e, idx) => (
+                <Tile
+                  homePage
+                  key={idx}
+                  title={e.project.title}
+                  description={e.content}
+                  content
+                />
+              )) :
                 <Flex
                   flexDirection="column"
                   justifyContent="center"

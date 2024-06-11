@@ -1,7 +1,4 @@
-
 import { Box, Skeleton } from '@chakra-ui/react';
-
-import { useState } from 'react';
 import ArrowLeftIcon from '../../icons/arrowLeftIcon';
 import { PaginationControls } from '../../lib/pagination';
 import Tile from '../../lib/tile';
@@ -17,6 +14,8 @@ export type Project = {
     description: string;
     createdAt: string;
     owner: { username: string };
+    comments: Array<{ id: string; content: string }>;
+    likes: Array<{ id: string }>;
 };
 
 interface DashboardProjectsProps {
@@ -24,9 +23,10 @@ interface DashboardProjectsProps {
     onDelete: (projectId: string) => void;
     setShowAllProjects: (show: boolean) => void;
     isLoading: boolean;
+    toggleLike: (options: { variables: { projectId: string } }) => void;
 }
 
-const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }: DashboardProjectsProps) => {
+const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, toggleLike }: DashboardProjectsProps) => {
     const router = useRouter();
     const currentPage = parseInt(router.query.page as string) || 1;
     const projectsPerPage = 8;
@@ -34,6 +34,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
 
     return (
         <Box mb={10}>
@@ -50,7 +51,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                 </Box>
                 {currentProjects.map((project, idx) => (
                     <Skeleton isLoaded={!isLoading} key={idx}>
-                        <Tile
+                        {/* <Tile
                             homePage={false}
                             projectId={project.id}
                             icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
@@ -58,10 +59,15 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading }
                             description={project.description}
                             createdAt={project.createdAt}
                             owner={project.owner.username}
+                            commentCount={project?.comments.length}
+                            likeCount={project.likes.length}
+                            toggleLike={() => {
+                                toggleLike({ variables: { projectId: project.id } });
+                            }}
                             onDelete={() => {
                                 onDelete(project.id);
                             }}
-                        />
+                        /> */}
                     </Skeleton>
                 ))}
             </Box>

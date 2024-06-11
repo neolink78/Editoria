@@ -1,5 +1,6 @@
 import Section from "../lib/section";
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import SubmitButton from "../lib/submitButton";
 import Tile from "../lib/tile";
@@ -7,6 +8,8 @@ import indexMock from "../mocks/indexMock";
 import Layout from "../components/layout";
 
 export default function HomePage() {
+  const router = useRouter();
+
   return (
     <Layout>
       <Flex className="header_main_title">
@@ -43,7 +46,7 @@ export default function HomePage() {
         ))}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
-        <SubmitButton onClick={() => alert("redirecting to IDE...")} w="10vw">
+        <SubmitButton onClick={() => router.push("/projects")} w="10vw">
           See all projects
         </SubmitButton>
       </Flex>
