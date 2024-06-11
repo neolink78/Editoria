@@ -115,6 +115,19 @@ class User extends BaseEntity {
     return user;
   }
 
+  static async getUserByUsername(username: string) {
+    const user = await User.findOne({ where: { username }, relations: ["projects"]});
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+    return  {
+      username: user.username,
+      description: user.description,
+      projects: user.projects.map(project => ({
+        description: project.description,
+      }))}
+  }
+
   static async updateUser(id: string, userData: CreateOrUpdateUser): Promise<User> {
     const user = await User.getUserById(id);
     

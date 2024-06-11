@@ -39,6 +39,11 @@ export class UserResolver {
       return User.getUserByEmail(email);
   }
 
+  @Query(() => User)
+  getUserByUsername(@Arg("username") username: string) {
+      return User.getUserByUsername(username);
+  }
+
   @Mutation(() => User)
   async signIn(
     @Args() args: SignInUser,

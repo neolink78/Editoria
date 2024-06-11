@@ -34,7 +34,7 @@ type projectType = {
 };
 const Projects = () => {
   const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
-  console.log(data?.getProjects);
+
   const router = useRouter();
 
   const [value, setValue] = useState("");
