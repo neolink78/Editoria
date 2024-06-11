@@ -22,10 +22,11 @@ const documents = {
     "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n": types.SignInDocument,
     "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n": types.ResetUserDocument,
     "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n": types.ResetPasswordDocument,
-    "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n": types.CreateProjectDocument,
+    "\n  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {\n    deleteCodeSnippet(id: $deleteCodeSnippetId) {\n      id\n    }\n  }\n": types.DeleteCodeSnippetDocument,
+    "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n      owner {\n        email\n        id\n        username\n      }\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n": types.AddFileDocument,
     "\n  mutation UpdateFile(\n    $updateCodeSnippetId: ID!\n    $code: String!\n    $title: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    updateCodeSnippet(\n      id: $updateCodeSnippetId\n      code: $code\n      title: $title\n      language: $language\n      projectId: $projectId\n    ) {\n      code\n      id\n    }\n  }\n": types.UpdateFileDocument,
-    "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n": types.GetProjectDocument,
+    "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n": types.GetProjectDocument,
     "\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n": types.UpdateProjectDocument,
 };
 
@@ -82,7 +83,11 @@ export function graphql(source: "\n  mutation ResetPassword($newPassword: String
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"];
+export function graphql(source: "\n  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {\n    deleteCodeSnippet(id: $deleteCodeSnippetId) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {\n    deleteCodeSnippet(id: $deleteCodeSnippetId) {\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n      owner {\n        email\n        id\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n      owner {\n        email\n        id\n        username\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -94,7 +99,7 @@ export function graphql(source: "\n  mutation UpdateFile(\n    $updateCodeSnippe
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

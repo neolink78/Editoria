@@ -14,6 +14,8 @@ import {
   AddFileMutationVariables,
   CreateProjectMutation,
   CreateProjectMutationVariables,
+  DeleteCodeSnippetMutation,
+  DeleteCodeSnippetMutationVariables,
   GetProjectQuery,
   GetProjectQueryVariables,
   Language,
@@ -41,8 +43,17 @@ export type ProjectInfo = {
   owner: {
     id: string;
     username: string;
+    email: string;
   };
 };
+
+const DELETE_FILE = gql`
+  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {
+    deleteCodeSnippet(id: $deleteCodeSnippetId) {
+      id
+    }
+  }
+`;
 
 const CREATE_PROJECT = gql`
   mutation CreateProject(
@@ -56,6 +67,11 @@ const CREATE_PROJECT = gql`
       description: $description
     ) {
       id
+      owner {
+        email
+        id
+        username
+      }
     }
   }
 `;
@@ -113,6 +129,7 @@ const GET_PROJECT = gql`
       owner {
         username
         id
+        email
       }
     }
   }
@@ -152,6 +169,7 @@ function CodeEditor() {
     owner: {
       id: "",
       username: "",
+      email: "",
     },
   });
   const [project, setProject] = useState<File[]>([
@@ -167,15 +185,15 @@ function CodeEditor() {
 
   const selectedFile = project.find((file) => file.name === fileName);
 
-  const [
-    createProjectMutation,
-    { loading: loadingCreateProject, error: errorCreateProject },
-  ] = useMutation<CreateProjectMutation, CreateProjectMutationVariables>(
-    CREATE_PROJECT
-  );
+  const [createProjectMutation] = useMutation<
+    CreateProjectMutation,
+    CreateProjectMutationVariables
+  >(CREATE_PROJECT);
 
-  const [addFileMutation, { loading: loadingAddFiles, error: errorAddFiles }] =
-    useMutation<AddFileMutation, AddFileMutationVariables>(ADD_FILE);
+  const [addFileMutation] = useMutation<
+    AddFileMutation,
+    AddFileMutationVariables
+  >(ADD_FILE);
 
   const [updateFileMutation] = useMutation<
     UpdateFileMutation,
@@ -187,13 +205,18 @@ function CodeEditor() {
     UpdateProjectMutationVariables
   >(UPDATE_PROJECT);
 
-  const { data, loading, error } = useQuery<
-    GetProjectQuery,
-    GetProjectQueryVariables
-  >(GET_PROJECT, { variables: { getProjectByIdId: projectId as string } });
+  const [deleteFileMutation] = useMutation<
+    DeleteCodeSnippetMutation,
+    DeleteCodeSnippetMutationVariables
+  >(DELETE_FILE);
+
+  const { data, refetch } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
+    GET_PROJECT,
+    { variables: { getProjectByIdId: projectId as string } }
+  );
 
   useEffect(() => {
-    if (data) {
+    if (data && projectId) {
       setProjectInfo({
         id: projectId as string,
         title: data.getProjectById.title,
@@ -202,6 +225,7 @@ function CodeEditor() {
         owner: {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
+          email: data.getProjectById.owner.email,
         },
       });
       setProject(
@@ -216,7 +240,7 @@ function CodeEditor() {
         data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
       );
     }
-  }, [data, projectId]);
+  }, [data]);
 
   const createProject = async () => {
     try {
@@ -228,10 +252,19 @@ function CodeEditor() {
         },
       });
       if (data && data.createProject?.id) {
-        setProjectInfo({ ...projectInfo, id: data.createProject.id });
+        setProjectInfo({
+          ...projectInfo,
+          id: data.createProject.id,
+          owner: {
+            id: data.createProject.owner.id,
+            username: data.createProject.owner.username,
+            email: data.createProject.owner.email,
+          },
+        });
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
       }
+      refetch()
     } catch (error) {
       console.error(error);
     }
@@ -278,16 +311,40 @@ function CodeEditor() {
         },
       });
 
+      const fileToDelete = data?.getProjectById.codeSnippetsOwned.filter(
+        (snippet) => !project.find((el) => el.id === snippet.id)
+      );
+      if (fileToDelete?.length) {
+        for(const file of fileToDelete) {
+          await deleteFileMutation({
+            variables: {
+              deleteCodeSnippetId: file.id
+            }
+          })
+        }
+      }
+
       for (const file of project) {
-        await updateFileMutation({
-          variables: {
-            updateCodeSnippetId: file.id,
-            code: file.value,
-            title: file.name,
-            language: file.language,
-            projectId: projectId as string,
-          },
-        });
+        if (!file.id) {
+          await addFileMutation({
+            variables: {
+              title: file.name,
+              code: file.value,
+              language: file.language,
+              projectId: projectId as string,
+            },
+          });
+        } else {
+          await updateFileMutation({
+            variables: {
+              updateCodeSnippetId: file.id,
+              code: file.value,
+              title: file.name,
+              language: file.language,
+              projectId: projectId as string,
+            },
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -297,6 +354,7 @@ function CodeEditor() {
   const handleSave = async () => {
     if (router.query.project) {
       await updateProject();
+      refetch()
     } else {
       await createProject();
     }

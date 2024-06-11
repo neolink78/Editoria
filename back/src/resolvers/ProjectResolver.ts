@@ -48,12 +48,9 @@ export class ProjectResolver {
   updateProject(
     @Arg("id", () => ID) id: string,
     @Args() args: CreateOrUpdateProjectArgs,
-    @Ctx() { user }: Context
   ) {
     return Project.updateProject(id, {
       ...args,
-      owner: user as User,
-      codeSnippetsOwned: [],
     });
   }
 }
