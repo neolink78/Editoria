@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   BaseEntity,
+  CreateDateColumn,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { CreateOrUpdateCommentArgs } from "./comment.args";
@@ -38,6 +39,14 @@ class Comment extends BaseEntity {
   @Field(() => User)
   owner!: User;
 
+  @CreateDateColumn()
+  @Field()
+  createdAt!: Date;
+
+  @CreateDateColumn()
+  @Field()
+  updatedAt!: Date;
+
   constructor(comment?: CommentArgs) {
     super();
 
@@ -70,6 +79,7 @@ class Comment extends BaseEntity {
     const comment = await Comment.getCommentById(commentId);
 
     comment.content = content;
+    comment.updatedAt = new Date();
     return await Comment.save(comment);
   }
 

@@ -5,6 +5,8 @@ import { File, ProjectInfo } from "../../pages/editor";
 import FilesList from "./FilesList";
 import ProjectInfoTab from "./ProjectInfoTab";
 import EditorComments from "./EditorComments";
+import { gql, useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
 
 type EditorSidebarProps = {
   project: File[];
@@ -15,14 +17,6 @@ type EditorSidebarProps = {
   filesInTabs: string[];
   projectInfo: ProjectInfo;
   likes: number | undefined;
-  comments:
-    | {
-        content: string;
-        owner: {
-          username: string;
-        };
-      }[]
-    | undefined;
 };
 
 type ShowTabs = {
@@ -33,6 +27,21 @@ type ShowTabs = {
 
 const SIDEBAR_TABS = ["Info", "Files", "Comments"];
 
+const GET_COMMENTS = gql`
+  query GetCommentsbyProjectId($projectId: String!) {
+    getCommentsbyProjectId(projectId: $projectId) {
+      content
+      id
+      createdAt
+      updatedAt
+      owner {
+        id
+        username
+      }
+    }
+  }
+`;
+
 const EditorSidebar = ({
   projectInfo,
   project,
@@ -42,13 +51,22 @@ const EditorSidebar = ({
   setFilesInTabs,
   filesInTabs,
   likes,
-  comments,
 }: EditorSidebarProps) => {
+  const router = useRouter();
+
+  const { project: projectId } = router.query;
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
     Comments: true,
     Info: true,
   });
+
+  const { data: commentsData, refetch } = useQuery(
+    GET_COMMENTS,
+    {
+      variables: { projectId: projectId as string },
+    }
+  );
 
   const displayTabContent = (tab: string) => {
     switch (tab) {
@@ -66,14 +84,14 @@ const EditorSidebar = ({
         );
 
       case "Comments":
-        return <EditorComments comments={comments} />;
+        return <EditorComments comments={commentsData?.getCommentsbyProjectId} refetch={refetch} />;
 
       default:
         return (
           <ProjectInfoTab
             info={projectInfo}
             likes={likes}
-            comments={comments?.length}
+            comments={commentsData?.getCommentsbyProjectId?.length}
           />
         );
     }
@@ -87,7 +105,6 @@ const EditorSidebar = ({
       backgroundColor={"#212227"}
       color="white"
     >
-      <Text className="p-4">PROJECT</Text>
       {SIDEBAR_TABS.map((tab) => {
         return (
           <Fragment key={tab}>

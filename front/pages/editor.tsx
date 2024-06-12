@@ -130,13 +130,6 @@ const GET_PROJECT = gql`
       likes {
         id
       }
-      comments {
-        id
-        content
-        owner {
-          username
-        }
-      }
       owner {
         username
         id
@@ -226,6 +219,8 @@ function CodeEditor() {
     { variables: { getProjectByIdId: projectId as string } }
   );
 
+  console.log(data);
+
   useEffect(() => {
     if (data && projectId) {
       setProjectInfo({
@@ -251,7 +246,7 @@ function CodeEditor() {
         data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
       );
     }
-    console.log(data)
+    console.log(data);
   }, [data]);
   const createProject = async () => {
     try {
@@ -548,7 +543,6 @@ function CodeEditor() {
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
           likes={data?.getProjectById.likes.length}
-          comments={data?.getProjectById.comments}
         />
         <Flex
           direction={"column"}
