@@ -219,8 +219,6 @@ function CodeEditor() {
     { variables: { getProjectByIdId: projectId as string } }
   );
 
-  console.log(data);
-
   useEffect(() => {
     if (data && projectId) {
       setProjectInfo({
@@ -246,7 +244,6 @@ function CodeEditor() {
         data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
       );
     }
-    console.log(data);
   }, [data]);
   const createProject = async () => {
     try {
