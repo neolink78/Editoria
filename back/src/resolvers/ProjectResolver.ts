@@ -48,6 +48,11 @@ export class ProjectResolver {
     return Project.getProjectById(id);
   }
 
+  @Query(() => [Project])
+  getProjectsByUserId(@Arg("userId", () => ID) userId: string) {
+    return Project.getProjectsByUserId(userId);
+  }
+
   @Authorized()
   @ProjectOwner()
   @Mutation(() => Project)

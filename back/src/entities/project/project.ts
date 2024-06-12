@@ -109,13 +109,6 @@ class Project extends BaseEntity {
       order: {
         createdAt: "DESC",
       },
-      relations: [
-        "owner",
-        "comments",
-        "codeSnippetsOwned",
-        "comments.owner",
-        "comments.project",
-      ],
     });
     return projects;
   }
