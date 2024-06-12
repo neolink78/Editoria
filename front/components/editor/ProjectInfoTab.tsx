@@ -5,24 +5,26 @@ import { CiChat1 } from "react-icons/ci";
 
 type ProjectInfoProps = {
   info : ProjectInfo
+  comments: number | undefined;
+  likes: number | undefined;
 }
 
-const ProjectInfoTab = ({ info } : ProjectInfoProps) => {
+const ProjectInfoTab = ({ info, likes, comments } : ProjectInfoProps) => {
   return (
     <Flex direction={"column"} className="px-5 py-3" >
       <Flex gap={4}>
         <Box>Photo bg</Box>
-        <Link href={`/profile?user=${info.owner.id}`}>{ info.owner.username }</Link>
+        <Link href={`/profile?user=${info.owner.username}`}>{ info.owner.username }</Link>
       </Flex>
       <Box fontSize="sm" className="mt-4">{info.title}</Box>
       <Text fontSize="xs" className="opacity-60">{info.description}</Text>
       <Flex gap={4} fontSize='xs' className="mt-2 opacity-60">
         <Flex gap={1} align={"center"}>
-          <Text>1000</Text>
+          <Text>{likes}</Text>
           <AiOutlineLike />
         </Flex>
         <Flex gap={1} align={"center"}>
-          <Text>999</Text>
+          <Text>{comments}</Text>
           <CiChat1 />
         </Flex>
       </Flex>

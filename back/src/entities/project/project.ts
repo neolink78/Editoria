@@ -121,7 +121,7 @@ class Project extends BaseEntity {
   }
 
   static async getProjectById(id: string): Promise<Project> {
-    const project = await Project.findOne({ where: { id }});
+    const project = await Project.findOne({ where: { id }, relations: ["owner", "comments", "codeSnippetsOwned", "comments.owner", "comments.project"]});
     if (!project) {
       throw new Error("Project not found");
     }

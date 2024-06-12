@@ -1,4 +1,5 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import Link from "next/link";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
@@ -126,6 +127,16 @@ const GET_PROJECT = gql`
       }
       description
       title
+      likes {
+        id
+      }
+      comments {
+        id
+        content
+        owner {
+          username
+        }
+      }
       owner {
         username
         id
@@ -240,8 +251,8 @@ function CodeEditor() {
         data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
       );
     }
+    console.log(data)
   }, [data]);
-
   const createProject = async () => {
     try {
       const { data } = await createProjectMutation({
@@ -264,7 +275,7 @@ function CodeEditor() {
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
       }
-      refetch()
+      refetch();
     } catch (error) {
       console.error(error);
     }
@@ -315,12 +326,12 @@ function CodeEditor() {
         (snippet) => !project.find((el) => el.id === snippet.id)
       );
       if (fileToDelete?.length) {
-        for(const file of fileToDelete) {
+        for (const file of fileToDelete) {
           await deleteFileMutation({
             variables: {
-              deleteCodeSnippetId: file.id
-            }
-          })
+              deleteCodeSnippetId: file.id,
+            },
+          });
         }
       }
 
@@ -354,7 +365,7 @@ function CodeEditor() {
   const handleSave = async () => {
     if (router.query.project) {
       await updateProject();
-      refetch()
+      refetch();
     } else {
       await createProject();
     }
@@ -484,7 +495,7 @@ function CodeEditor() {
         align={"center"}
         className="relative"
       >
-        <Text>EDITORIA</Text>
+        <Link href="/">EDITORIA</Link>
         {isUserLoggedIn && (
           <Flex
             align={"center"}
@@ -527,7 +538,7 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex w="100%" className="editor-container">
+      <Flex w="100%" className="editor-container" height="calc(100vh - 64px)">
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -536,6 +547,8 @@ function CodeEditor() {
           setFilesInTabs={setFilesInTabs}
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
+          likes={data?.getProjectById.likes.length}
+          comments={data?.getProjectById.comments}
         />
         <Flex
           direction={"column"}
@@ -579,7 +592,7 @@ function CodeEditor() {
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
-                height="calc(100vh - 92px)"
+                height="calc(100vh - 100px)"
                 width="60%"
                 path={selectedFile?.name}
                 language={selectedFile?.language.toLowerCase()}
@@ -590,7 +603,7 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box height={"calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
+              <Box height={"calc(100vh - 100px)"} width="60%" bg={"#14181F"} />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

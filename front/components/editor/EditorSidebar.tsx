@@ -14,6 +14,15 @@ type EditorSidebarProps = {
   setFilesInTabs: Dispatch<SetStateAction<string[]>>;
   filesInTabs: string[];
   projectInfo: ProjectInfo;
+  likes: number | undefined;
+  comments:
+    | {
+        content: string;
+        owner: {
+          username: string;
+        };
+      }[]
+    | undefined;
 };
 
 type ShowTabs = {
@@ -32,6 +41,8 @@ const EditorSidebar = ({
   setFileName,
   setFilesInTabs,
   filesInTabs,
+  likes,
+  comments,
 }: EditorSidebarProps) => {
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
@@ -55,10 +66,16 @@ const EditorSidebar = ({
         );
 
       case "Comments":
-        return <EditorComments />;
+        return <EditorComments comments={comments} />;
 
       default:
-        return <ProjectInfoTab info={projectInfo} />;
+        return (
+          <ProjectInfoTab
+            info={projectInfo}
+            likes={likes}
+            comments={comments?.length}
+          />
+        );
     }
   };
 
@@ -75,6 +92,7 @@ const EditorSidebar = ({
         return (
           <Fragment key={tab}>
             <Flex
+              gap={2}
               alignItems="center"
               bg="#2F3138"
               className="p-1 cursor-pointer"
@@ -94,9 +112,7 @@ const EditorSidebar = ({
               />
               {tab}
             </Flex>
-            {showTabs[tab as keyof ShowTabs] && (
-              <Box>{displayTabContent(tab)}</Box>
-            )}
+            {showTabs[tab as keyof ShowTabs] && displayTabContent(tab)}
           </Fragment>
         );
       })}
