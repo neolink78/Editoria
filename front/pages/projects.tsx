@@ -40,10 +40,10 @@ const Projects = () => {
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
   const [filteredProjects, setFilteredProjects] = useState(
-    data?.getProjects || []
+    data?.getProjects || [],
   );
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || 1
+    parseInt(router.query.page as string) || 1,
   );
   const handlePageChange = (pageName: string | undefined) => {
     setActivePage(pageName || "dashboard");
@@ -68,14 +68,14 @@ const Projects = () => {
       let filtered = data.getProjects.filter(
         (project) =>
           project.title.toLowerCase().includes(value.toLowerCase()) ||
-          project.description.toLowerCase().includes(value.toLowerCase())
+          project.description.toLowerCase().includes(value.toLowerCase()),
       );
 
       if (activePage === "mostRecents") {
         router.push(`?page=${1}`);
         filtered = filtered.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
       }
       setFilteredProjects(filtered);

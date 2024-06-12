@@ -136,7 +136,7 @@ class Project extends BaseEntity {
 
   static async updateProject(
     id: string,
-    partialProject: ProjectArgs
+    partialProject: ProjectArgs,
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
@@ -146,7 +146,7 @@ class Project extends BaseEntity {
     }
     if (partialProject.collaboratorIds) {
       project.collaborators = await Promise.all(
-        partialProject.collaboratorIds.map(User.getUserById)
+        partialProject.collaboratorIds.map(User.getUserById),
       );
     }
 
