@@ -524,7 +524,7 @@ function CodeEditor() {
               )}
             </>
           ) : (
-            <SubmitButton bg="#1574EF">
+            <SubmitButton bg="#1574EF" onClick={() => router.push("/sign-in")}>
               Sign in to save your project
             </SubmitButton>
           )}
