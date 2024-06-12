@@ -86,19 +86,29 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   };
 
   return (
-    <Flex direction={"column"} gap={2} p={2} overflow={"scroll"} className="no-scrollbar">
-      <Textarea
-        size={"xs"}
-        width="auto"
-        height={"30px"}
-        placeholder="add a comment"
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-        className="text-xs p-2"
-      />
-      <SubmitButton bg="#1574EF" onClick={addComment}>
-        Send comment
-      </SubmitButton>
+    <Flex
+      direction={"column"}
+      gap={2}
+      p={2}
+      overflow={"scroll"}
+      className="no-scrollbar"
+    >
+      {user && (
+        <Flex direction={"column"}>
+          <Textarea
+            size={"xs"}
+            width="auto"
+            height={"30px"}
+            placeholder="add a comment"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="text-xs p-2"
+          />
+          <SubmitButton bg="#1574EF" onClick={addComment}>
+            Send comment
+          </SubmitButton>
+        </Flex>
+      )}
       {comments?.map((comment, index) => (
         <Flex key={index} bg="#2F3138" p={2} gap={2} direction={"column"}>
           <Flex justifyContent={"space-between"}>

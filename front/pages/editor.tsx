@@ -28,6 +28,7 @@ import {
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
 import { isClickOutside } from "../utils/event";
+import { useAuth } from "@/context/UserContext";
 
 export type File = {
   id: string;
@@ -159,9 +160,8 @@ const UPDATE_PROJECT = gql`
 
 function CodeEditor() {
   const router = useRouter();
-
+  const { user } = useAuth();
   const { project: projectId } = router.query;
-  const isUserLoggedIn = true;
   const modalRef = useRef<HTMLInputElement | null>(null);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>("index.html");
@@ -488,7 +488,7 @@ function CodeEditor() {
         className="relative"
       >
         <Link href="/">EDITORIA</Link>
-        {isUserLoggedIn && (
+        {user && (
           <Flex
             align={"center"}
             gap={2}
@@ -502,7 +502,7 @@ function CodeEditor() {
           </Flex>
         )}
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          {isUserLoggedIn ? (
+          {user ? (
             <>
               <Flex align={"center"} gap={4} position={"relative"}>
                 <Text>{projectInfo.title}</Text>
@@ -530,7 +530,7 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex w="100%" className="editor-container" height="calc(100vh - 64px)">
+      <Flex w="100%" className="editor-container" height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}>
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -583,7 +583,7 @@ function CodeEditor() {
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
-                height="calc(100vh - 100px)"
+                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
                 width="60%"
                 path={selectedFile?.name}
                 language={selectedFile?.language.toLowerCase()}
@@ -594,7 +594,7 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box height={"calc(100vh - 100px)"} width="60%" bg={"#14181F"} />
+              <Box height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

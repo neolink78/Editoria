@@ -37,7 +37,6 @@ export class CommentResolver {
     return Comment.createComment({ ...args, owner: user });
   }
 
-  @Authorized()
   @Query(() => [Comment])
   async getCommentsbyProjectId(
     @Arg("projectId") projectId: string
