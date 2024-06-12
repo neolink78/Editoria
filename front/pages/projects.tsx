@@ -7,6 +7,7 @@ import Breadcrumb from "@/lib/breadCrumb";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
+import { UUID } from "crypto";
 const GETPROJECTS = gql`
   query GETPROJECTS {
     getProjects {
@@ -15,6 +16,7 @@ const GETPROJECTS = gql`
       }
       owner {
         username
+        id
       }
       createdAt
       description
@@ -26,6 +28,7 @@ const GETPROJECTS = gql`
 type projectType = {
   owner: {
     username: string;
+    id: UUID;
   };
   codeSnippetsOwned: Array<{ language: Language }>;
   title: string;
@@ -126,9 +129,10 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
                     homePage
+                    ownerId={project.owner.id as UUID}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
                     title={project.title}
@@ -150,9 +154,10 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
                     homePage
+                    ownerId={project.owner.id as UUID}
                     title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}

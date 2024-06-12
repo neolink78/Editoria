@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import ReactIcon from "@/icons/reactIcon";
@@ -9,8 +9,11 @@ import { AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Language } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import { UUID } from "crypto";
 
 type TileProps = {
+  ownerId: UUID;
   icon: Language;
   label?: string;
   description?: string;
@@ -27,6 +30,7 @@ type TileProps = {
 const Tile = ({
   icon,
   label,
+  ownerId,
   description,
   marginTop,
   homePage,
@@ -36,6 +40,7 @@ const Tile = ({
   projectId,
   onDelete,
 }: TileProps) => {
+  const router = useRouter();
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
@@ -54,14 +59,14 @@ const Tile = ({
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon)}
-        <Text isTruncated minWidth="10vw" maxWidth="10vw">
+        <Box minWidth="10vw" maxWidth="10vw">
           {title}
-        </Text>
+        </Box>
       </Flex>
       <Flex gap="1vw">
-        <Text isTruncated minWidth="30vw" maxWidth="30vw">
+        <Box minWidth="30vw" maxWidth="30vw">
           {description}
-        </Text>
+        </Box>
       </Flex>
       {/* {description} */}
       <Flex gap="1vw"></Flex>
@@ -73,14 +78,19 @@ const Tile = ({
           <CiChat1 /> 4
         </Flex>
 
-        <Text isTruncated minWidth="16vw" maxWidth="16vw">
+        <Box w="16vw">
           {relativeDate} par{" "}
           {owner ? (
-            <span style={{ color: "#1574EF" }}>{owner}</span>
+            <span
+              style={{ color: "#1574EF" }}
+              onClick={() => router.push(`/user/${ownerId}?page=1`)}
+            >
+              {owner}
+            </span>
           ) : (
             "Unknown"
           )}
-        </Text>
+        </Box>
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

@@ -92,6 +92,23 @@ class Project extends BaseEntity {
     });
   }
 
+  static async getProjectsByUserId(userId: string): Promise<Project[]> {
+    const projects = await Project.find({
+      where: { owner: { id: userId } },
+      order: {
+        createdAt: "DESC",
+      },
+      relations: [
+        "owner",
+        "comments",
+        "codeSnippetsOwned",
+        "comments.owner",
+        "comments.project",
+      ],
+    });
+    return projects;
+  }
+
   static async getProjectById(id: string): Promise<Project> {
     const project = await Project.findOne({ where: { id } });
     if (!project) {

@@ -1,9 +1,28 @@
-import { Arg, Args, Authorized, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { Context } from "..";
 import User from "../entities/user/user";
-import { CreateOrUpdateUser, ResetPassword, ResetUser, SignInUser } from "../entities/user/user.args";
+import {
+  CreateOrUpdateUser,
+  ResetPassword,
+  ResetUser,
+  SignInUser,
+} from "../entities/user/user.args";
 import UserSession from "../entities/user/userSession";
-import { clearUserResetSessionIdInCookie, clearUserSessionIdInCookie, setUserResetSessionIdInCookie, setUserSessionIdInCookie } from "../utils/cookie";
+import {
+  clearUserResetSessionIdInCookie,
+  clearUserSessionIdInCookie,
+  setUserResetSessionIdInCookie,
+  setUserSessionIdInCookie,
+} from "../utils/cookie";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail";
 import UserResetSession from "../entities/user/userResetSession";
 
@@ -17,31 +36,29 @@ export class UserResolver {
   @Query(() => [User])
   getUsers() {
     return User.getUsers();
-    }
+  }
 
   @Mutation(() => User)
-  updateUser(@Arg("id", () => ID) id: string, @Args() args: CreateOrUpdateUser) {
+  updateUser(
+    @Arg("id", () => ID) id: string,
+    @Args() args: CreateOrUpdateUser
+  ) {
     return User.updateUser(id, args);
-    }
+  }
 
   @Mutation(() => User)
   deleteUser(@Arg("id", () => ID) id: string) {
     return User.deleteUser(id);
-    }
+  }
 
   @Query(() => User)
   getUser(@Arg("id", () => ID) id: string) {
-      return User.getUserById(id);
+    return User.getUserById(id);
   }
 
   @Query(() => User)
   getUserByEmail(@Arg("email") email: string) {
-      return User.getUserByEmail(email);
-  }
-
-  @Query(() => User)
-  getUserByUsername(@Arg("username") username: string) {
-      return User.getUserByUsername(username);
+    return User.getUserByEmail(email);
   }
 
   @Mutation(() => User)
@@ -63,12 +80,17 @@ export class UserResolver {
     setUserResetSessionIdInCookie(context.res, session);
     try {
       await sendPasswordResetEmail(user.email, session.id);
-      console.log('E-mail de réinitialisation de mot de passe envoyé avec succès');
+      console.log(
+        "E-mail de réinitialisation de mot de passe envoyé avec succès"
+      );
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'e-mail de réinitialisation de mot de passe :', error);
+      console.error(
+        "Erreur lors de l'envoi de l'e-mail de réinitialisation de mot de passe :",
+        error
+      );
       throw error;
     }
-  
+
     return user;
   }
 
@@ -80,10 +102,10 @@ export class UserResolver {
     console.log("username", context.user?.username);
     const userResetSessionId = context.userResetSessionId as string;
     const updatedUser = await User.updatePassword(userResetSessionId, args);
-    
+
     await UserResetSession.deleteResetSession(userResetSessionId);
     clearUserResetSessionIdInCookie(context.res);
-    
+
     return updatedUser;
   }
 
@@ -93,9 +115,9 @@ export class UserResolver {
     const userSessionId = context.userSessionId as string;
     await UserSession.deleteSession(userSessionId);
     clearUserSessionIdInCookie(context.res);
-    return true
+    return true;
   }
-  
+
   @Authorized()
   @Query(() => User)
   async myProfile(@Ctx() { user }: Context): Promise<User> {

@@ -13,6 +13,7 @@ import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { useRouter } from "next/router";
+import { UUID } from "crypto";
 
 const GET_PROJECTS = gql`
   query GetProjects {
@@ -27,6 +28,7 @@ const GET_PROJECTS = gql`
       }
       owner {
         username
+        id
       }
     }
   }
@@ -46,6 +48,7 @@ const Dashboard = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  console.log(data);
   const projects = data?.getProjects || [];
   const [deleteProject, { loading: deleting, error: deleteError }] =
     useMutation(DELETE_PROJECT, {
@@ -138,6 +141,7 @@ const Dashboard = () => {
                       description={e.description}
                       createdAt={e.createdAt}
                       owner={e.owner.username}
+                      ownerId={e.owner.id as UUID}
                       onDelete={() => handleDelete(e.id)}
                     />
                   ))
@@ -188,6 +192,7 @@ const Dashboard = () => {
                       label={e.label}
                       description={e.description}
                       date={e.date}
+                      ownerId="ac87bc7a-bf47-43a8-8f8a-7da653cb0eed"
                     />
                   </Skeleton>
                 ))
@@ -237,6 +242,7 @@ const Dashboard = () => {
                       label={e.label}
                       description={e.description}
                       date={e.date}
+                      ownerId="ac87bc7a-bf47-43a8-8f8a-7da653cb0eed"
                     />
                   </Skeleton>
                 ))
@@ -280,6 +286,7 @@ const Dashboard = () => {
                       label={e.label}
                       description={e.description}
                       date={e.date}
+                      ownerId="ac87bc7a-bf47-43a8-8f8a-7da653cb0eed"
                     />
                   ))
               ) : (
