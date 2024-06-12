@@ -102,7 +102,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
       {comments?.map((comment, index) => (
         <Flex key={index} bg="#2F3138" p={2} gap={2} direction={"column"}>
           <Flex justifyContent={"space-between"}>
-            <Flex gap={2} alignItems={"center"}>
+            <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
               <Link
                 href={`/profile?user=${comment.owner.username}`}
                 className="text-sm hover:text-[#1574EF]"
