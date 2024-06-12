@@ -125,7 +125,7 @@ class User extends BaseEntity {
 
   static async updateUser(
     id: string,
-    userData: CreateOrUpdateUser
+    userData: CreateOrUpdateUser,
   ): Promise<User> {
     const user = await User.getUserById(id);
 
@@ -187,7 +187,7 @@ class User extends BaseEntity {
   }
 
   static async getUserResetWithSessionId(
-    resetSessionId: string
+    resetSessionId: string,
   ): Promise<User | null> {
     const resetSession = await UserResetSession.findOne({
       where: { id: resetSessionId },
@@ -201,7 +201,7 @@ class User extends BaseEntity {
 
   static async updatePassword(
     userResetSessionId: string,
-    userData: ResetPassword
+    userData: ResetPassword,
   ): Promise<User> {
     const user = await User.getUserResetWithSessionId(userResetSessionId);
 

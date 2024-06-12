@@ -22,7 +22,7 @@ type TileProps = {
   owner?: string;
   projectId?: string;
   commentCount?: number;
-  content?: boolean
+  content?: boolean;
   onDelete?: (e: any) => void;
   toggleLike?: () => void;
   likeCount?: number;
@@ -41,12 +41,11 @@ const Tile = ({
   commentCount,
   content,
   toggleLike,
-  likeCount
+  likeCount,
 }: TileProps) => {
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
-
 
   return (
     <Flex
@@ -66,32 +65,42 @@ const Tile = ({
         </Text>
       </Flex>
       <Flex gap="1vw">
-        {content ?
-          <Text isTruncated minWidth="30vw" maxWidth="30vw"> Commentaire : {description}
-          </Text> :
-          <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}
+        {content ? (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {" "}
+            Commentaire : {description}
           </Text>
-        }
+        ) : (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {description}
+          </Text>
+        )}
       </Flex>
       <Flex gap="1vw">
-        <Flex alignItems="center"  >
-          <AiOutlineLike onClick={() => {
-            toggleLike?.();
-          }} cursor="pointer" />
+        <Flex alignItems="center">
+          <AiOutlineLike
+            onClick={() => {
+              toggleLike?.();
+            }}
+            cursor="pointer"
+          />
           {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> {commentCount}
         </Flex>
-        {content ? "" :
-          <Text
-            isTruncated
-            minWidth="16vw"
-            maxWidth="16vw">
+        {content ? (
+          ""
+        ) : (
+          <Text isTruncated minWidth="16vw" maxWidth="16vw">
             {relativeDate} par &nbsp;
-            {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}
+            {owner ? (
+              <span style={{ color: "#1574EF" }}>{owner}</span>
+            ) : (
+              "Unknown"
+            )}
           </Text>
-        }
+        )}
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

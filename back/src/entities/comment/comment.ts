@@ -43,7 +43,7 @@ class Comment extends BaseEntity {
   }
 
   static async createComment(
-    commentArgs: CreateOrUpdateCommentArgs
+    commentArgs: CreateOrUpdateCommentArgs,
   ): Promise<Comment> {
     const project = await Project.findOne({
       where: { id: commentArgs.projectId },
@@ -62,7 +62,7 @@ class Comment extends BaseEntity {
 
   static async updateComment(
     commentId: string,
-    content: string
+    content: string,
   ): Promise<Comment> {
     const comment = await Comment.getCommentById(commentId);
 

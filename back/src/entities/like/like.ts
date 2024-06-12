@@ -35,7 +35,7 @@ class Like extends BaseEntity {
   @Field()
   createdAt!: Date;
 
-  static async toggleLike(user:User, projectId: string): Promise<boolean> {
+  static async toggleLike(user: User, projectId: string): Promise<boolean> {
     const projectEntity = await Project.findOne({ where: { id: projectId } });
 
     if (!projectEntity) {
