@@ -8,6 +8,7 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
+
 const GETPROJECTS = gql`
   query GETPROJECTS {
     getProjects {
@@ -25,16 +26,6 @@ const GETPROJECTS = gql`
   }
 `;
 
-type projectType = {
-  owner: {
-    username: string;
-    id: UUID;
-  };
-  codeSnippetsOwned: Array<{ language: Language }>;
-  title: string;
-  description: string;
-  createdAt: string;
-};
 const Projects = () => {
   const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
 
