@@ -86,7 +86,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   };
 
   return (
-    <Flex direction={"column"} gap={2} p={2} overflow={"scroll"}>
+    <Flex direction={"column"} gap={2} p={2} overflow={"scroll"} className="no-scrollbar">
       <Textarea
         size={"xs"}
         width="auto"
