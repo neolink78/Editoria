@@ -1,9 +1,9 @@
 import {
   BaseEntity,
   Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
+
+
+  ManyToOne, PrimaryGeneratedColumn, CreateDateColumn,
 } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
 import User from "../user/user";
@@ -13,17 +13,20 @@ import Project from "../project/project";
 @ObjectType()
 class Like extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  @Field(() => ID)
+  @Field(() =>     ID)
   id!: string;
 
-  @ManyToOne(() => User, (user) => user.likes, {
+  @ManyToOne(() =>     User, (user) => user.
+  likes, {
     onDelete: "CASCADE",
   })
   @Field(() => User)
   user!: User;
 
-  @ManyToOne(() => Project, (project) => project.likes, {
-    onDelete: "CASCADE",
+  @ManyToOne(() => Project, (project) => project.
+  
+  likes, {
+    onDelete:       "CASCADE",
   })
   @Field(() => Project)
   project!: Project;
