@@ -1,4 +1,3 @@
-import { ObjectId } from "typeorm";
 import { getDataSource } from "../../database";
 import User from "./user";
 
@@ -8,7 +7,7 @@ describe("User", () => {
     for (const entity of database.entityMetadatas) {
       const repository = database.getRepository(entity.name);
       await repository.query(
-        `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`,
+        `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
       );
     }
   });
@@ -27,7 +26,7 @@ describe("User", () => {
     describe("when email matches no user in database", () => {
       it("throws error", async () => {
         await expect(
-          User.getUserWithEmailAndPassword({ email, password }),
+          User.getUserWithEmailAndPassword({ email, password })
         ).rejects.toThrow("INVALID_CREDENTIALS");
       });
     });
@@ -43,7 +42,7 @@ describe("User", () => {
           });
 
           await expect(
-            User.getUserWithEmailAndPassword({ email, password }),
+            User.getUserWithEmailAndPassword({ email, password })
           ).rejects.toThrow("INVALID_CREDENTIALS");
         });
       });
@@ -57,9 +56,20 @@ describe("User", () => {
             description: "",
           });
 
-          await expect(
-            User.getUserWithEmailAndPassword({ email, password }),
-          ).resolves.toEqual(user);
+          const actualUser = await User.getUserWithEmailAndPassword({
+            email,
+            password,
+          });
+
+          expect(actualUser).toEqual({
+            ...user,
+            comments: [],
+            likes: [],
+          });
+
+          // await expect(
+          //   User.getUserWithEmailAndPassword({ email, password })
+          // ).resolves.toEqual(user);
         });
       });
     });
@@ -67,57 +77,72 @@ describe("User", () => {
 
   describe("saveNewUser", () => {
     const { email, username, password, description } = {
-        email: "me@test.com",
-        username: "Thibaut",
-        password: "123456azerty",
-        description: ""
-      };
+      email: "me@test.com",
+      username: "Thibaut",
+      password: "123456azerty",
+      description: "",
+    };
 
     it("saves user and returns it", async () => {
       const user = await User.saveNewUser({
         email,
         username,
         password,
-        description
-      })
+        description,
+      });
 
-      await expect(User.findOne({ where: { email }})).resolves.toEqual(user)
+      const actualUser = await User.getUserWithEmailAndPassword({
+        email,
+        password,
+      });
+
+      expect(actualUser).toEqual({
+        ...user,
+        comments: [],
+        likes: [],
+      });
+
+      // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
     });
 
     it("throws an error if email already exists", async () => {
-        await User.saveNewUser({
-            email,
-            username: "Tom",
-            password: "azerty123456",
-            description: ""
-          });
-    
-        await expect(User.saveNewUser({
-            email,
-            username: "Thibaut",
-            password: "123456azerty",
-            description: ""
-          })).rejects.toThrow("EMAIL_ALREADY_USED");
+      await User.saveNewUser({
+        email,
+        username: "Tom",
+        password: "azerty123456",
+        description: "",
+      });
+
+      await expect(
+        User.saveNewUser({
+          email,
+          username: "Thibaut",
+          password: "123456azerty",
+          description: "",
+        })
+      ).rejects.toThrow("EMAIL_ALREADY_USED");
     });
   });
 
   describe("modify password", () => {
     const { email, username, password, description } = {
-        email: "me@test.com",
-        username: "Tom",
-        password: "azerty123456",
-        description: ""
-      };
+      email: "me@test.com",
+      username: "Tom",
+      password: "azerty123456",
+      description: "",
+    };
 
-      it("throws an error if email doesn't exist", async () => {
-        await User.saveNewUser({
-            email,
-            username,
-            password,
-            description,
-          });
-        
-        await expect(User.resetUser({ email: 'other@gmail.com' })).rejects.toThrow("USER_NOT_FOUND");
-      })
-    })
-})
+    it("throws an error if email doesn't exist", async () => {
+      await User.saveNewUser({
+        email,
+        username,
+        password,
+        description,
+      });
+
+      await expect(
+        User.resetUser({ email: "other@gmail.com" })
+      ).rejects.toThrow("USER_NOT_FOUND");
+    });
+  });
+});
