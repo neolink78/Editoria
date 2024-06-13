@@ -54,10 +54,6 @@ const Tile = ({
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
 
-  const handleProjectOpen = () => {
-    onOpenProject(projectId);
-  };
-
   return (
     <Flex
       justifyContent="space-between"
@@ -68,7 +64,10 @@ const Tile = ({
       bg="#2F3138"
       mt={marginTop || "1vw"}
       fontSize="0.9vw"
-      onClick={handleProjectOpen}
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpenProject(projectId);
+      }}
       cursor="pointer"
     >
       <Flex alignItems="center" gap="2vw">
@@ -93,14 +92,16 @@ const Tile = ({
         <Flex alignItems="center">
           {isLiked ? (
             <AiFillLike
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 toggleLike?.();
               }}
               cursor="pointer"
             />
           ) : (
             <AiOutlineLike
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 toggleLike?.();
               }}
               cursor="pointer"
@@ -121,7 +122,10 @@ const Tile = ({
                 {" "} par {" "}
                 <span
                   style={{ color: "#1574EF", cursor: "pointer" }}
-                  onClick={() => router.push(`/user/${ownerId}?page=1`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/user/${ownerId}?page=1`)
+                  }}
                 >
                   {owner}
                 </span></span>
@@ -132,7 +136,12 @@ const Tile = ({
         )}
       </Flex>
       {!homePage && (
-        <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />
+        <FaRegTrashAlt
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(projectId)
+          }}
+          cursor="pointer" />
       )}
     </Flex>
   );
