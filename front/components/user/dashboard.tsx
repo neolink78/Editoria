@@ -39,7 +39,8 @@ const Dashboard = () => {
     error,
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
-  const { data: commentData, loading: commentLoading } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const { data: commentData, loading: commentLoading } =
+    useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const comments = commentData?.getOwnComments || [];
   const { data: likedProjectsData, loading: likedProjectsLoading } =
     useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
@@ -77,20 +78,34 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0 && comments.length === 0 && likedProjects.length === 0;
-  const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
+  const newUser =
+    projects.length === 0 &&
+    comments.length === 0 &&
+    likedProjects.length === 0;
+  const sortedProjects = [...projects]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 3);
 
-
-  if (error) return (<Error />)
-  if (loading || commentLoading || likedProjectsLoading) return (
-    <Flex flexDirection="column" justifyContent="center" alignItems="center" width="70vw" mt="50px">
-      {Array.from({ length: 10 }).map((_, idx) => (
-        <Box key={idx} width="100%" mb="10px">
-          <Skeleton height="46px" width="100%" borderRadius="30px" />
-        </Box>
-      ))}
-    </Flex>
-  );
+  if (error) return <Error />;
+  if (loading || commentLoading || likedProjectsLoading)
+    return (
+      <Flex
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        width="70vw"
+        mt="50px"
+      >
+        {Array.from({ length: 10 }).map((_, idx) => (
+          <Box key={idx} width="100%" mb="10px">
+            <Skeleton height="46px" width="100%" borderRadius="30px" />
+          </Box>
+        ))}
+      </Flex>
+    );
 
   return (
     (!newUser && (
@@ -237,7 +252,7 @@ const Dashboard = () => {
                   </SubmitButton>
                 </Flex>
               )}
-            </Box >
+            </Box>
 
             <Box
               fontSize="1.4vw"
@@ -294,17 +309,19 @@ const Dashboard = () => {
             </Box>
             <Box mb={12}>
               {commentData && comments.length > 0 ? (
-                comments.slice(-3).map((e, idx) => (
-                  <Tile
-                    homePage
-                    ownerId={e.owner.id as UUID}
-                    key={idx}
-                    title={e.project.title}
-                    description={e.content}
-                    content
-                    onOpenProject={() => handleOpenProject(e.project.id)}
-                  />
-                ))
+                comments
+                  .slice(-3)
+                  .map((e, idx) => (
+                    <Tile
+                      homePage
+                      ownerId={e.owner.id as UUID}
+                      key={idx}
+                      title={e.project.title}
+                      description={e.content}
+                      content
+                      onOpenProject={() => handleOpenProject(e.project.id)}
+                    />
+                  ))
               ) : (
                 <Flex
                   flexDirection="column"
@@ -315,9 +332,8 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de commentaire.
                   </Box>
                 </Flex>
-              )
-              }
-            </Box >
+              )}
+            </Box>
           </>
         )}
         <ConfirmModal />

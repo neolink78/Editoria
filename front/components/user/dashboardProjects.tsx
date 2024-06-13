@@ -53,8 +53,9 @@ const DashboardProjects = ({
         gap={2}
         flexDirection="column"
       >
-        <Box display="flex" alignItems="center" >
-          <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes projets récents
+        <Box display="flex" alignItems="center">
+          <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes
+          projets récents
         </Box>
         {currentProjects.map((project, idx) => (
           <Skeleton isLoaded={!isLoading} key={idx}>
@@ -76,8 +77,7 @@ const DashboardProjects = ({
               }}
               onOpenProject={() => {
                 router.push(`/editor?project=${project.id}`);
-              }
-              }
+              }}
             />
           </Skeleton>
         ))}
