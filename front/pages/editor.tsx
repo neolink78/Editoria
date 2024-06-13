@@ -216,7 +216,7 @@ function CodeEditor() {
 
   const { data, refetch } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     GET_PROJECT,
-    { variables: { getProjectByIdId: projectId as string } }
+    { variables: { getProjectByIdId: projectId as string } },
   );
 
   useEffect(() => {
@@ -238,10 +238,10 @@ function CodeEditor() {
           name: snippet.title,
           language: snippet.language,
           value: snippet.code,
-        }))
+        })),
       );
       setFilesInTabs(
-        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
+        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title),
       );
     }
   }, [data]);
@@ -294,7 +294,7 @@ function CodeEditor() {
                 };
               }
               return el;
-            })
+            }),
           );
         }
       }
@@ -315,7 +315,7 @@ function CodeEditor() {
       });
 
       const fileToDelete = data?.getProjectById.codeSnippetsOwned.filter(
-        (snippet) => !project.find((el) => el.id === snippet.id)
+        (snippet) => !project.find((el) => el.id === snippet.id),
       );
       if (fileToDelete?.length) {
         for (const file of fileToDelete) {
@@ -451,7 +451,7 @@ function CodeEditor() {
   const removeFileFromTabs = (fileName: string) => {
     setFilesInTabs((prevState) => {
       const updatedTabs = prevState.filter(
-        (fileInTab) => fileInTab !== fileName
+        (fileInTab) => fileInTab !== fileName,
       );
       if (selectedFile?.name === fileName) setFileName(updatedTabs[0]);
       return updatedTabs;
@@ -530,7 +530,11 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex w="100%" className="editor-container" height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}>
+      <Flex
+        w="100%"
+        className="editor-container"
+        height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}
+      >
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -594,7 +598,11 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
+              <Box
+                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
+                width="60%"
+                bg={"#14181F"}
+              />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

@@ -1,38 +1,38 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_PROJECTS = gql`
-query GetProjectsByUser {
-  getOwnProject {
-    id
-    title
-    description
-    is_public
-    createdAt
-    updatedAt
-    codeSnippetsOwned {
+  query GetProjectsByUser {
+    getOwnProject {
       id
       title
-      code
-      language
-    }
-    comments {
-      id
-      content
+      description
+      is_public
+      createdAt
+      updatedAt
+      codeSnippetsOwned {
+        id
+        title
+        code
+        language
+      }
+      comments {
+        id
+        content
+        owner {
+          id
+        }
+        project {
+          id
+        }
+      }
       owner {
         id
+        email
+        username
       }
-      project {
+      likes {
         id
       }
     }
-    owner {
-      id
-      email
-      username
-    }
-    likes {
-      id
-    }
   }
-}
 `;

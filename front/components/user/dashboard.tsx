@@ -77,7 +77,7 @@ const Dashboard = () => {
   const sortedProjects = [...projects]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
 
@@ -216,7 +216,7 @@ const Dashboard = () => {
                       toggleLike={() => {
                         console.log(
                           "Toggle like button clicked for project ID:",
-                          e.id
+                          e.id,
                         );
                         toggleLike({ variables: { projectId: e.id } });
                       }}

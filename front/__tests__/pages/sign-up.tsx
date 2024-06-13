@@ -71,7 +71,7 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
@@ -103,7 +103,7 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
@@ -121,7 +121,7 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 

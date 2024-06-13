@@ -32,11 +32,11 @@ export const useSignInFormik = (isLogin: boolean) => {
   const router = useRouter();
 
   const [signUpMutation] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_FORM
+    SIGN_UP_FORM,
   );
 
   const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
-    SIGN_IN_FORM
+    SIGN_IN_FORM,
   );
 
   const validationSchema = isLogin

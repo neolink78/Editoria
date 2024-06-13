@@ -48,7 +48,7 @@ describe("Sign in component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_IN_FORM]}>
           <SignIn />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
@@ -74,7 +74,7 @@ describe("Sign in component", () => {
       render(
         <MockedProvider>
           <SignIn />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 

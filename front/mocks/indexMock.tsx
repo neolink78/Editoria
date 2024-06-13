@@ -30,7 +30,8 @@ const indexMock = [
     marginTop: "1.2vw",
     icon: <ReactIcon width="2vw" />,
     label: "Amazing paralaX effect",
-    description: "this is a parallax effect, using different algorithms and react",
+    description:
+      "this is a parallax effect, using different algorithms and react",
     date: "9 months ago",
     user: "Mehmet",
   },

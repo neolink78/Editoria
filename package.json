@@ -1,0 +1,13 @@
+{
+  "name": "editoria",
+  "version": "1.0.0",
+  "description": "## Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format:fix": "npx prettier ./**/*.{ts,tsx} --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -95,20 +95,23 @@ const Tile = ({
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> {commentCount}
         </Flex>
-
-        <Box w="16vw">
-          {relativeDate} par{" "}
-          {owner ? (
-            <span
-              style={{ color: "#1574EF", cursor: "pointer" }}
-              onClick={() => router.push(`/user/${ownerId}?page=1`)}
-            >
-              {owner}
-            </span>
-          ) : (
-            "Unknown"
-          )}
-        </Box>
+        {content ? (
+          ""
+        ) : (
+          <Text isTruncated w="16vw">
+            {relativeDate} par{" "}
+            {owner ? (
+              <span
+                style={{ color: "#1574EF", cursor: "pointer" }}
+                onClick={() => router.push(`/user/${ownerId}?page=1`)}
+              >
+                {owner}
+              </span>
+            ) : (
+              "Unknown"
+            )}
+          </Text>
+        )}
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

@@ -12,7 +12,7 @@ export const useSettingsFormik = (user: any) => {
     password: Yup.string(),
     passwordConfirmation: Yup.string().oneOf(
       [Yup.ref("password")],
-      "Les mots de passes doivent être identiques"
+      "Les mots de passes doivent être identiques",
     ),
     description: Yup.string().optional(),
   });

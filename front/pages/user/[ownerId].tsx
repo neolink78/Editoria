@@ -49,7 +49,7 @@ export default function User() {
     variables: { ownerId },
   });
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || "1"
+    parseInt(router.query.page as string) || "1",
   );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;

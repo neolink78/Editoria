@@ -6,7 +6,7 @@ import UserResetSession from "../entities/user/userResetSession";
 
 export function setUserSessionIdInCookie(
   expressResponse: Response,
-  session: UserSession
+  session: UserSession,
 ) {
   expressResponse.cookie("userSessionId", session.id, {
     secure: true,
@@ -15,9 +15,7 @@ export function setUserSessionIdInCookie(
   });
 }
 
-export function clearUserSessionIdInCookie(
-  expressResponse: Response
-) {
+export function clearUserSessionIdInCookie(expressResponse: Response) {
   expressResponse.clearCookie("userSessionId");
 }
 
@@ -28,7 +26,7 @@ export function getUserSessionIdFromCookie(req: IncomingMessage) {
 
 export function setUserResetSessionIdInCookie(
   expressResponse: Response,
-  session: UserResetSession
+  session: UserResetSession,
 ) {
   expressResponse.cookie("userResetSessionId", session.id, {
     secure: true,
@@ -37,9 +35,7 @@ export function setUserResetSessionIdInCookie(
   });
 }
 
-export function clearUserResetSessionIdInCookie(
-  expressResponse: Response
-) {
+export function clearUserResetSessionIdInCookie(expressResponse: Response) {
   expressResponse.clearCookie("userResetSessionId");
 }
 

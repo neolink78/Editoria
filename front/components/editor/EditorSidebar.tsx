@@ -61,12 +61,9 @@ const EditorSidebar = ({
     Info: true,
   });
 
-  const { data: commentsData, refetch } = useQuery(
-    GET_COMMENTS,
-    {
-      variables: { projectId: projectId as string },
-    }
-  );
+  const { data: commentsData, refetch } = useQuery(GET_COMMENTS, {
+    variables: { projectId: projectId as string },
+  });
 
   const displayTabContent = (tab: string) => {
     switch (tab) {
@@ -84,7 +81,12 @@ const EditorSidebar = ({
         );
 
       case "Comments":
-        return <EditorComments comments={commentsData?.getCommentsbyProjectId} refetch={refetch} />;
+        return (
+          <EditorComments
+            comments={commentsData?.getCommentsbyProjectId}
+            refetch={refetch}
+          />
+        );
 
       default:
         return (

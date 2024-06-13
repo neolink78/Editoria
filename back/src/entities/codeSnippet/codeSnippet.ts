@@ -77,7 +77,7 @@ class CodeSnippet extends BaseEntity {
   }
 
   static async createCodeSnippet(
-    codeSnippet: CodeSnippetArgs
+    codeSnippet: CodeSnippetArgs,
   ): Promise<CodeSnippet> {
     const newCodeSnippet = new CodeSnippet(codeSnippet);
     if (newCodeSnippet.code.length === 0) {
@@ -86,7 +86,7 @@ class CodeSnippet extends BaseEntity {
 
     if (codeSnippet.projectId) {
       newCodeSnippet.project = await Project.getProjectById(
-        codeSnippet.projectId
+        codeSnippet.projectId,
       );
     }
 
@@ -94,11 +94,14 @@ class CodeSnippet extends BaseEntity {
   }
 
   static async getCodeSnippet(): Promise<CodeSnippet[]> {
-    return await CodeSnippet.find({ relations: { project: true }});
+    return await CodeSnippet.find({ relations: { project: true } });
   }
 
   static async getCodeSnippetById(id: string): Promise<CodeSnippet> {
-    const codeSnippet = await CodeSnippet.findOne({ where: { id }, relations: { project: true }});
+    const codeSnippet = await CodeSnippet.findOne({
+      where: { id },
+      relations: { project: true },
+    });
     if (!codeSnippet) {
       throw new Error("Code snippet not found");
     }
@@ -116,7 +119,7 @@ class CodeSnippet extends BaseEntity {
 
   static async updateCodeSnippet(
     id: string,
-    partialCodeSnippet: CreateOrUpdateCodeSnippetArgs
+    partialCodeSnippet: CreateOrUpdateCodeSnippetArgs,
   ): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });

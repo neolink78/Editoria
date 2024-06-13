@@ -29,7 +29,7 @@ export class ProjectResolver {
   @Mutation(() => Project)
   createProject(
     @Args() args: CreateOrUpdateProjectArgs,
-    @Ctx() { user }: Context
+    @Ctx() { user }: Context,
   ) {
     return Project.createProject({
       ...args,
