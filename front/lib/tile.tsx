@@ -84,28 +84,28 @@ const Tile = ({
             Commentaire : {description}
           </Text>
         ) : (
-          <Text
-            isTruncated
-            minWidth="30vw"
-            maxWidth="30vw">
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
             {description}
           </Text>
         )}
       </Flex>
       <Flex gap="1vw">
-        <Flex
-          alignItems="center"  >
-          {
-            isLiked ? <AiFillLike onClick={() => {
-              toggleLike?.();
-            }}
-              cursor="pointer" /> : <AiOutlineLike
+        <Flex alignItems="center">
+          {isLiked ? (
+            <AiFillLike
               onClick={() => {
                 toggleLike?.();
               }}
               cursor="pointer"
             />
-          }
+          ) : (
+            <AiOutlineLike
+              onClick={() => {
+                toggleLike?.();
+              }}
+              cursor="pointer"
+            />
+          )}
           {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
