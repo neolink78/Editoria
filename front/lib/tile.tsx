@@ -125,7 +125,7 @@ const Tile = ({
                   style={{ color: "#1574EF", cursor: "pointer" }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/user/${ownerId}?page=1`)
+                    router.push(`/user/${ownerId}?page=1`);
                   }}
                 >
                   {owner}
@@ -141,9 +141,10 @@ const Tile = ({
         <FaRegTrashAlt
           onClick={(e) => {
             e.stopPropagation();
-            onDelete?.(projectId)
+            onDelete?.(projectId);
           }}
-          cursor="pointer" />
+          cursor="pointer"
+        />
       )}
     </Flex>
   );
