@@ -37,6 +37,7 @@ const Dashboard = () => {
     data: projectData,
     loading,
     error,
+    refetch
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
   const { data: commentData, loading: commentLoading } =
@@ -60,6 +61,10 @@ const Dashboard = () => {
     });
 
   const router = useRouter();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
