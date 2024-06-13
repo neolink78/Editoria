@@ -11,6 +11,7 @@ import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
+import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
@@ -76,7 +77,7 @@ const Dashboard = () => {
   const sortedProjects = [...projects]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
     .slice(0, 3);
 
@@ -148,7 +149,7 @@ const Dashboard = () => {
                 sortedProjects.slice(-3).map((e, idx) => (
                   <Tile
                     homePage={false}
-                    key={e.id}
+                    key={idx}
                     icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
                     description={e.description}
@@ -156,6 +157,7 @@ const Dashboard = () => {
                     owner={e.owner.username}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
+                    ownerId={e.owner.id as UUID}
                     likeCount={e.likes.length}
                     toggleLike={() => {
                       toggleLike({ variables: { projectId: e.id } });
@@ -203,6 +205,7 @@ const Dashboard = () => {
                 likedProjects.slice(-3).map((e, idx) => (
                   <Skeleton isLoaded={!loading} key={idx}>
                     <Tile
+                      ownerId={e.owner.id as UUID}
                       homePage
                       icon={e.codeSnippetsOwned[0]?.language}
                       key={idx}
@@ -213,7 +216,7 @@ const Dashboard = () => {
                       toggleLike={() => {
                         console.log(
                           "Toggle like button clicked for project ID:",
-                          e.id,
+                          e.id
                         );
                         toggleLike({ variables: { projectId: e.id } });
                       }}
@@ -263,6 +266,8 @@ const Dashboard = () => {
                     label={e.label}
                     description={e.description}
                     date={e.date}
+                    ownerId={e.owner.id as UUID}
+
                   />
                 </Skeleton>
               )) :
@@ -297,6 +302,7 @@ const Dashboard = () => {
                 comments.map((e, idx) => (
                   <Tile
                     homePage
+                    ownerId={e.owner.id as UUID}
                     key={idx}
                     title={e.project.title}
                     description={e.content}
@@ -310,8 +316,7 @@ const Dashboard = () => {
                   alignItems="center"
                 >
                   <Box fontSize="0.9vw" m="4vw">
-                    {" "}
-                    Vous n&apos;avez pas encore de commentaire.{" "}
+                    Vous n&apos;avez pas encore de commentaire.
                   </Box>
                 </Flex>
               )}

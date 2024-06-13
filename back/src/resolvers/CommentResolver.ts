@@ -34,10 +34,9 @@ export class CommentResolver {
       throw new Error("Authentication required");
     }
 
-    return Comment.createComment(args);
+    return Comment.createComment({ ...args, owner: user });
   }
 
-  @Authorized()
   @Query(() => [Comment])
   async getCommentsbyProjectId(
     @Arg("projectId") projectId: string,

@@ -6,7 +6,7 @@ import {
   ID,
   Mutation,
   Query,
-  Resolver,
+  Resolver
 } from "type-graphql";
 import { Context } from "..";
 import User from "../entities/user/user";
@@ -14,14 +14,14 @@ import {
   CreateOrUpdateUser,
   ResetPassword,
   ResetUser,
-  SignInUser,
+  SignInUser
 } from "../entities/user/user.args";
 import UserSession from "../entities/user/userSession";
 import {
   clearUserResetSessionIdInCookie,
   clearUserSessionIdInCookie,
   setUserResetSessionIdInCookie,
-  setUserSessionIdInCookie,
+  setUserSessionIdInCookie
 } from "../utils/cookie";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail";
 import UserResetSession from "../entities/user/userResetSession";
@@ -41,7 +41,7 @@ export class UserResolver {
   @Mutation(() => User)
   updateUser(
     @Arg("id", () => ID) id: string,
-    @Args() args: CreateOrUpdateUser,
+    @Args() args: CreateOrUpdateUser
   ) {
     return User.updateUser(id, args);
   }
@@ -64,7 +64,7 @@ export class UserResolver {
   @Mutation(() => User)
   async signIn(
     @Args() args: SignInUser,
-    @Ctx() context: Context,
+    @Ctx() context: Context
   ): Promise<User> {
     const { user, session } = await User.signIn(args);
     setUserSessionIdInCookie(context.res, session);
@@ -74,19 +74,19 @@ export class UserResolver {
   @Mutation(() => User)
   async ResetUser(
     @Args() args: ResetUser,
-    @Ctx() context: Context,
+    @Ctx() context: Context
   ): Promise<User> {
     const { user, session } = await User.resetUser(args);
     setUserResetSessionIdInCookie(context.res, session);
     try {
       await sendPasswordResetEmail(user.email, session.id);
       console.log(
-        "E-mail de réinitialisation de mot de passe envoyé avec succès",
+        "E-mail de réinitialisation de mot de passe envoyé avec succès"
       );
     } catch (error) {
       console.error(
         "Erreur lors de l'envoi de l'e-mail de réinitialisation de mot de passe :",
-        error,
+        error
       );
       throw error;
     }

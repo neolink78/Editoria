@@ -99,7 +99,7 @@ class Project extends BaseEntity {
     return await Project.find({
       order: {
         createdAt: "DESC",
-      },
+      }
     });
   }
 
@@ -121,7 +121,7 @@ class Project extends BaseEntity {
   }
 
   static async getProjectById(id: string): Promise<Project> {
-    const project = await Project.findOne({ where: { id } });
+    const project = await Project.findOne({ where: { id }, relations: ["owner", "comments", "codeSnippetsOwned", "comments.owner", "comments.project"]});
     if (!project) {
       throw new Error("Project not found");
     }
@@ -136,11 +136,10 @@ class Project extends BaseEntity {
 
   static async updateProject(
     id: string,
-    partialProject: ProjectArgs,
+    partialProject: CreateOrUpdateProjectArgs
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
-
     if (partialProject.title === "") {
       throw new Error("Title cannot be empty");
     }

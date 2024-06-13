@@ -1,4 +1,5 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import Link from "next/link";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
 import EditorSidebar from "../components/editor/EditorSidebar";
@@ -8,19 +9,29 @@ import { MdOutlineEdit } from "react-icons/md";
 import { IoLogoJavascript } from "react-icons/io5";
 import SubmitButton from "../lib/submitButton";
 import { LuSave } from "react-icons/lu";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   AddFileMutation,
   AddFileMutationVariables,
   CreateProjectMutation,
   CreateProjectMutationVariables,
+  DeleteCodeSnippetMutation,
+  DeleteCodeSnippetMutationVariables,
+  GetProjectQuery,
+  GetProjectQueryVariables,
   Language,
+  UpdateFileMutation,
+  UpdateFileMutationVariables,
+  UpdateProjectMutation,
+  UpdateProjectMutationVariables,
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
 import { isClickOutside } from "../utils/event";
+import { useAuth } from "@/context/UserContext";
 
 export type File = {
+  id: string;
   name: string;
   language: Language;
   value: string;
@@ -31,7 +42,20 @@ export type ProjectInfo = {
   title: string;
   description: string;
   isPublic: boolean;
+  owner: {
+    id: string;
+    username: string;
+    email: string;
+  };
 };
+
+const DELETE_FILE = gql`
+  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {
+    deleteCodeSnippet(id: $deleteCodeSnippetId) {
+      id
+    }
+  }
+`;
 
 const CREATE_PROJECT = gql`
   mutation CreateProject(
@@ -45,6 +69,11 @@ const CREATE_PROJECT = gql`
       description: $description
     ) {
       id
+      owner {
+        email
+        id
+        username
+      }
     }
   }
 `;
@@ -67,8 +96,72 @@ const ADD_FILE = gql`
   }
 `;
 
+const UPDATE_FILE = gql`
+  mutation UpdateFile(
+    $updateCodeSnippetId: ID!
+    $code: String!
+    $title: String!
+    $language: Language!
+    $projectId: String!
+  ) {
+    updateCodeSnippet(
+      id: $updateCodeSnippetId
+      code: $code
+      title: $title
+      language: $language
+      projectId: $projectId
+    ) {
+      code
+      id
+    }
+  }
+`;
+
+const GET_PROJECT = gql`
+  query GetProject($getProjectByIdId: ID!) {
+    getProjectById(id: $getProjectByIdId) {
+      codeSnippetsOwned {
+        code
+        id
+        language
+        title
+      }
+      description
+      title
+      likes {
+        id
+      }
+      owner {
+        username
+        id
+        email
+      }
+    }
+  }
+`;
+
+const UPDATE_PROJECT = gql`
+  mutation UpdateProject(
+    $title: String!
+    $isPublic: Boolean!
+    $updateProjectId: ID!
+    $description: String
+  ) {
+    updateProject(
+      title: $title
+      is_public: $isPublic
+      id: $updateProjectId
+      description: $description
+    ) {
+      id
+    }
+  }
+`;
+
 function CodeEditor() {
-  const isUserLoggedIn = true;
+  const router = useRouter();
+  const { user } = useAuth();
+  const { project: projectId } = router.query;
   const modalRef = useRef<HTMLInputElement | null>(null);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>("index.html");
@@ -77,33 +170,82 @@ function CodeEditor() {
     title: "Nouveau projet",
     description: "",
     isPublic: false,
+    owner: {
+      id: "",
+      username: "",
+      email: "",
+    },
   });
   const [project, setProject] = useState<File[]>([
     {
+      id: "",
       name: "index.html",
       language: Language.Html,
       value: "<!-- Write your HTML -->",
     },
   ]);
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
 
   const selectedFile = project.find((file) => file.name === fileName);
 
-  const router = useRouter();
+  const [createProjectMutation] = useMutation<
+    CreateProjectMutation,
+    CreateProjectMutationVariables
+  >(CREATE_PROJECT);
 
-  const [
-    createProjectMutation,
-    { loading: loadingCreateProject, error: errorCreateProject },
-  ] = useMutation<CreateProjectMutation, CreateProjectMutationVariables>(
-    CREATE_PROJECT,
+  const [addFileMutation] = useMutation<
+    AddFileMutation,
+    AddFileMutationVariables
+  >(ADD_FILE);
+
+  const [updateFileMutation] = useMutation<
+    UpdateFileMutation,
+    UpdateFileMutationVariables
+  >(UPDATE_FILE);
+
+  const [UpdateProjectMutation] = useMutation<
+    UpdateProjectMutation,
+    UpdateProjectMutationVariables
+  >(UPDATE_PROJECT);
+
+  const [deleteFileMutation] = useMutation<
+    DeleteCodeSnippetMutation,
+    DeleteCodeSnippetMutationVariables
+  >(DELETE_FILE);
+
+  const { data, refetch } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
+    GET_PROJECT,
+    { variables: { getProjectByIdId: projectId as string } }
   );
 
-  const [addFileMutation, { loading: loadingAddFiles, error: errorAddFiles }] =
-    useMutation<AddFileMutation, AddFileMutationVariables>(ADD_FILE);
-
+  useEffect(() => {
+    if (data && projectId) {
+      setProjectInfo({
+        id: projectId as string,
+        title: data.getProjectById.title,
+        description: data.getProjectById.description,
+        isPublic: false,
+        owner: {
+          id: data.getProjectById.owner.id,
+          username: data.getProjectById.owner.username,
+          email: data.getProjectById.owner.email,
+        },
+      });
+      setProject(
+        data.getProjectById.codeSnippetsOwned.map((snippet) => ({
+          id: snippet.id,
+          name: snippet.title,
+          language: snippet.language,
+          value: snippet.code,
+        }))
+      );
+      setFilesInTabs(
+        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
+      );
+    }
+  }, [data]);
   const createProject = async () => {
-    if (router.query.project) return;
     try {
       const { data } = await createProjectMutation({
         variables: {
@@ -113,10 +255,19 @@ function CodeEditor() {
         },
       });
       if (data && data.createProject?.id) {
-        setProjectInfo({ ...projectInfo, id: data.createProject.id });
+        setProjectInfo({
+          ...projectInfo,
+          id: data.createProject.id,
+          owner: {
+            id: data.createProject.owner.id,
+            username: data.createProject.owner.username,
+            email: data.createProject.owner.email,
+          },
+        });
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
       }
+      refetch();
     } catch (error) {
       console.error(error);
     }
@@ -125,7 +276,7 @@ function CodeEditor() {
   const addProject = async (id: string) => {
     try {
       for (const file of project) {
-        await addFileMutation({
+        const { data } = await addFileMutation({
           variables: {
             title: file.name,
             code: file.value,
@@ -133,9 +284,82 @@ function CodeEditor() {
             projectId: id,
           },
         });
+        if (data && data.createCodeSnippet?.id) {
+          setProject((prevState) =>
+            prevState.map((el) => {
+              if (el.name === file.name) {
+                return {
+                  ...el,
+                  id: data.createCodeSnippet.id,
+                };
+              }
+              return el;
+            })
+          );
+        }
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const updateProject = async () => {
+    try {
+      await UpdateProjectMutation({
+        variables: {
+          title: projectInfo.title,
+          isPublic: projectInfo.isPublic,
+          updateProjectId: projectId as string,
+          description: projectInfo.description,
+        },
+      });
+
+      const fileToDelete = data?.getProjectById.codeSnippetsOwned.filter(
+        (snippet) => !project.find((el) => el.id === snippet.id)
+      );
+      if (fileToDelete?.length) {
+        for (const file of fileToDelete) {
+          await deleteFileMutation({
+            variables: {
+              deleteCodeSnippetId: file.id,
+            },
+          });
+        }
+      }
+
+      for (const file of project) {
+        if (!file.id) {
+          await addFileMutation({
+            variables: {
+              title: file.name,
+              code: file.value,
+              language: file.language,
+              projectId: projectId as string,
+            },
+          });
+        } else {
+          await updateFileMutation({
+            variables: {
+              updateCodeSnippetId: file.id,
+              code: file.value,
+              title: file.name,
+              language: file.language,
+              projectId: projectId as string,
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (router.query.project) {
+      await updateProject();
+      refetch();
+    } else {
+      await createProject();
     }
   };
 
@@ -263,8 +487,8 @@ function CodeEditor() {
         align={"center"}
         className="relative"
       >
-        <Text>EDITORIA</Text>
-        {isUserLoggedIn && (
+        <Link href="/">EDITORIA</Link>
+        {user && (
           <Flex
             align={"center"}
             gap={2}
@@ -272,13 +496,13 @@ function CodeEditor() {
             py={1}
             px={2}
             className="hover:outline hover:outline-1 hover:outline-gray-400 hover:bg-gray-600 cursor-pointer transition-colors ease-out"
-            onClick={createProject}
+            onClick={handleSave}
           >
             <LuSave color="white" /> <Text>Save</Text>
           </Flex>
         )}
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          {isUserLoggedIn ? (
+          {user ? (
             <>
               <Flex align={"center"} gap={4} position={"relative"}>
                 <Text>{projectInfo.title}</Text>
@@ -300,13 +524,13 @@ function CodeEditor() {
               )}
             </>
           ) : (
-            <SubmitButton bg="#1574EF">
+            <SubmitButton bg="#1574EF" onClick={() => router.push("/sign-in")}>
               Sign in to save your project
             </SubmitButton>
           )}
         </Box>
       </Flex>
-      <Flex w="100%" className="editor-container">
+      <Flex w="100%" className="editor-container" height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}>
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -315,6 +539,7 @@ function CodeEditor() {
           setFilesInTabs={setFilesInTabs}
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
+          likes={data?.getProjectById.likes.length}
         />
         <Flex
           direction={"column"}
@@ -358,7 +583,7 @@ function CodeEditor() {
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
-                height="calc(100vh - 92px)"
+                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
                 width="60%"
                 path={selectedFile?.name}
                 language={selectedFile?.language.toLowerCase()}
@@ -369,7 +594,7 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box height={"calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
+              <Box height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

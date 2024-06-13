@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import ReactIcon from "@/icons/reactIcon";
@@ -9,9 +9,12 @@ import { AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Language } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import { UUID } from "crypto";
 
 type TileProps = {
-  icon?: string;
+  ownerId: UUID;
+  icon?: Language;
   label?: string;
   description?: string;
   date?: string;
@@ -30,6 +33,8 @@ type TileProps = {
 
 const Tile = ({
   icon,
+  label,
+  ownerId,
   description,
   marginTop,
   homePage,
@@ -43,6 +48,7 @@ const Tile = ({
   toggleLike,
   likeCount,
 }: TileProps) => {
+  const router = useRouter();
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
@@ -92,15 +98,19 @@ const Tile = ({
         {content ? (
           ""
         ) : (
-          <Text isTruncated minWidth="16vw" maxWidth="16vw">
-            {relativeDate} par &nbsp;
+          <Text isTruncated w="16vw">
+            {relativeDate} par{" "}
             {owner ? (
-              <span style={{ color: "#1574EF" }}>{owner}</span>
+              <span
+                style={{ color: "#1574EF", cursor: "pointer" }}
+                onClick={() => router.push(`/user/${ownerId}?page=1`)}
+              >
+                {owner}
+              </span>
             ) : (
               "Unknown"
             )}
-          </Text>
-        )}
+          </Text>)}
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />
