@@ -9,7 +9,4 @@ export class CreateOrUpdateCommentArgs {
 
   @Field()
   projectId!: string;
-
-  @Field()
-  userId!: string;
 }

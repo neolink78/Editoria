@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 import { gql, useQuery } from "@apollo/client";
-import { GetProjectsQuery, Language } from "@/gql/graphql";
+import { GetprojectsQuery, Language } from "@/gql/graphql";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
@@ -33,8 +33,8 @@ type projectType = {
   createdAt: string;
 };
 const Projects = () => {
-  const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
-  console.log(data?.getProjects);
+  const { data } = useQuery<GetprojectsQuery>(GETPROJECTS);
+
   const router = useRouter();
 
   const [value, setValue] = useState("");
