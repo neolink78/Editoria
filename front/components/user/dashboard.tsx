@@ -61,16 +61,8 @@ const Dashboard = () => {
   const router = useRouter();
 
   const handleOpenProject = (projectId: string) => {
-    console.log(projectId);
-    projectId = projects[0].id;
     router.push(`/editor?project=${projectId}`);
   };
-
-  // useEffect(() => {
-  //   if (projectData) {
-  //     refetch();
-  //   }
-  // }, [projectData]);
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -89,7 +81,7 @@ const Dashboard = () => {
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
-  // if (error) return (<Error />)
+  if (error) return (<Error />)
   if (loading || commentLoading || likedProjectsLoading) return (
     <Flex flexDirection="column" justifyContent="center" alignItems="center" width="70vw" mt="50px">
       {Array.from({ length: 10 }).map((_, idx) => (
@@ -163,7 +155,7 @@ const Dashboard = () => {
                       toggleLike({ variables: { projectId: e.id } });
                     }}
                     // isLiked={likedProjects.some((p) => p.id === e.id)}
-                    onOpenProject={handleOpenProject}
+                    onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
               )}
@@ -254,7 +246,7 @@ const Dashboard = () => {
               display="flex"
               alignItems="baseline"
             >
-              Mes projets en collaboration
+              {/* Mes projets en collaboration */}
               {/* {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
               </Box>} */}
@@ -302,7 +294,7 @@ const Dashboard = () => {
             </Box>
             <Box mb={12}>
               {commentData && comments.length > 0 ? (
-                comments.map((e, idx) => (
+                comments.slice(-3).map((e, idx) => (
                   <Tile
                     homePage
                     ownerId={e.owner.id as UUID}

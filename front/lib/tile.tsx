@@ -69,6 +69,7 @@ const Tile = ({
       mt={marginTop || "1vw"}
       fontSize="0.9vw"
       onClick={handleProjectOpen}
+      cursor="pointer"
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon as Language)}
