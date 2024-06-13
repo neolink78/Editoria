@@ -5,7 +5,6 @@ import Tile from "../../lib/tile";
 import { getLanguageIcon } from "../../utils/languageIcons";
 import { Language } from "@/gql/graphql";
 import { useRouter } from "next/router";
-import { UUID } from "crypto";
 
 export type Project = {
   id: string;
@@ -13,7 +12,7 @@ export type Project = {
   title: string;
   description: string;
   createdAt: string;
-  ownerId?: { username: UUID };
+  owner: { username: string };
   comments: Array<{ id: string; content: string }>;
   likes: Array<{ id: string }>;
 };
@@ -66,7 +65,7 @@ const DashboardProjects = ({
               title={project.title}
               description={project.description}
               createdAt={project.createdAt}
-              ownerId={project.ownerId!.username}
+              owner={project.owner.username}
               commentCount={project?.comments.length}
               likeCount={project.likes.length}
               toggleLike={() => {

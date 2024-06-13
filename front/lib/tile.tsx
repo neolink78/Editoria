@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { UUID } from "crypto";
 
 type TileProps = {
-  ownerId: UUID;
+  ownerId?: UUID;
   icon?: Language;
   label?: string;
   description?: string;
