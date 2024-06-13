@@ -1,13 +1,16 @@
 import {
-  SiJavascript, SiTypescript, SiPython, SiCplusplus,
+  SiJavascript,
+  SiTypescript,
+  SiPython,
+  SiCplusplus,
   SiCsharp,
   SiHtml5,
   SiC,
   SiCss3,
-  SiHtmx
-} from 'react-icons/si';
+  SiHtmx,
+} from "react-icons/si";
 
-import { Language } from '../gql/graphql';
+import { Language } from "../gql/graphql";
 
 export const getLanguageIcon = (language: Language) => {
   const iconStyle = { fontSize: "22px" };
@@ -22,11 +25,11 @@ export const getLanguageIcon = (language: Language) => {
       return <SiCplusplus style={iconStyle} />;
     case "CSHARP":
       return <SiCsharp style={iconStyle} />;
-    case 'HTML':
+    case "HTML":
       return <SiHtml5 color="orange" style={iconStyle} />;
-    case 'C':
+    case "C":
       return <SiC style={iconStyle} />;
-    case 'CSS':
+    case "CSS":
       return <SiCss3 color="#1574EF" style={iconStyle} />;
     default:
       return <SiHtmx style={iconStyle} />;

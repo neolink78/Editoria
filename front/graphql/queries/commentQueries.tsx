@@ -1,18 +1,18 @@
 import { gql } from "@apollo/client";
 
 export const GET_OWN_COMMENTS = gql`
-query GetOwnComments {
-  getOwnComments {
-    id
-    content
-    project {
+  query GetOwnComments {
+    getOwnComments {
       id
-      title
-    }
-    owner {
-      id
-      username
+      content
+      project {
+        id
+        title
+      }
+      owner {
+        id
+        username
+      }
     }
   }
-}
 `;

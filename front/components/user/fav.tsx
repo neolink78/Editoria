@@ -1,8 +1,8 @@
-import { gql, useQuery } from "@apollo/client"
-import { Box } from "@chakra-ui/react"
-import { GetUsersQuery } from "../../gql/graphql"
-import Tile from "../../lib/tile"
-import indexMock from "../../mocks/indexMock"
+import { gql, useQuery } from "@apollo/client";
+import { Box } from "@chakra-ui/react";
+import { GetUsersQuery } from "../../gql/graphql";
+import Tile from "../../lib/tile";
+import indexMock from "../../mocks/indexMock";
 
 const GETUSERS = gql`
   query GetUsers {
@@ -12,11 +12,11 @@ const GETUSERS = gql`
       email
     }
   }
-`
+`;
 
 const Fav = () => {
-  const { data, loading, error } = useQuery<GetUsersQuery>(GETUSERS)
-  
+  const { data, loading, error } = useQuery<GetUsersQuery>(GETUSERS);
+
   return (
     <>
       <Box
@@ -27,7 +27,6 @@ const Fav = () => {
         alignItems="baseline"
       >
         <Box>John a liké ...</Box>
-       
       </Box>
       <Box>
         {indexMock.slice(-2).map((e, idx) => (
@@ -51,7 +50,6 @@ const Fav = () => {
         alignItems="baseline"
       >
         <Box>Novak a commenté ...</Box>
-       
       </Box>
       <Box>
         {indexMock.slice(-1).map((e, idx) => (
@@ -75,7 +73,6 @@ const Fav = () => {
         alignItems="baseline"
       >
         <Box>Novak a liké ...</Box>
-       
       </Box>
       <Box mb={12}>
         {indexMock.slice(-3).map((e, idx) => (
@@ -90,8 +87,8 @@ const Fav = () => {
           />
         ))}
       </Box>
-      </>
-  )
-}
+    </>
+  );
+};
 
-export default Fav
+export default Fav;

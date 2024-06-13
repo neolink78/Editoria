@@ -69,6 +69,11 @@ class User extends BaseEntity {
   @Field(() => [Project])
   projects!: Project[];
 
+  @ManyToMany(() => Project)
+  @JoinTable({ name: "user_likes_project" })
+  @Field(() => [Project])
+  likedProjects!: Project[];
+
   @OneToMany(() => Like, (like) => like.user, { eager: true })
   @Field(() => [Like])
   likes!: Like[];
@@ -94,6 +99,13 @@ class User extends BaseEntity {
   }
 
   static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
+    const existingUser = await User.findOne({
+      where: { email: userData.email },
+    });
+    if (existingUser) {
+      throw new Error("EMAIL_ALREADY_USED");
+    }
+
     userData.password = await hash(userData.password, 10);
 
     const newUser = new User(userData);
@@ -107,11 +119,16 @@ class User extends BaseEntity {
     return users;
   }
 
-  static async getUserById(id: string): Promise<User> {
-    const user = await User.findOne({ where: { id } });
+  static async getUserById(id: string) {
+    const user = await User.findOne({
+      where: { id },
+      relations: ["projects"],
+    });
     if (!user) {
       throw new Error("USER_NOT_FOUND");
     }
+    const projects = await Project.find({ where: { owner: { id } } });
+    user.projects = projects;
     return user;
   }
 
@@ -125,7 +142,7 @@ class User extends BaseEntity {
 
   static async updateUser(
     id: string,
-    userData: CreateOrUpdateUser
+    userData: CreateOrUpdateUser,
   ): Promise<User> {
     const user = await User.getUserById(id);
 
@@ -187,7 +204,7 @@ class User extends BaseEntity {
   }
 
   static async getUserResetWithSessionId(
-    resetSessionId: string
+    resetSessionId: string,
   ): Promise<User | null> {
     const resetSession = await UserResetSession.findOne({
       where: { id: resetSessionId },
@@ -201,7 +218,7 @@ class User extends BaseEntity {
 
   static async updatePassword(
     userResetSessionId: string,
-    userData: ResetPassword
+    userData: ResetPassword,
   ): Promise<User> {
     const user = await User.getUserResetWithSessionId(userResetSessionId);
 

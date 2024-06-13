@@ -16,9 +16,8 @@ export class CreateOrUpdateUser {
   @MinLength(12)
   password!: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   description!: string;
-  
 }
 
 @ArgsType()

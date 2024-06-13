@@ -7,14 +7,17 @@ import Breadcrumb from "@/lib/breadCrumb";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
+import { UUID } from "crypto";
+
 const GETPROJECTS = gql`
-  query GETPROJECTS {
+  query GetProjects {
     getProjects {
       codeSnippetsOwned {
         language
       }
       owner {
         username
+        id
       }
       createdAt
       description
@@ -23,27 +26,18 @@ const GETPROJECTS = gql`
   }
 `;
 
-type projectType = {
-  owner: {
-    username: string;
-  };
-  codeSnippetsOwned: Array<{ language: Language }>;
-  title: string;
-  description: string;
-  createdAt: string;
-};
 const Projects = () => {
   const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
-  console.log(data?.getProjects);
+
   const router = useRouter();
 
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
   const [filteredProjects, setFilteredProjects] = useState(
-    data?.getProjects || []
+    data?.getProjects || [],
   );
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || 1
+    parseInt(router.query.page as string) || 1,
   );
   const handlePageChange = (pageName: string | undefined) => {
     setActivePage(pageName || "dashboard");
@@ -68,14 +62,14 @@ const Projects = () => {
       let filtered = data.getProjects.filter(
         (project) =>
           project.title.toLowerCase().includes(value.toLowerCase()) ||
-          project.description.toLowerCase().includes(value.toLowerCase())
+          project.description.toLowerCase().includes(value.toLowerCase()),
       );
 
       if (activePage === "mostRecents") {
         router.push(`?page=${1}`);
         filtered = filtered.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
       }
       setFilteredProjects(filtered);
@@ -126,9 +120,10 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
                     homePage
+                    ownerId={project.owner.id as UUID}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
                     title={project.title}
@@ -150,9 +145,10 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
                     homePage
+                    ownerId={project.owner.id as UUID}
                     title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}

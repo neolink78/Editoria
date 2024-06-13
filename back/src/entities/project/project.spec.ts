@@ -78,7 +78,7 @@ describe("Project", () => {
           owner: testUser,
           collaboratorIds: [],
           codeSnippetsOwned: [codesnippet],
-        })
+        }),
       ).rejects.toThrow("Title is required");
     });
   });
@@ -104,9 +104,7 @@ describe("Project", () => {
         title: "HTML LOADER",
         is_public: true,
         description: "This is a bad loader, don't look please",
-        owner: testUser,
         collaboratorIds: [],
-        codeSnippetsOwned: [codesnippet],
       });
 
       expect(updatedProject).toBeDefined();
@@ -123,11 +121,10 @@ describe("Project", () => {
       expect(fetchedProject).toBeDefined();
       expect(fetchedProject!.id).toBeDefined();
       expect(fetchedProject!.description).toBe(
-        "This is a bad loader, don't look please"
+        "This is a bad loader, don't look please",
       );
       expect(fetchedProject!.title).toBe("HTML LOADER");
     });
-
 
     it("should not be able to update a project with a wrong id format", async () => {
       await expect(
@@ -136,10 +133,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
-        })
+        }),
       ).rejects.toThrow('invalid input syntax for type uuid: "123"');
     });
 
@@ -150,10 +145,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
-        })
+        }),
       ).rejects.toThrow("Project not found");
     });
 
@@ -164,10 +157,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
-        })
+        }),
       ).rejects.toThrow("Title cannot be empty");
     });
   });
@@ -197,13 +188,13 @@ describe("Project", () => {
 
     it("should not be able to delete a project with a wrong id format", async () => {
       await expect(Project.deleteProject("123")).rejects.toThrow(
-        'invalid input syntax for type uuid: "123"'
+        'invalid input syntax for type uuid: "123"',
       );
     });
 
     it("should not be able to delete a project with a wrong id", async () => {
       await expect(
-        Project.deleteProject("123e4567-e89b-12d3-a456-426614174000")
+        Project.deleteProject("123e4567-e89b-12d3-a456-426614174000"),
       ).rejects.toThrow("Project not found");
     });
   });

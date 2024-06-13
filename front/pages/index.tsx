@@ -35,6 +35,7 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {indexMock.map((e, idx) => (
           <Tile
+            ownerId="ac87bc7a-bf47-43a8-8f8a-7da653cb0eed"
             homePage
             key={idx}
             marginTop={e.marginTop}

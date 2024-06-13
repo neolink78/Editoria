@@ -1,11 +1,11 @@
-import { Box, Skeleton } from '@chakra-ui/react';
-import ArrowLeftIcon from '../../icons/arrowLeftIcon';
-import { PaginationControls } from '../../lib/pagination';
-import Tile from '../../lib/tile';
-import { getLanguageIcon } from '../../utils/languageIcons';
-import { Language } from '@/gql/graphql';
-import { useRouter } from 'next/router';
-
+import { Box, Skeleton } from "@chakra-ui/react";
+import ArrowLeftIcon from "../../icons/arrowLeftIcon";
+import { PaginationControls } from "../../lib/pagination";
+import Tile from "../../lib/tile";
+import { getLanguageIcon } from "../../utils/languageIcons";
+import { Language } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import { UUID } from "crypto";
 
 export type Project = {
   id: string;
@@ -13,7 +13,7 @@ export type Project = {
   title: string;
   description: string;
   createdAt: string;
-  owner: { username: string };
+  ownerId?: { username: UUID };
   comments: Array<{ id: string; content: string }>;
   likes: Array<{ id: string }>;
 };
@@ -26,15 +26,23 @@ interface DashboardProjectsProps {
   toggleLike: (options: { variables: { projectId: string } }) => void;
 }
 
-const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, toggleLike }: DashboardProjectsProps) => {
+const DashboardProjects = ({
+  projects,
+  onDelete,
+  setShowAllProjects,
+  isLoading,
+  toggleLike,
+}: DashboardProjectsProps) => {
   const router = useRouter();
   const currentPage = parseInt(router.query.page as string) || 1;
   const projectsPerPage = 8;
 
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
-
+  const currentProjects = projects.slice(
+    indexOfFirstProject,
+    indexOfLastProject,
+  );
 
   return (
     <Box mb={10}>
@@ -58,7 +66,7 @@ const DashboardProjects = ({ projects, onDelete, setShowAllProjects, isLoading, 
               title={project.title}
               description={project.description}
               createdAt={project.createdAt}
-              owner={project.owner.username}
+              ownerId={project.ownerId!.username}
               commentCount={project?.comments.length}
               likeCount={project.likes.length}
               toggleLike={() => {

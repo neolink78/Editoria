@@ -9,7 +9,7 @@ import {
   SignUpMutationVariables,
 } from "../gql/graphql";
 
-const SIGN_UP_FORM = gql`
+export const SIGN_UP_FORM = gql`
   mutation SignUp($email: String!, $username: String!, $password: String!) {
     signUp(email: $email, username: $username, password: $password) {
       email
@@ -17,7 +17,7 @@ const SIGN_UP_FORM = gql`
   }
 `;
 
-const SIGN_IN_FORM = gql`
+export const SIGN_IN_FORM = gql`
   mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
       description
@@ -32,11 +32,11 @@ export const useSignInFormik = (isLogin: boolean) => {
   const router = useRouter();
 
   const [signUpMutation] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_FORM
+    SIGN_UP_FORM,
   );
 
   const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
-    SIGN_IN_FORM
+    SIGN_IN_FORM,
   );
 
   const validationSchema = isLogin
