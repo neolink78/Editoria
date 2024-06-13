@@ -17,7 +17,7 @@ const defaultValue: ModalContextType = {
   isOpen: false,
   modalProps: {},
   openModal: () => {},
-  closeModal: () => {}
+  closeModal: () => {},
 };
 
 const ModalContext = createContext<ModalContextType>(defaultValue);

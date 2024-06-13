@@ -3,7 +3,7 @@ import {
   render,
   screen,
   waitFor,
-  act
+  act,
 } from "@testing-library/react";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { SIGN_IN_FORM } from "../../hooks/form";
@@ -22,8 +22,8 @@ describe("Sign in component", () => {
       query: SIGN_IN_FORM,
       variables: {
         email: "test@example.com",
-        password: "password1234"
-      }
+        password: "password1234",
+      },
     },
     result: {
       data: {
@@ -31,32 +31,32 @@ describe("Sign in component", () => {
           email: "test@example.com",
           id: "123456",
           username: "Chloé",
-          description: ""
-        }
-      }
-    }
+          description: "",
+        },
+      },
+    },
   };
 
   it("renders the SignIp form and signs up a user", async () => {
     const push = jest.fn();
     (useRouter as jest.Mock).mockImplementation(() => ({
       push,
-      query: {}
+      query: {},
     }));
 
     await act(async () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_IN_FORM]}>
           <SignIn />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
     fireEvent.change(screen.getByPlaceholderText(/email/i), {
-      target: { value: "test@example.com" }
+      target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getByPlaceholderText(/Password/i), {
-      target: { value: "password1234" }
+      target: { value: "password1234" },
     });
 
     await act(async () => {
@@ -74,7 +74,7 @@ describe("Sign in component", () => {
       render(
         <MockedProvider>
           <SignIn />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 

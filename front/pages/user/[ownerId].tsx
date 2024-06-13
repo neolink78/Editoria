@@ -46,10 +46,10 @@ export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
   const { data } = useQuery(GET_USER, {
-    variables: { ownerId }
+    variables: { ownerId },
   });
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || "1"
+    parseInt(router.query.page as string) || "1",
   );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;

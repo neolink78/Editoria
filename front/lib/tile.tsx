@@ -46,7 +46,7 @@ const Tile = ({
   commentCount,
   content,
   toggleLike,
-  likeCount
+  likeCount,
 }: TileProps) => {
   const router = useRouter();
   const relativeDate = createdAt

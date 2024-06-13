@@ -3,7 +3,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  CreateDateColumn
+  CreateDateColumn,
 } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
 import User from "../user/user";
@@ -17,13 +17,13 @@ class Like extends BaseEntity {
   id!: string;
 
   @ManyToOne(() => User, (user) => user.likes, {
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
   })
   @Field(() => User)
   user!: User;
 
   @ManyToOne(() => Project, (project) => project.likes, {
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
   })
   @Field(() => Project)
   project!: Project;
@@ -42,8 +42,8 @@ class Like extends BaseEntity {
     const like = await Like.findOne({
       where: {
         user: { id: user.id },
-        project: { id: projectId }
-      }
+        project: { id: projectId },
+      },
     });
 
     if (like) {
@@ -59,7 +59,7 @@ class Like extends BaseEntity {
   static async likedProjects(userId: string): Promise<Project[]> {
     const likes = await Like.find({
       where: { user: { id: userId } },
-      relations: ["project"]
+      relations: ["project"],
     });
 
     return likes.map((like) => like.project);
@@ -68,7 +68,7 @@ class Like extends BaseEntity {
   static async projectLikes(projectId: string): Promise<User[]> {
     const likes = await Like.find({
       where: { project: { id: projectId } },
-      relations: ["user"]
+      relations: ["user"],
     });
 
     return likes.map((like) => like.user);

@@ -6,7 +6,7 @@ import {
   ID,
   Mutation,
   Query,
-  Resolver
+  Resolver,
 } from "type-graphql";
 import { Context } from "..";
 import CodeSnippet from "../entities/codeSnippet/codeSnippet";
@@ -19,7 +19,7 @@ export class CodeSnippetResolver {
   @Mutation(() => CodeSnippet)
   createCodeSnippet(
     @Args() args: CreateOrUpdateCodeSnippetArgs,
-    @Ctx() { user }: Context
+    @Ctx() { user }: Context,
   ) {
     return CodeSnippet.createCodeSnippet({ ...args, owner: user as User });
   }
@@ -42,7 +42,7 @@ export class CodeSnippetResolver {
   @Mutation(() => CodeSnippet)
   updateCodeSnippet(
     @Arg("id", () => ID) id: string,
-    @Args() args: CreateOrUpdateCodeSnippetArgs
+    @Args() args: CreateOrUpdateCodeSnippetArgs,
   ) {
     return CodeSnippet.updateCodeSnippet(id, args);
   }

@@ -7,7 +7,7 @@ import {
   ID,
   Mutation,
   Query,
-  Resolver
+  Resolver,
 } from "type-graphql";
 import { Context } from "..";
 import Project from "../entities/project/project";
@@ -29,12 +29,12 @@ export class ProjectResolver {
   @Mutation(() => Project)
   createProject(
     @Args() args: CreateOrUpdateProjectArgs,
-    @Ctx() { user }: Context
+    @Ctx() { user }: Context,
   ) {
     return Project.createProject({
       ...args,
       owner: user as User,
-      codeSnippetsOwned: []
+      codeSnippetsOwned: [],
     });
   }
 
@@ -65,10 +65,10 @@ export class ProjectResolver {
   @Mutation(() => Project)
   async updateProject(
     @Arg("id", () => ID) id: string,
-    @Args() args: CreateOrUpdateProjectArgs
+    @Args() args: CreateOrUpdateProjectArgs,
   ) {
     return Project.updateProject(id, {
-      ...args
+      ...args,
     });
   }
 

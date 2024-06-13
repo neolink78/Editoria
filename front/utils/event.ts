@@ -3,7 +3,7 @@
  */
 export const isClickOutside = (
   event: Event,
-  el: HTMLElement | null
+  el: HTMLElement | null,
 ): boolean => {
   let target = event.target as HTMLElement;
   if (!target) return false;

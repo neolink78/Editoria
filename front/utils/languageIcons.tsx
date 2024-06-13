@@ -7,7 +7,7 @@ import {
   SiHtml5,
   SiC,
   SiCss3,
-  SiHtmx
+  SiHtmx,
 } from "react-icons/si";
 
 import { Language } from "../gql/graphql";

@@ -50,7 +50,7 @@ const EditorSidebar = ({
   setFileName,
   setFilesInTabs,
   filesInTabs,
-  likes
+  likes,
 }: EditorSidebarProps) => {
   const router = useRouter();
 
@@ -58,11 +58,11 @@ const EditorSidebar = ({
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
     Comments: true,
-    Info: true
+    Info: true,
   });
 
   const { data: commentsData, refetch } = useQuery(GET_COMMENTS, {
-    variables: { projectId: projectId as string }
+    variables: { projectId: projectId as string },
   });
 
   const displayTabContent = (tab: string) => {
@@ -118,7 +118,7 @@ const EditorSidebar = ({
               onClick={() =>
                 setShowTabs({
                   ...showTabs,
-                  [tab]: !showTabs[tab as keyof ShowTabs]
+                  [tab]: !showTabs[tab as keyof ShowTabs],
                 })
               }
             >
@@ -126,7 +126,7 @@ const EditorSidebar = ({
                 style={{
                   transform: showTabs[tab as keyof ShowTabs]
                     ? "rotate(90deg)"
-                    : ""
+                    : "",
                 }}
               />
               {tab}

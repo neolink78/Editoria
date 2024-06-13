@@ -23,7 +23,7 @@ import {
   UpdateFileMutation,
   UpdateFileMutationVariables,
   UpdateProjectMutation,
-  UpdateProjectMutationVariables
+  UpdateProjectMutationVariables,
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
@@ -173,16 +173,16 @@ function CodeEditor() {
     owner: {
       id: "",
       username: "",
-      email: ""
-    }
+      email: "",
+    },
   });
   const [project, setProject] = useState<File[]>([
     {
       id: "",
       name: "index.html",
       language: Language.Html,
-      value: "<!-- Write your HTML -->"
-    }
+      value: "<!-- Write your HTML -->",
+    },
   ]);
 
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
@@ -216,7 +216,7 @@ function CodeEditor() {
 
   const { data, refetch } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
     GET_PROJECT,
-    { variables: { getProjectByIdId: projectId as string } }
+    { variables: { getProjectByIdId: projectId as string } },
   );
 
   useEffect(() => {
@@ -229,19 +229,19 @@ function CodeEditor() {
         owner: {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
-          email: data.getProjectById.owner.email
-        }
+          email: data.getProjectById.owner.email,
+        },
       });
       setProject(
         data.getProjectById.codeSnippetsOwned.map((snippet) => ({
           id: snippet.id,
           name: snippet.title,
           language: snippet.language,
-          value: snippet.code
-        }))
+          value: snippet.code,
+        })),
       );
       setFilesInTabs(
-        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title)
+        data.getProjectById.codeSnippetsOwned.map((snippet) => snippet.title),
       );
     }
   }, [data]);
@@ -251,8 +251,8 @@ function CodeEditor() {
         variables: {
           title: projectInfo.title,
           isPublic: projectInfo.isPublic,
-          description: projectInfo.description
-        }
+          description: projectInfo.description,
+        },
       });
       if (data && data.createProject?.id) {
         setProjectInfo({
@@ -261,8 +261,8 @@ function CodeEditor() {
           owner: {
             id: data.createProject.owner.id,
             username: data.createProject.owner.username,
-            email: data.createProject.owner.email
-          }
+            email: data.createProject.owner.email,
+          },
         });
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
@@ -281,8 +281,8 @@ function CodeEditor() {
             title: file.name,
             code: file.value,
             language: file.language,
-            projectId: id
-          }
+            projectId: id,
+          },
         });
         if (data && data.createCodeSnippet?.id) {
           setProject((prevState) =>
@@ -290,11 +290,11 @@ function CodeEditor() {
               if (el.name === file.name) {
                 return {
                   ...el,
-                  id: data.createCodeSnippet.id
+                  id: data.createCodeSnippet.id,
                 };
               }
               return el;
-            })
+            }),
           );
         }
       }
@@ -310,19 +310,19 @@ function CodeEditor() {
           title: projectInfo.title,
           isPublic: projectInfo.isPublic,
           updateProjectId: projectId as string,
-          description: projectInfo.description
-        }
+          description: projectInfo.description,
+        },
       });
 
       const fileToDelete = data?.getProjectById.codeSnippetsOwned.filter(
-        (snippet) => !project.find((el) => el.id === snippet.id)
+        (snippet) => !project.find((el) => el.id === snippet.id),
       );
       if (fileToDelete?.length) {
         for (const file of fileToDelete) {
           await deleteFileMutation({
             variables: {
-              deleteCodeSnippetId: file.id
-            }
+              deleteCodeSnippetId: file.id,
+            },
           });
         }
       }
@@ -334,8 +334,8 @@ function CodeEditor() {
               title: file.name,
               code: file.value,
               language: file.language,
-              projectId: projectId as string
-            }
+              projectId: projectId as string,
+            },
           });
         } else {
           await updateFileMutation({
@@ -344,8 +344,8 @@ function CodeEditor() {
               code: file.value,
               title: file.name,
               language: file.language,
-              projectId: projectId as string
-            }
+              projectId: projectId as string,
+            },
           });
         }
       }
@@ -369,8 +369,8 @@ function CodeEditor() {
       inherit: true,
       rules: [],
       colors: {
-        "editor.background": "#14181F"
-      }
+        "editor.background": "#14181F",
+      },
     });
   };
 
@@ -385,7 +385,7 @@ function CodeEditor() {
       if (file.name === fileName) {
         return {
           ...file,
-          value
+          value,
         };
       }
       return file;
@@ -411,7 +411,7 @@ function CodeEditor() {
   const getGeneratedPageURL = ({
     html,
     css,
-    js
+    js,
   }: {
     html: string;
     css: string;
@@ -444,13 +444,14 @@ function CodeEditor() {
     html: project.find((file) => file.language === Language.Html)?.value || "",
     css: project.find((file) => file.language === Language.Css)?.value || "",
     js:
-      project.find((file) => file.language === Language.Javascript)?.value || ""
+      project.find((file) => file.language === Language.Javascript)?.value ||
+      "",
   });
 
   const removeFileFromTabs = (fileName: string) => {
     setFilesInTabs((prevState) => {
       const updatedTabs = prevState.filter(
-        (fileInTab) => fileInTab !== fileName
+        (fileInTab) => fileInTab !== fileName,
       );
       if (selectedFile?.name === fileName) setFileName(updatedTabs[0]);
       return updatedTabs;

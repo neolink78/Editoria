@@ -7,7 +7,7 @@ describe("User", () => {
     for (const entity of database.entityMetadatas) {
       const repository = database.getRepository(entity.name);
       await repository.query(
-        `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
+        `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`,
       );
     }
   });
@@ -20,13 +20,13 @@ describe("User", () => {
   describe("getUserWithEmailAndPassword", () => {
     const { email, password } = {
       email: "me@test.com",
-      password: "123456azerty"
+      password: "123456azerty",
     };
 
     describe("when email matches no user in database", () => {
       it("throws error", async () => {
         await expect(
-          User.getUserWithEmailAndPassword({ email, password })
+          User.getUserWithEmailAndPassword({ email, password }),
         ).rejects.toThrow("INVALID_CREDENTIALS");
       });
     });
@@ -38,11 +38,11 @@ describe("User", () => {
             email,
             username: "Omar",
             password: "otherpassword",
-            description: ""
+            description: "",
           });
 
           await expect(
-            User.getUserWithEmailAndPassword({ email, password })
+            User.getUserWithEmailAndPassword({ email, password }),
           ).rejects.toThrow("INVALID_CREDENTIALS");
         });
       });
@@ -53,18 +53,18 @@ describe("User", () => {
             email,
             username: "Omar",
             password,
-            description: ""
+            description: "",
           });
 
           const actualUser = await User.getUserWithEmailAndPassword({
             email,
-            password
+            password,
           });
 
           expect(actualUser).toEqual({
             ...user,
             comments: [],
-            likes: []
+            likes: [],
           });
 
           // await expect(
@@ -80,7 +80,7 @@ describe("User", () => {
       email: "me@test.com",
       username: "Thibaut",
       password: "123456azerty",
-      description: ""
+      description: "",
     };
 
     it("saves user and returns it", async () => {
@@ -88,18 +88,18 @@ describe("User", () => {
         email,
         username,
         password,
-        description
+        description,
       });
 
       const actualUser = await User.getUserWithEmailAndPassword({
         email,
-        password
+        password,
       });
 
       expect(actualUser).toEqual({
         ...user,
         comments: [],
-        likes: []
+        likes: [],
       });
 
       // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
@@ -110,7 +110,7 @@ describe("User", () => {
         email,
         username: "Tom",
         password: "azerty123456",
-        description: ""
+        description: "",
       });
 
       await expect(
@@ -118,8 +118,8 @@ describe("User", () => {
           email,
           username: "Thibaut",
           password: "123456azerty",
-          description: ""
-        })
+          description: "",
+        }),
       ).rejects.toThrow("EMAIL_ALREADY_USED");
     });
   });
@@ -129,7 +129,7 @@ describe("User", () => {
       email: "me@test.com",
       username: "Tom",
       password: "azerty123456",
-      description: ""
+      description: "",
     };
 
     it("throws an error if email doesn't exist", async () => {
@@ -137,11 +137,11 @@ describe("User", () => {
         email,
         username,
         password,
-        description
+        description,
       });
 
       await expect(
-        User.resetUser({ email: "other@gmail.com" })
+        User.resetUser({ email: "other@gmail.com" }),
       ).rejects.toThrow("USER_NOT_FOUND");
     });
   });

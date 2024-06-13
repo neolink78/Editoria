@@ -6,7 +6,7 @@ import {
   ID,
   Mutation,
   Query,
-  Resolver
+  Resolver,
 } from "type-graphql";
 import { Context } from "..";
 import Project from "../entities/project/project";
@@ -20,7 +20,7 @@ export class LikeResolver {
   @Mutation(() => Boolean)
   async toggleLike(
     @Args() args: ToggleLikeArgs,
-    @Ctx() { user }: Context
+    @Ctx() { user }: Context,
   ): Promise<boolean> {
     if (!user) {
       throw new Error("Authentication required");
@@ -38,7 +38,7 @@ export class LikeResolver {
 
   @Query(() => [User])
   async projectLikes(
-    @Arg("projectId", () => ID) projectId: string
+    @Arg("projectId", () => ID) projectId: string,
   ): Promise<User[]> {
     return Like.projectLikes(projectId);
   }

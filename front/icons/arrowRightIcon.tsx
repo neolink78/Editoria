@@ -7,7 +7,7 @@ interface ArrowRightIconProps {
 const ArrowRightIcon = ({
   width = "28",
   color = "white",
-  onClick
+  onClick,
 }: ArrowRightIconProps) => (
   <svg
     width={width}

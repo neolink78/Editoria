@@ -3,7 +3,7 @@ import {
   render,
   screen,
   waitFor,
-  act
+  act,
 } from "@testing-library/react";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { SIGN_IN_FORM, SIGN_UP_FORM } from "../../hooks/form";
@@ -11,7 +11,7 @@ import {
   SignInMutation,
   SignInMutationVariables,
   SignUpMutation,
-  SignUpMutationVariables
+  SignUpMutationVariables,
 } from "@/gql/graphql";
 import SignUp from "@/pages/sign-up";
 import { useRouter } from "next/router";
@@ -28,16 +28,16 @@ describe("Sign up component", () => {
       variables: {
         email: "test@example.com",
         username: "Chloé",
-        password: "password1234"
-      }
+        password: "password1234",
+      },
     },
     result: {
       data: {
         signUp: {
-          email: "test@example.com"
-        }
-      }
-    }
+          email: "test@example.com",
+        },
+      },
+    },
   };
 
   const MOCK_SIGN_IN_FORM: MockedResponse<
@@ -48,8 +48,8 @@ describe("Sign up component", () => {
       query: SIGN_IN_FORM,
       variables: {
         email: "test@example.com",
-        password: "password1234"
-      }
+        password: "password1234",
+      },
     },
     result: {
       data: {
@@ -57,10 +57,10 @@ describe("Sign up component", () => {
           email: "test@example.com",
           id: "123456",
           username: "Chloé",
-          description: ""
-        }
-      }
-    }
+          description: "",
+        },
+      },
+    },
   };
 
   it("renders the SignUp form and signs up a user", async () => {
@@ -71,21 +71,21 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
     fireEvent.change(screen.getByPlaceholderText(/pseudo/i), {
-      target: { value: "Chloé" }
+      target: { value: "Chloé" },
     });
     fireEvent.change(screen.getByPlaceholderText(/email/i), {
-      target: { value: "test@example.com" }
+      target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getAllByPlaceholderText("Password")[0], {
-      target: { value: "password1234" }
+      target: { value: "password1234" },
     });
     fireEvent.change(screen.getByPlaceholderText(/confirm password/i), {
-      target: { value: "password1234" }
+      target: { value: "password1234" },
     });
 
     await act(async () => {
@@ -103,7 +103,7 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
@@ -121,21 +121,21 @@ describe("Sign up component", () => {
       render(
         <MockedProvider mocks={[MOCK_SIGN_UP_FORM, MOCK_SIGN_IN_FORM]}>
           <SignUp />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
     fireEvent.change(screen.getByPlaceholderText(/pseudo/i), {
-      target: { value: "Chloé" }
+      target: { value: "Chloé" },
     });
     fireEvent.change(screen.getByPlaceholderText(/email/i), {
-      target: { value: "test@example.com" }
+      target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getAllByPlaceholderText("Password")[0], {
-      target: { value: "password1234" }
+      target: { value: "password1234" },
     });
     fireEvent.change(screen.getByPlaceholderText(/confirm password/i), {
-      target: { value: "differentpassword" }
+      target: { value: "differentpassword" },
     });
 
     await act(async () => {

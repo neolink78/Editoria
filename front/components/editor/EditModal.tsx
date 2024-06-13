@@ -6,7 +6,7 @@ import {
   Textarea,
   Text,
   FormLabel,
-  Box
+  Box,
 } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
 

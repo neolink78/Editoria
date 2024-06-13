@@ -6,14 +6,14 @@ import {
   JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
-  ManyToMany
+  ManyToMany,
 } from "typeorm";
 import { compare, hash } from "bcrypt";
 import {
   CreateOrUpdateUser,
   ResetPassword,
   ResetUser,
-  SignInUser
+  SignInUser,
 } from "./user.args";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
@@ -24,11 +24,11 @@ import Like from "../like/like";
 
 export enum Role {
   USER = "USER",
-  ADMIN = "ADMIN"
+  ADMIN = "ADMIN",
 }
 
 registerEnumType(Role, {
-  name: "Role"
+  name: "Role",
 });
 
 @Entity("AppUser")
@@ -100,7 +100,7 @@ class User extends BaseEntity {
 
   static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
     const existingUser = await User.findOne({
-      where: { email: userData.email }
+      where: { email: userData.email },
     });
     if (existingUser) {
       throw new Error("EMAIL_ALREADY_USED");
@@ -122,7 +122,7 @@ class User extends BaseEntity {
   static async getUserById(id: string) {
     const user = await User.findOne({
       where: { id },
-      relations: ["projects"]
+      relations: ["projects"],
     });
     if (!user) {
       throw new Error("USER_NOT_FOUND");
@@ -142,7 +142,7 @@ class User extends BaseEntity {
 
   static async updateUser(
     id: string,
-    userData: CreateOrUpdateUser
+    userData: CreateOrUpdateUser,
   ): Promise<User> {
     const user = await User.getUserById(id);
 
@@ -166,7 +166,7 @@ class User extends BaseEntity {
 
   static async getUserWithEmailAndPassword({
     email,
-    password
+    password,
   }: SignInUser): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user || !(await compare(password, user.hashedPassword))) {
@@ -177,7 +177,7 @@ class User extends BaseEntity {
 
   static async signIn({
     email,
-    password
+    password,
   }: SignInUser): Promise<{ user: User; session: UserSession }> {
     const user = await this.getUserWithEmailAndPassword({ email, password });
     const session = await UserSession.saveNewSession(user);
@@ -185,7 +185,7 @@ class User extends BaseEntity {
   }
 
   static async resetUser({
-    email
+    email,
   }: ResetUser): Promise<{ user: User; session: UserSession }> {
     const user = await this.getUserByEmail(email);
     const session = await UserResetSession.saveNewSession(user);
@@ -195,7 +195,7 @@ class User extends BaseEntity {
   static async getUserWithSessionId(sessionId: string): Promise<User | null> {
     const session = await UserSession.findOne({
       where: { id: sessionId },
-      relations: { user: true }
+      relations: { user: true },
     });
     if (!session) {
       return null;
@@ -204,11 +204,11 @@ class User extends BaseEntity {
   }
 
   static async getUserResetWithSessionId(
-    resetSessionId: string
+    resetSessionId: string,
   ): Promise<User | null> {
     const resetSession = await UserResetSession.findOne({
       where: { id: resetSessionId },
-      relations: { user: true }
+      relations: { user: true },
     });
     if (!resetSession) {
       return null;
@@ -218,7 +218,7 @@ class User extends BaseEntity {
 
   static async updatePassword(
     userResetSessionId: string,
-    userData: ResetPassword
+    userData: ResetPassword,
   ): Promise<User> {
     const user = await User.getUserResetWithSessionId(userResetSessionId);
 

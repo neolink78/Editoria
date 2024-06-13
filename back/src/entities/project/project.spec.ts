@@ -15,13 +15,13 @@ describe("Project", () => {
       email: `testuser_${Date.now()}@example.com`,
       password: "securepassword123",
       username: `testuser_${Date.now()}`,
-      hashedPassword: "somehashedpassword"
+      hashedPassword: "somehashedpassword",
     });
 
     codesnippet = await database.getRepository(CodeSnippet).save({
       title: "JAVASCRIPT LOADER",
       code: "console.log('Hello World')",
-      owner: testUser
+      owner: testUser,
     });
     // let codeSnippetId = codesnippet.id;
   });
@@ -42,7 +42,7 @@ describe("Project", () => {
         description: "This is a great navbar",
         owner: testUser,
         codeSnippetsOwned: [codesnippet],
-        collaboratorIds: []
+        collaboratorIds: [],
       };
     });
 
@@ -77,8 +77,8 @@ describe("Project", () => {
           description: "This is a great loader",
           owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet]
-        })
+          codeSnippetsOwned: [codesnippet],
+        }),
       ).rejects.toThrow("Title is required");
     });
   });
@@ -93,7 +93,7 @@ describe("Project", () => {
           description: "Temp project for update tests",
           owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet]
+          codeSnippetsOwned: [codesnippet],
         });
         updateProjectId = project.id;
       }
@@ -104,7 +104,7 @@ describe("Project", () => {
         title: "HTML LOADER",
         is_public: true,
         description: "This is a bad loader, don't look please",
-        collaboratorIds: []
+        collaboratorIds: [],
       });
 
       expect(updatedProject).toBeDefined();
@@ -121,7 +121,7 @@ describe("Project", () => {
       expect(fetchedProject).toBeDefined();
       expect(fetchedProject!.id).toBeDefined();
       expect(fetchedProject!.description).toBe(
-        "This is a bad loader, don't look please"
+        "This is a bad loader, don't look please",
       );
       expect(fetchedProject!.title).toBe("HTML LOADER");
     });
@@ -133,8 +133,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          collaboratorIds: []
-        })
+          collaboratorIds: [],
+        }),
       ).rejects.toThrow('invalid input syntax for type uuid: "123"');
     });
 
@@ -145,8 +145,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          collaboratorIds: []
-        })
+          collaboratorIds: [],
+        }),
       ).rejects.toThrow("Project not found");
     });
 
@@ -157,8 +157,8 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          collaboratorIds: []
-        })
+          collaboratorIds: [],
+        }),
       ).rejects.toThrow("Title cannot be empty");
     });
   });
@@ -173,7 +173,7 @@ describe("Project", () => {
           description: "Temp project for delete tests",
           owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet]
+          codeSnippetsOwned: [codesnippet],
         });
         deleteProjectId = project.id;
       }
@@ -188,13 +188,13 @@ describe("Project", () => {
 
     it("should not be able to delete a project with a wrong id format", async () => {
       await expect(Project.deleteProject("123")).rejects.toThrow(
-        'invalid input syntax for type uuid: "123"'
+        'invalid input syntax for type uuid: "123"',
       );
     });
 
     it("should not be able to delete a project with a wrong id", async () => {
       await expect(
-        Project.deleteProject("123e4567-e89b-12d3-a456-426614174000")
+        Project.deleteProject("123e4567-e89b-12d3-a456-426614174000"),
       ).rejects.toThrow("Project not found");
     });
   });

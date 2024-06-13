@@ -3,7 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
 } from "react";
 import { MyProfileQuery, SignOUtMutation } from "../gql/graphql";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -28,7 +28,7 @@ const defaultValue: UserContextType = {
   setUser: () => {},
   refetch: () => {},
   signOut: () => Promise.resolve(),
-  loading: false
+  loading: false,
 };
 
 const AuthContext = createContext<UserContextType>(defaultValue);
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     update: (cache) => {
       cache.evict({ fieldName: "myProfile" });
       cache.gc();
-    }
+    },
   });
 
   useEffect(() => {

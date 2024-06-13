@@ -6,7 +6,7 @@ import {
   ResetPasswordMutation,
   ResetPasswordMutationVariables,
   ResetUserMutation,
-  ResetUserMutationVariables
+  ResetUserMutationVariables,
 } from "../gql/graphql";
 import { useState } from "react";
 
@@ -46,7 +46,7 @@ export const useResetFormik = (isEmail: boolean) => {
 
   const validationSchema = isEmail
     ? Yup.object({
-        email: Yup.string().email("Invalid email").required("Email required")
+        email: Yup.string().email("Invalid email").required("Email required"),
       })
     : Yup.object({
         password: Yup.string()
@@ -54,7 +54,7 @@ export const useResetFormik = (isEmail: boolean) => {
           .min(12, "The password is too short"),
         confirmPassword: Yup.string()
           .oneOf([Yup.ref("password")], "Passwords do not match")
-          .required("Password confirmation not entered")
+          .required("Password confirmation not entered"),
       });
 
   const onSubmit = async () => {
@@ -62,22 +62,22 @@ export const useResetFormik = (isEmail: boolean) => {
       try {
         const { data } = await ResetEmailMutation({
           variables: {
-            email: formik.values.email
-          }
+            email: formik.values.email,
+          },
         });
         if (data && data.ResetUser) {
           setShowMessage(true);
         }
       } catch (error: any) {
         formik.setErrors({
-          email: "Wrong email"
+          email: "Wrong email",
         });
       }
     } else {
       const { data } = await ResetPasswordMutation({
         variables: {
-          newPassword: formik.values.password
-        }
+          newPassword: formik.values.password,
+        },
       });
 
       if (data && data.ResetPassword) {
@@ -90,10 +90,10 @@ export const useResetFormik = (isEmail: boolean) => {
     initialValues: {
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
     },
     validationSchema,
-    onSubmit
+    onSubmit,
   });
   return { formik, showMessage };
 };

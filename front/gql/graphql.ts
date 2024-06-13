@@ -13,7 +13,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
 };
 export type MakeEmpty<
   T extends { [key: string]: unknown },
-  K extends keyof T
+  K extends keyof T,
 > = { [_ in K]?: never };
 export type Incremental<T> =
   | T
@@ -62,7 +62,7 @@ export enum Language {
   Javascript = "JAVASCRIPT",
   Python = "PYTHON",
   Typescript = "TYPESCRIPT",
-  Unknown = "UNKNOWN"
+  Unknown = "UNKNOWN",
 }
 
 export type Like = {
@@ -254,7 +254,7 @@ export type QueryProjectLikesArgs = {
 
 export enum Role {
   Admin = "ADMIN",
-  User = "USER"
+  User = "USER",
 }
 
 export type User = {
@@ -606,24 +606,30 @@ export const AddCommentDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "content" }
+            name: { kind: "Name", value: "content" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "projectId" }
+            name: { kind: "Name", value: "projectId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -637,29 +643,29 @@ export const AddCommentDocument = {
                 name: { kind: "Name", value: "content" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "content" }
-                }
+                  name: { kind: "Name", value: "content" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "projectId" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "projectId" }
-                }
-              }
+                  name: { kind: "Name", value: "projectId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "content" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "content" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<AddCommentMutation, AddCommentMutationVariables>;
 export const DeleteCommentDocument = {
   kind: "Document",
@@ -673,13 +679,13 @@ export const DeleteCommentDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "deleteCommentId" }
+            name: { kind: "Name", value: "deleteCommentId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
-        }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -693,21 +699,21 @@ export const DeleteCommentDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "deleteCommentId" }
-                }
-              }
+                  name: { kind: "Name", value: "deleteCommentId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
@@ -724,13 +730,16 @@ export const GetCommentsbyProjectIdDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "projectId" }
+            name: { kind: "Name", value: "projectId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -744,9 +753,9 @@ export const GetCommentsbyProjectIdDocument = {
                 name: { kind: "Name", value: "projectId" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "projectId" }
-                }
-              }
+                  name: { kind: "Name", value: "projectId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -764,18 +773,18 @@ export const GetCommentsbyProjectIdDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   GetCommentsbyProjectIdQuery,
   GetCommentsbyProjectIdQueryVariables
@@ -798,14 +807,14 @@ export const GetUsersDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
-                { kind: "Field", name: { kind: "Name", value: "email" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const MyProfileDocument = {
   kind: "Document",
@@ -826,14 +835,14 @@ export const MyProfileDocument = {
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<MyProfileQuery, MyProfileQueryVariables>;
 export const SignOUtDocument = {
   kind: "Document",
@@ -845,11 +854,11 @@ export const SignOUtDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
-          { kind: "Field", name: { kind: "Name", value: "signOut" } }
-        ]
-      }
-    }
-  ]
+          { kind: "Field", name: { kind: "Name", value: "signOut" } },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<SignOUtMutation, SignOUtMutationVariables>;
 export const ToggleLikeDocument = {
   kind: "Document",
@@ -863,13 +872,16 @@ export const ToggleLikeDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "projectId" }
+            name: { kind: "Name", value: "projectId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -883,15 +895,15 @@ export const ToggleLikeDocument = {
                 name: { kind: "Name", value: "projectId" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "projectId" }
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
+                  name: { kind: "Name", value: "projectId" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const DeleteProjectDocument = {
   kind: "Document",
@@ -905,13 +917,13 @@ export const DeleteProjectDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "deleteProjectId" }
+            name: { kind: "Name", value: "deleteProjectId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
-        }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -925,21 +937,21 @@ export const DeleteProjectDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "deleteProjectId" }
-                }
-              }
+                  name: { kind: "Name", value: "deleteProjectId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   DeleteProjectMutation,
   DeleteProjectMutationVariables
@@ -969,9 +981,9 @@ export const GetOwnCommentsDocument = {
                     kind: "SelectionSet",
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "title" } }
-                    ]
-                  }
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -982,18 +994,18 @@ export const GetOwnCommentsDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<GetOwnCommentsQuery, GetOwnCommentsQueryVariables>;
 export const LikedProjectsDocument = {
   kind: "Document",
@@ -1023,10 +1035,10 @@ export const LikedProjectsDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
-                      }
-                    ]
-                  }
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1034,9 +1046,9 @@ export const LikedProjectsDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } }
-                    ]
-                  }
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1047,18 +1059,18 @@ export const LikedProjectsDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "language" }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                        name: { kind: "Name", value: "language" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<LikedProjectsQuery, LikedProjectsQueryVariables>;
 export const GetProjectsByUserDocument = {
   kind: "Document",
@@ -1093,10 +1105,10 @@ export const GetProjectsByUserDocument = {
                       { kind: "Field", name: { kind: "Name", value: "code" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "language" }
-                      }
-                    ]
-                  }
+                        name: { kind: "Name", value: "language" },
+                      },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1107,7 +1119,7 @@ export const GetProjectsByUserDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "content" }
+                        name: { kind: "Name", value: "content" },
                       },
                       {
                         kind: "Field",
@@ -1117,10 +1129,10 @@ export const GetProjectsByUserDocument = {
                           selections: [
                             {
                               kind: "Field",
-                              name: { kind: "Name", value: "id" }
-                            }
-                          ]
-                        }
+                              name: { kind: "Name", value: "id" },
+                            },
+                          ],
+                        },
                       },
                       {
                         kind: "Field",
@@ -1130,13 +1142,13 @@ export const GetProjectsByUserDocument = {
                           selections: [
                             {
                               kind: "Field",
-                              name: { kind: "Name", value: "id" }
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
+                              name: { kind: "Name", value: "id" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1148,10 +1160,10 @@ export const GetProjectsByUserDocument = {
                       { kind: "Field", name: { kind: "Name", value: "email" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
-                      }
-                    ]
-                  }
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1159,17 +1171,17 @@ export const GetProjectsByUserDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   GetProjectsByUserQuery,
   GetProjectsByUserQueryVariables
@@ -1186,35 +1198,44 @@ export const SignUpDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "email" }
+            name: { kind: "Name", value: "email" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "username" }
+            name: { kind: "Name", value: "username" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "password" }
+            name: { kind: "Name", value: "password" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1228,37 +1249,37 @@ export const SignUpDocument = {
                 name: { kind: "Name", value: "email" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "email" }
-                }
+                  name: { kind: "Name", value: "email" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "username" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "username" }
-                }
+                  name: { kind: "Name", value: "username" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "password" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "password" }
-                }
-              }
+                  name: { kind: "Name", value: "password" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "email" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<SignUpMutation, SignUpMutationVariables>;
 export const SignInDocument = {
   kind: "Document",
@@ -1272,24 +1293,30 @@ export const SignInDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "email" }
+            name: { kind: "Name", value: "email" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "password" }
+            name: { kind: "Name", value: "password" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1303,17 +1330,17 @@ export const SignInDocument = {
                 name: { kind: "Name", value: "email" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "email" }
-                }
+                  name: { kind: "Name", value: "email" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "password" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "password" }
-                }
-              }
+                  name: { kind: "Name", value: "password" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -1321,14 +1348,14 @@ export const SignInDocument = {
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<SignInMutation, SignInMutationVariables>;
 export const ResetUserDocument = {
   kind: "Document",
@@ -1342,13 +1369,16 @@ export const ResetUserDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "email" }
+            name: { kind: "Name", value: "email" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1362,23 +1392,23 @@ export const ResetUserDocument = {
                 name: { kind: "Name", value: "email" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "email" }
-                }
-              }
+                  name: { kind: "Name", value: "email" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<ResetUserMutation, ResetUserMutationVariables>;
 export const ResetPasswordDocument = {
   kind: "Document",
@@ -1392,13 +1422,16 @@ export const ResetPasswordDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "newPassword" }
+            name: { kind: "Name", value: "newPassword" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1412,23 +1445,23 @@ export const ResetPasswordDocument = {
                 name: { kind: "Name", value: "newPassword" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "newPassword" }
-                }
-              }
+                  name: { kind: "Name", value: "newPassword" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   ResetPasswordMutation,
   ResetPasswordMutationVariables
@@ -1445,13 +1478,13 @@ export const DeleteCodeSnippetDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "deleteCodeSnippetId" }
+            name: { kind: "Name", value: "deleteCodeSnippetId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
-        }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1465,21 +1498,21 @@ export const DeleteCodeSnippetDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "deleteCodeSnippetId" }
-                }
-              }
+                  name: { kind: "Name", value: "deleteCodeSnippetId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   DeleteCodeSnippetMutation,
   DeleteCodeSnippetMutationVariables
@@ -1496,35 +1529,38 @@ export const CreateProjectDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "title" }
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "isPublic" }
+            name: { kind: "Name", value: "title" },
           },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "Boolean" }
-            }
-          }
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "description" }
+            name: { kind: "Name", value: "isPublic" },
           },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-        }
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Boolean" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1538,25 +1574,25 @@ export const CreateProjectDocument = {
                 name: { kind: "Name", value: "title" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "title" }
-                }
+                  name: { kind: "Name", value: "title" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "is_public" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "isPublic" }
-                }
+                  name: { kind: "Name", value: "isPublic" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "description" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "description" }
-                }
-              }
+                  name: { kind: "Name", value: "description" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -1572,18 +1608,18 @@ export const CreateProjectDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   CreateProjectMutation,
   CreateProjectMutationVariables
@@ -1600,46 +1636,55 @@ export const AddFileDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "title" }
+            name: { kind: "Name", value: "title" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "code" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "language" }
+            name: { kind: "Name", value: "language" },
           },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "Language" }
-            }
-          }
+              name: { kind: "Name", value: "Language" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "projectId" }
+            name: { kind: "Name", value: "projectId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1653,45 +1698,45 @@ export const AddFileDocument = {
                 name: { kind: "Name", value: "title" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "title" }
-                }
+                  name: { kind: "Name", value: "title" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "code" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "code" }
-                }
+                  name: { kind: "Name", value: "code" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "language" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "language" }
-                }
+                  name: { kind: "Name", value: "language" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "projectId" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "projectId" }
-                }
-              }
+                  name: { kind: "Name", value: "projectId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<AddFileMutation, AddFileMutationVariables>;
 export const UpdateFileDocument = {
   kind: "Document",
@@ -1705,57 +1750,66 @@ export const UpdateFileDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "updateCodeSnippetId" }
+            name: { kind: "Name", value: "updateCodeSnippetId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "code" } },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "title" }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "language" }
+            name: { kind: "Name", value: "title" },
           },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "Language" }
-            }
-          }
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "projectId" }
+            name: { kind: "Name", value: "language" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Language" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1769,54 +1823,54 @@ export const UpdateFileDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "updateCodeSnippetId" }
-                }
+                  name: { kind: "Name", value: "updateCodeSnippetId" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "code" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "code" }
-                }
+                  name: { kind: "Name", value: "code" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "title" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "title" }
-                }
+                  name: { kind: "Name", value: "title" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "language" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "language" }
-                }
+                  name: { kind: "Name", value: "language" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "projectId" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "projectId" }
-                }
-              }
+                  name: { kind: "Name", value: "projectId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "code" } },
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<UpdateFileMutation, UpdateFileMutationVariables>;
 export const GetProjectDocument = {
   kind: "Document",
@@ -1830,13 +1884,13 @@ export const GetProjectDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "getProjectByIdId" }
+            name: { kind: "Name", value: "getProjectByIdId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
-        }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1850,9 +1904,9 @@ export const GetProjectDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "getProjectByIdId" }
-                }
-              }
+                  name: { kind: "Name", value: "getProjectByIdId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -1867,11 +1921,11 @@ export const GetProjectDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "language" }
+                        name: { kind: "Name", value: "language" },
                       },
-                      { kind: "Field", name: { kind: "Name", value: "title" } }
-                    ]
-                  }
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                    ],
+                  },
                 },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
@@ -1881,9 +1935,9 @@ export const GetProjectDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } }
-                    ]
-                  }
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -1893,20 +1947,20 @@ export const GetProjectDocument = {
                     selections: [
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
+                        name: { kind: "Name", value: "username" },
                       },
                       { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "email" } }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<GetProjectQuery, GetProjectQueryVariables>;
 export const UpdateProjectDocument = {
   kind: "Document",
@@ -1920,46 +1974,49 @@ export const UpdateProjectDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "title" }
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-          }
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "isPublic" }
+            name: { kind: "Name", value: "title" },
           },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "Boolean" }
-            }
-          }
+              name: { kind: "Name", value: "String" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "updateProjectId" }
+            name: { kind: "Name", value: "isPublic" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Boolean" },
+            },
+          },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "description" }
+            name: { kind: "Name", value: "updateProjectId" },
           },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
-        }
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1973,45 +2030,45 @@ export const UpdateProjectDocument = {
                 name: { kind: "Name", value: "title" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "title" }
-                }
+                  name: { kind: "Name", value: "title" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "is_public" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "isPublic" }
-                }
+                  name: { kind: "Name", value: "isPublic" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "updateProjectId" }
-                }
+                  name: { kind: "Name", value: "updateProjectId" },
+                },
               },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "description" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "description" }
-                }
-              }
+                  name: { kind: "Name", value: "description" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<
   UpdateProjectMutation,
   UpdateProjectMutationVariables
@@ -2040,10 +2097,10 @@ export const GetProjectsDocument = {
                     selections: [
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "language" }
-                      }
-                    ]
-                  }
+                        name: { kind: "Name", value: "language" },
+                      },
+                    ],
+                  },
                 },
                 {
                   kind: "Field",
@@ -2053,22 +2110,22 @@ export const GetProjectsDocument = {
                     selections: [
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" }
+                        name: { kind: "Name", value: "username" },
                       },
-                      { kind: "Field", name: { kind: "Name", value: "id" } }
-                    ]
-                  }
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
                 },
                 { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetUserDocument = {
   kind: "Document",
@@ -2082,13 +2139,13 @@ export const GetUserDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "ownerId" }
+            name: { kind: "Name", value: "ownerId" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } }
-          }
-        }
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -2102,9 +2159,9 @@ export const GetUserDocument = {
                 name: { kind: "Name", value: "id" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "ownerId" }
-                }
-              }
+                  name: { kind: "Name", value: "ownerId" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -2125,29 +2182,29 @@ export const GetUserDocument = {
                           selections: [
                             {
                               kind: "Field",
-                              name: { kind: "Name", value: "language" }
-                            }
-                          ]
-                        }
+                              name: { kind: "Name", value: "language" },
+                            },
+                          ],
+                        },
                       },
                       { kind: "Field", name: { kind: "Name", value: "title" } },
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "description" }
+                        name: { kind: "Name", value: "description" },
                       },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "createdAt" }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ]
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 } as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;

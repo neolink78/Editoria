@@ -7,7 +7,7 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import Comment from "../comment/comment";
@@ -49,14 +49,14 @@ class Project extends BaseEntity {
 
   @OneToMany(() => CodeSnippet, (codeSnippet) => codeSnippet.project, {
     eager: true,
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
   })
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
   @OneToMany(() => Comment, (comment) => comment.project, {
     eager: true,
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
   })
   @Field(() => [Comment])
   comments!: Comment[];
@@ -69,7 +69,7 @@ class Project extends BaseEntity {
   collaborators!: User[];
 
   @OneToMany(() => Like, (like) => like.project, {
-    eager: true
+    eager: true,
   })
   @Field(() => [Like])
   likes!: Like[];
@@ -98,8 +98,8 @@ class Project extends BaseEntity {
   static async getProject(): Promise<Project[]> {
     return await Project.find({
       order: {
-        createdAt: "DESC"
-      }
+        createdAt: "DESC",
+      },
     });
   }
 
@@ -107,15 +107,15 @@ class Project extends BaseEntity {
     const projects = await Project.find({
       where: { owner: { id: userId } },
       order: {
-        createdAt: "DESC"
+        createdAt: "DESC",
       },
       relations: [
         "owner",
         "comments",
         "codeSnippetsOwned",
         "comments.owner",
-        "comments.project"
-      ]
+        "comments.project",
+      ],
     });
     return projects;
   }
@@ -128,8 +128,8 @@ class Project extends BaseEntity {
         "comments",
         "codeSnippetsOwned",
         "comments.owner",
-        "comments.project"
-      ]
+        "comments.project",
+      ],
     });
     if (!project) {
       throw new Error("Project not found");
@@ -145,7 +145,7 @@ class Project extends BaseEntity {
 
   static async updateProject(
     id: string,
-    partialProject: CreateOrUpdateProjectArgs
+    partialProject: CreateOrUpdateProjectArgs,
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
@@ -154,7 +154,7 @@ class Project extends BaseEntity {
     }
     if (partialProject.collaboratorIds) {
       project.collaborators = await Promise.all(
-        partialProject.collaboratorIds.map(User.getUserById)
+        partialProject.collaboratorIds.map(User.getUserById),
       );
     }
 

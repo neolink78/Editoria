@@ -30,7 +30,7 @@ const DashboardProjects = ({
   onDelete,
   setShowAllProjects,
   isLoading,
-  toggleLike
+  toggleLike,
 }: DashboardProjectsProps) => {
   const router = useRouter();
   const currentPage = parseInt(router.query.page as string) || 1;
@@ -40,7 +40,7 @@ const DashboardProjects = ({
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
   const currentProjects = projects.slice(
     indexOfFirstProject,
-    indexOfLastProject
+    indexOfLastProject,
   );
 
   return (

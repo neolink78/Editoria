@@ -24,9 +24,9 @@ export const getDataSource = async () => {
         Project,
         Like,
         UserResetSession,
-        Comment
+        Comment,
       ],
-      synchronize: true
+      synchronize: true,
     });
     await dataSource.initialize();
   }
