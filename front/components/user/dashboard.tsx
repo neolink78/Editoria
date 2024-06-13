@@ -3,7 +3,7 @@ import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
@@ -26,8 +26,9 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
-  const { data: projectData, loading, error } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
+  const { data: projectData, loading, error, refetch } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
+  console.log(projects);
   const { data: commentData, loading: commentLoading } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const comments = commentData?.getOwnComments || [];
   const { data: likedProjectsData, loading: likedProjectsLoading } = useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
@@ -40,6 +41,18 @@ const Dashboard = () => {
   });
 
   const router = useRouter()
+
+  const handleOpenProject = (projectId: string) => {
+    console.log(projectId);
+    projectId = projects[0].id;
+    router.push(`/editor?project=${projectId}`);
+  };
+
+  // useEffect(() => {
+  //   if (projectData) {
+  //     refetch();
+  //   }
+  // }, [projectData]);
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -58,7 +71,7 @@ const Dashboard = () => {
   const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
 
 
-  if (error) return (<Error />);
+  // if (error) return (<Error />)
   if (loading || commentLoading || likedProjectsLoading) return (
     <Flex flexDirection="column" justifyContent="center" alignItems="center" width="70vw" mt="50px">
       {Array.from({ length: 10 }).map((_, idx) => (
@@ -120,6 +133,8 @@ const Dashboard = () => {
                     toggleLike={() => {
                       toggleLike({ variables: { projectId: e.id } });
                     }}
+                    // isLiked={likedProjects.some((p) => p.id === e.id)}
+                    onOpenProject={handleOpenProject}
                   />
                 ))
               )}
@@ -168,6 +183,8 @@ const Dashboard = () => {
                       console.log("Toggle like button clicked for project ID:", e.id);
                       toggleLike({ variables: { projectId: e.id } });
                     }}
+                    // isLiked
+                    onOpenProject={handleOpenProject}
                   />
                 </Skeleton>
 
@@ -248,6 +265,7 @@ const Dashboard = () => {
                   title={e.project.title}
                   description={e.content}
                   content
+                  onOpenProject={handleOpenProject}
                 />
               )) :
                 <Flex

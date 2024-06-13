@@ -18,12 +18,6 @@ query GetProjectsByUser {
     comments {
       id
       content
-      owner {
-        id
-      }
-      project {
-        id
-      }
     }
     owner {
       id

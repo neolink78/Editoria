@@ -5,10 +5,12 @@ import ReactIcon from "@/icons/reactIcon";
 import { ReactNode } from "react";
 //import LikeIcon from "../icons/likeIcon"
 import { getLanguageIcon } from "@/utils/languageIcons";
-import { AiOutlineLike } from "react-icons/ai";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Language } from "@/gql/graphql";
+import { Language, LikedProjectsQuery } from "@/gql/graphql";
+import { useQuery } from "@apollo/client";
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 
 type TileProps = {
   icon?: string;
@@ -26,6 +28,8 @@ type TileProps = {
   onDelete?: (e: any) => void;
   toggleLike?: () => void;
   likeCount?: number;
+  isLiked?: boolean; 
+  onOpenProject: (e: any) => void;
 };
 
 const Tile = ({
@@ -41,12 +45,18 @@ const Tile = ({
   commentCount,
   content,
   toggleLike,
-  likeCount
+  likeCount,
+  isLiked,
+  onOpenProject,
 }: TileProps) => {
+  
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
 
+  const handleProjectOpen = () => {
+    onOpenProject(projectId);
+  };
 
   return (
     <Flex
@@ -58,6 +68,7 @@ const Tile = ({
       bg="#2F3138"
       mt={marginTop || "1vw"}
       fontSize="0.9vw"
+    onClick={handleProjectOpen}
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon as Language)}
@@ -75,9 +86,16 @@ const Tile = ({
       </Flex>
       <Flex gap="1vw">
         <Flex alignItems="center"  >
-          <AiOutlineLike onClick={() => {
+          {isLiked ? <AiFillLike onClick={() => {
             toggleLike?.();
-          }} cursor="pointer" />
+          }}
+            cursor="pointer" /> : <AiOutlineLike
+            onClick={() => {
+              toggleLike?.();
+            }}
+            cursor="pointer"
+
+          />}
           {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
@@ -88,8 +106,12 @@ const Tile = ({
             isTruncated
             minWidth="16vw"
             maxWidth="16vw">
-            
-            {owner ? <div>{relativeDate} par &nbsp; <span style={{ color: "#1574EF" }}>{owner}</span></div>: ""}
+            {relativeDate}{" "}
+            {owner ? (
+              <span>
+                par <span style={{ color: "#1574EF" }}>{owner}</span>
+              </span>
+            ) : ""}
           </Text>
         }
       </Flex>
