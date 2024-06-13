@@ -4,7 +4,7 @@ import {
   Column,
   ManyToOne,
   BaseEntity,
-  CreateDateColumn,
+  CreateDateColumn
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { CreateOrUpdateCommentArgs } from "./comment.args";
@@ -56,9 +56,7 @@ class Comment extends BaseEntity {
     }
   }
 
-  static async createComment(
-    commentArgs: CommentArgs
-  ): Promise<Comment> {
+  static async createComment(commentArgs: CommentArgs): Promise<Comment> {
     const project = await Project.findOne({
       where: { id: commentArgs.projectId }
     });

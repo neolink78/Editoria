@@ -67,7 +67,7 @@ const FilesList = ({
           language: language,
           value: fileValue,
           id: ""
-        },
+        }
       ]);
       setFilesInTabs((prevsState) => [...prevsState, newFileName]);
       setFileName(newFileName);

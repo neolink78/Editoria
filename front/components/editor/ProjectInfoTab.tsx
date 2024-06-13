@@ -4,17 +4,19 @@ import { AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 
 type ProjectInfoProps = {
-  info : ProjectInfo
+  info: ProjectInfo;
   comments: number | undefined;
   likes: number | undefined;
-}
+};
 
-const ProjectInfoTab = ({ info, likes, comments } : ProjectInfoProps) => {
+const ProjectInfoTab = ({ info, likes, comments }: ProjectInfoProps) => {
   return (
     <Flex direction={"column"} className="px-5 py-3">
       <Flex gap={4}>
         <Box>Photo bg</Box>
-        <Link href={`/profile?user=${info.owner.username}`}>{ info.owner.username }</Link>
+        <Link href={`/profile?user=${info.owner.username}`}>
+          {info.owner.username}
+        </Link>
       </Flex>
       <Box fontSize="sm" className="mt-4">
         {info.title}

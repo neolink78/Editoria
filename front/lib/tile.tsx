@@ -110,7 +110,8 @@ const Tile = ({
             ) : (
               "Unknown"
             )}
-          </Text>)}
+          </Text>
+        )}
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

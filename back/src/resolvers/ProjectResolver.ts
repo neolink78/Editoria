@@ -65,10 +65,10 @@ export class ProjectResolver {
   @Mutation(() => Project)
   async updateProject(
     @Arg("id", () => ID) id: string,
-    @Args() args: CreateOrUpdateProjectArgs,
+    @Args() args: CreateOrUpdateProjectArgs
   ) {
     return Project.updateProject(id, {
-      ...args,
+      ...args
     });
   }
 

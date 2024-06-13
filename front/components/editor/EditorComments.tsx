@@ -3,7 +3,7 @@ import {
   AddCommentMutation,
   AddCommentMutationVariables,
   DeleteCommentMutation,
-  DeleteCommentMutationVariables,
+  DeleteCommentMutationVariables
 } from "@/gql/graphql";
 import SubmitButton from "@/lib/submitButton";
 import { ApolloQueryResult, gql, useMutation } from "@apollo/client";
@@ -67,8 +67,8 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
     await addCommentMutation({
       variables: {
         content: newComment,
-        projectId: projectId as string,
-      },
+        projectId: projectId as string
+      }
     });
 
     refetch();
@@ -78,8 +78,8 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const deleteComment = async (commentId: string) => {
     await deleteCommentMutation({
       variables: {
-        deleteCommentId: commentId,
-      },
+        deleteCommentId: commentId
+      }
     });
 
     refetch();
@@ -93,7 +93,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
       overflow={"scroll"}
       className="no-scrollbar"
     >
-      {(user && projectId) && (
+      {user && projectId && (
         <Flex direction={"column"} gap={1}>
           <Textarea
             size={"xs"}
@@ -122,7 +122,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
               <Text isTruncated className="text-xs">
                 {comment.createdAt &&
                   formatDistanceToNow(parseISO(comment.createdAt), {
-                    addSuffix: true,
+                    addSuffix: true
                   })}
               </Text>
             </Flex>

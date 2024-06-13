@@ -99,7 +99,9 @@ class User extends BaseEntity {
   }
 
   static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
-    const existingUser = await User.findOne({ where: { email: userData.email } });
+    const existingUser = await User.findOne({
+      where: { email: userData.email }
+    });
     if (existingUser) {
       throw new Error("EMAIL_ALREADY_USED");
     }
@@ -120,7 +122,7 @@ class User extends BaseEntity {
   static async getUserById(id: string) {
     const user = await User.findOne({
       where: { id },
-      relations: ["projects"],
+      relations: ["projects"]
     });
     if (!user) {
       throw new Error("USER_NOT_FOUND");
