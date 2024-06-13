@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import ReactIcon from "@/icons/reactIcon";
@@ -9,9 +9,12 @@ import { AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Language } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import { UUID } from "crypto";
 
 type TileProps = {
-  icon?: string;
+  ownerId: UUID;
+  icon?: Language;
   label?: string;
   description?: string;
   date?: string;
@@ -22,7 +25,7 @@ type TileProps = {
   owner?: string;
   projectId?: string;
   commentCount?: number;
-  content?: boolean
+  content?: boolean;
   onDelete?: (e: any) => void;
   toggleLike?: () => void;
   likeCount?: number;
@@ -30,6 +33,8 @@ type TileProps = {
 
 const Tile = ({
   icon,
+  label,
+  ownerId,
   description,
   marginTop,
   homePage,
@@ -41,12 +46,12 @@ const Tile = ({
   commentCount,
   content,
   toggleLike,
-  likeCount
+  likeCount,
 }: TileProps) => {
+  const router = useRouter();
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
-
 
   return (
     <Flex
@@ -66,32 +71,44 @@ const Tile = ({
         </Text>
       </Flex>
       <Flex gap="1vw">
-        {content ?
-          <Text isTruncated minWidth="30vw" maxWidth="30vw"> Commentaire : {description}
-          </Text> :
-          <Text isTruncated minWidth="30vw" maxWidth="30vw">{description}
+        {content ? (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {" "}
+            Commentaire : {description}
           </Text>
-        }
+        ) : (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {description}
+          </Text>
+        )}
       </Flex>
       <Flex gap="1vw">
-        <Flex alignItems="center"  >
-          <AiOutlineLike onClick={() => {
-            toggleLike?.();
-          }} cursor="pointer" />
+        <Flex alignItems="center">
+          <AiOutlineLike
+            onClick={() => {
+              toggleLike?.();
+            }}
+            cursor="pointer"
+          />
           {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
           <CiChat1 /> {commentCount}
         </Flex>
-        {content ? "" :
-          <Text
-            isTruncated
-            minWidth="16vw"
-            maxWidth="16vw">
-            {relativeDate} par &nbsp;
-            {owner ? <span style={{ color: "#1574EF" }}>{owner}</span> : "Unknown"}
-          </Text>
-        }
+
+        <Box w="16vw">
+          {relativeDate} par{" "}
+          {owner ? (
+            <span
+              style={{ color: "#1574EF", cursor: "pointer" }}
+              onClick={() => router.push(`/user/${ownerId}?page=1`)}
+            >
+              {owner}
+            </span>
+          ) : (
+            "Unknown"
+          )}
+        </Box>
       </Flex>
       {!homePage && (
         <FaRegTrashAlt onClick={() => onDelete?.(projectId)} cursor="pointer" />

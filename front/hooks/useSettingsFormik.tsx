@@ -4,7 +4,6 @@ import { Box, useToast } from "@chakra-ui/react";
 
 export const useSettingsFormik = (user: any) => {
   const toast = useToast();
-
   const validationSchema = Yup.object({
     username: Yup.string().required("Pseudonyme non renseigné"),
     email: Yup.string()
@@ -17,9 +16,8 @@ export const useSettingsFormik = (user: any) => {
     ),
     description: Yup.string().optional(),
   });
-
   const formik = useFormik({
-    initialValues: {
+    initialValues: user.user || {
       username: "",
       email: "",
       password: "",
@@ -28,7 +26,6 @@ export const useSettingsFormik = (user: any) => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      //if (values?.image?.includes("/")) values.image = null;
       try {
         console.log(values);
         toast({
