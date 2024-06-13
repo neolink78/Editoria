@@ -15,13 +15,13 @@ describe("CodeSnippet", () => {
       email: `testuser_${Date.now()}@example.com`,
       password: "securepassword123",
       username: `testuser_${Date.now()}`,
-      hashedPassword: "somehashedpassword",
+      hashedPassword: "somehashedpassword"
     });
 
     const testProject = await database.getRepository(Project).save({
       title: "Test Project",
       is_public: true,
-      owner: testUser,
+      owner: testUser
     });
     testProjectId = testProject.id;
   });
@@ -32,7 +32,7 @@ describe("CodeSnippet", () => {
       if (entity.name !== "Project" && entity.name !== "User") {
         const repository = database.getRepository(entity.name);
         await repository.query(
-          `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`,
+          `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
         );
       }
     }
@@ -55,7 +55,7 @@ describe("CodeSnippet", () => {
       code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
       language: Language.JAVASCRIPT,
       projectId: testProjectId,
-      owner: new User(),
+      owner: new User()
     };
 
     it("should create a new code snippet with correct properties", async () => {
@@ -71,7 +71,7 @@ describe("CodeSnippet", () => {
     it("should retrieve the created code snippet from the database with correct properties", async () => {
       const fetchedSnippet = await database.getRepository(CodeSnippet).findOne({
         relations: ["project"],
-        where: { project: { id: newSnippetDetails.projectId } },
+        where: { project: { id: newSnippetDetails.projectId } }
       });
 
       expect(fetchedSnippet).toBeDefined();
@@ -88,11 +88,11 @@ describe("CodeSnippet", () => {
         code: "",
         language: Language.JAVASCRIPT,
         projectId: "valid-project-id",
-        owner: new User(),
+        owner: new User()
       };
 
       await expect(
-        CodeSnippet.createCodeSnippet(newSnippetDetails),
+        CodeSnippet.createCodeSnippet(newSnippetDetails)
       ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
@@ -106,7 +106,7 @@ describe("CodeSnippet", () => {
         code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
         language: Language.JAVASCRIPT,
         projectId: testProjectId,
-        owner: new User(),
+        owner: new User()
       };
 
       const savedSnippet =
@@ -119,12 +119,12 @@ describe("CodeSnippet", () => {
         title: "Introduction to Jest - Updated",
         code: "test('expects 3 to be 3', () => { expect(3).toBe(3); });",
         language: Language.C,
-        projectId: testProjectId,
+        projectId: testProjectId
       };
 
       const updatedSnippet = await CodeSnippet.updateCodeSnippet(
         savedSnippetId,
-        updatedSnippetDetails,
+        updatedSnippetDetails
       );
 
       expect(updatedSnippet).toBeDefined();
@@ -134,14 +134,14 @@ describe("CodeSnippet", () => {
     });
     it("should retrieve the updated code snippet from the database with correct properties", async () => {
       const fetchedSnippet = await database.getRepository(CodeSnippet).findOne({
-        where: { project: { id: savedSnippetId } },
+        where: { project: { id: savedSnippetId } }
       });
 
       expect(fetchedSnippet).toBeDefined();
       if (fetchedSnippet) {
         expect(fetchedSnippet!.title).toBe("Introduction to Jest - Updated");
         expect(fetchedSnippet!.code).toBe(
-          "test('expects 3 to be 3', () => { expect(3).toBe(3); });",
+          "test('expects 3 to be 3', () => { expect(3).toBe(3); });"
         );
         expect(fetchedSnippet!.language).toBe(Language.JAVASCRIPT);
       }
@@ -152,11 +152,11 @@ describe("CodeSnippet", () => {
         title: "Introduction to Jest - Updated",
         code: "",
         language: Language.JAVASCRIPT,
-        projectId: testProjectId,
+        projectId: testProjectId
       };
 
       await expect(
-        CodeSnippet.updateCodeSnippet(savedSnippetId, updatedSnippetDetails),
+        CodeSnippet.updateCodeSnippet(savedSnippetId, updatedSnippetDetails)
       ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
@@ -170,7 +170,7 @@ describe("CodeSnippet", () => {
         code: "test('adds 1 + 2 to equal 3', () => { expect(1 + 2).toBe(3); });",
         language: Language.JAVASCRIPT,
         projectId: testProjectId,
-        owner: new User(),
+        owner: new User()
       };
 
       const savedSnippet =
@@ -188,14 +188,14 @@ describe("CodeSnippet", () => {
 
     it("should fail when the ID format is invalid", async () => {
       await expect(CodeSnippet.deleteCodeSnippet("invalid-id")).rejects.toThrow(
-        "Invalid UUID",
+        "Invalid UUID"
       );
     });
 
     it("should fail when the code snippet does not exist", async () => {
       const nonExistentUUID = "123e4567-e89b-12d3-a456-426614174000";
       await expect(
-        CodeSnippet.deleteCodeSnippet(nonExistentUUID),
+        CodeSnippet.deleteCodeSnippet(nonExistentUUID)
       ).rejects.toThrow("Code snippet not found");
     });
   });

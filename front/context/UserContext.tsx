@@ -3,7 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  ReactNode
 } from "react";
 import { MyProfileQuery, SignOUtMutation } from "../gql/graphql";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -25,7 +25,7 @@ const defaultValue: UserContextType = {
   user: null,
   setUser: () => {},
   refetch: () => {},
-  signOut: () => Promise.resolve(),
+  signOut: () => Promise.resolve()
 };
 
 const AuthContext = createContext<UserContextType>(defaultValue);

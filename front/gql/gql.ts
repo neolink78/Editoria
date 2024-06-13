@@ -41,7 +41,7 @@ const documents = {
   "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n":
     types.AddFileDocument,
   "\n  query GETPROJECTS {\n    getProjects {\n      codeSnippetsOwned {\n        language\n      }\n      owner {\n        username\n      }\n      createdAt\n      description\n      title\n    }\n  }\n":
-    types.GetprojectsDocument,
+    types.GetprojectsDocument
 };
 
 /**
@@ -62,91 +62,91 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n",
+  source: "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"
 ): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n",
+  source: "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n"
 ): (typeof documents)["\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation SignOUt {\n    signOut\n  }\n",
+  source: "\n  mutation SignOUt {\n    signOut\n  }\n"
 ): (typeof documents)["\n  mutation SignOUt {\n    signOut\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n",
+  source: "\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"
 ): (typeof documents)["\nmutation ToggleLike($projectId: String!) {\n  toggleLike(projectId: $projectId)\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n",
+  source: "\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"
 ): (typeof documents)["\nmutation DeleteProject($deleteProjectId: ID!) {\n  deleteProject(id: $deleteProjectId) {\n    id\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n",
+  source: "\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n"
 ): (typeof documents)["\nquery GetOwnComments {\n  getOwnComments {\n    id\n    content\n    project {\n      id\n      title\n    }\n    owner {\n      id\n      username\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query LikedProjects {\n    likedProjects {\n      id\n      title\n      description\n      owner {\n        id\n        username\n      }\n      likes {\n        id\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n",
+  source: "\n  query LikedProjects {\n    likedProjects {\n      id\n      title\n      description\n      owner {\n        id\n        username\n      }\n      likes {\n        id\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n"
 ): (typeof documents)["\n  query LikedProjects {\n    likedProjects {\n      id\n      title\n      description\n      owner {\n        id\n        username\n      }\n      likes {\n        id\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n",
+  source: "\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"
 ): (typeof documents)["\nquery GetProjectsByUser {\n  getOwnProject {\n    id\n    title\n    description\n    is_public\n    createdAt\n    updatedAt\n    codeSnippetsOwned {\n      id\n      title\n      code\n      language\n    }\n    comments {\n      id\n      content\n      owner {\n        id\n      }\n      project {\n        id\n      }\n    }\n    owner {\n      id\n      email\n      username\n    }\n    likes {\n      id\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n",
+  source: "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n"
 ): (typeof documents)["\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n",
+  source: "\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n"
 ): (typeof documents)["\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      description\n      email\n      id\n      username\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n",
+  source: "\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"
 ): (typeof documents)["\n  mutation ResetUser($email: String!) {\n    ResetUser(email: $email) {\n      email\n      username\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n",
+  source: "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n"
 ): (typeof documents)["\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n",
+  source: "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"
 ): (typeof documents)["\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n",
+  source: "\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n"
 ): (typeof documents)["\n  mutation AddFile(\n    $title: String!\n    $code: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    createCodeSnippet(\n      title: $title\n      code: $code\n      language: $language\n      projectId: $projectId\n    ) {\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GETPROJECTS {\n    getProjects {\n      codeSnippetsOwned {\n        language\n      }\n      owner {\n        username\n      }\n      createdAt\n      description\n      title\n    }\n  }\n",
+  source: "\n  query GETPROJECTS {\n    getProjects {\n      codeSnippetsOwned {\n        language\n      }\n      owner {\n        username\n      }\n      createdAt\n      description\n      title\n    }\n  }\n"
 ): (typeof documents)["\n  query GETPROJECTS {\n    getProjects {\n      codeSnippetsOwned {\n        language\n      }\n      owner {\n        username\n      }\n      createdAt\n      description\n      title\n    }\n  }\n"];
 
 export function graphql(source: string) {

@@ -7,7 +7,7 @@ import {
   Query,
   Arg,
   createMethodDecorator,
-  ID,
+  ID
 } from "type-graphql";
 import { Context } from "..";
 import Comment from "../entities/comment/comment";
@@ -28,7 +28,7 @@ export class CommentResolver {
   @Mutation(() => Comment)
   async createComment(
     @Args(() => CreateOrUpdateCommentArgs) args: CreateOrUpdateCommentArgs,
-    @Ctx() { user }: Context,
+    @Ctx() { user }: Context
   ): Promise<Comment> {
     if (!user) {
       throw new Error("Authentication required");
@@ -40,7 +40,7 @@ export class CommentResolver {
   @Authorized()
   @Query(() => [Comment])
   async getCommentsbyProjectId(
-    @Arg("projectId") projectId: string,
+    @Arg("projectId") projectId: string
   ): Promise<Comment[]> {
     return await Comment.getCommentByProjectId(projectId);
   }
@@ -48,7 +48,7 @@ export class CommentResolver {
   @Authorized()
   @Query(() => [Comment])
   async getCommentsByUserId(
-    @Arg("userId", () => ID) userId: string,
+    @Arg("userId", () => ID) userId: string
   ): Promise<Comment[]> {
     return await Comment.getCommentByUserId(userId);
   }
@@ -67,7 +67,7 @@ export class CommentResolver {
   @Mutation(() => Comment)
   async updateComment(
     @Arg("id", () => ID) id: string,
-    @Arg("content") content: string,
+    @Arg("content") content: string
   ): Promise<Comment> {
     return Comment.updateComment(id, content);
   }

@@ -18,7 +18,7 @@ const Breadcrumb = ({
   value,
   onChange,
   className,
-  padding = "0.3vw 1.4vw",
+  padding = "0.3vw 1.4vw"
 }: breadcrumbProps) => {
   return (
     <Flex className="breadcrumb_container">

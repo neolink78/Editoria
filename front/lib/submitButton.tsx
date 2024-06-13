@@ -16,7 +16,7 @@ const SubmitButton = ({
   bg = "white",
   w,
   h = "2.5vw",
-  type = "submit",
+  type = "submit"
 }: SubmitButtonProps) => {
   const [color, setColor] = useState("black");
   return (
@@ -32,7 +32,7 @@ const SubmitButton = ({
       _hover={{
         background: "none",
         border: "1px solid #1574EF",
-        color: color,
+        color: color
       }}
       onMouseEnter={() => setColor("white")}
       onMouseLeave={() => setColor("black")}

@@ -8,7 +8,7 @@ import User from "./entities/user/user";
 import { UserResolver } from "./resolvers/UserResolver";
 import {
   getUserResetSessionIdFromCookie,
-  getUserSessionIdFromCookie,
+  getUserSessionIdFromCookie
 } from "./utils/cookie";
 import { getDataSource } from "./database";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
@@ -35,10 +35,10 @@ const startApolloServer = async () => {
       UserResolver,
       ProjectResolver,
       LikeResolver,
-      CommentResolver,
+      CommentResolver
     ],
     validate: true,
-    authChecker,
+    authChecker
   });
   const server = new ApolloServer({ schema });
 
@@ -60,7 +60,7 @@ const startApolloServer = async () => {
       }
 
       return { res: res as Response, user, userSessionId: sessionId };
-    },
+    }
   });
 
   await getDataSource();

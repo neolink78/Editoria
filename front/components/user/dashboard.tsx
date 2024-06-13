@@ -21,7 +21,7 @@ import {
   GetProjectsByUserQuery,
   LikedProjectsQuery,
   ToggleLikeMutation,
-  ToggleLikeMutationVariables,
+  ToggleLikeMutationVariables
 } from "@/gql/graphql";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
@@ -35,7 +35,7 @@ const Dashboard = () => {
   const {
     data: projectData,
     loading,
-    error,
+    error
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
   const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
@@ -49,12 +49,12 @@ const Dashboard = () => {
   >(TOGGLE_LIKE, {
     refetchQueries: [
       { query: GET_LIKED_PROJECTS },
-      { query: GET_USER_PROJECTS },
-    ],
+      { query: GET_USER_PROJECTS }
+    ]
   });
   const [deleteProject, { loading: deleting, error: deleteError }] =
     useMutation(DELETE_PROJECT, {
-      refetchQueries: [{ query: GET_USER_PROJECTS }],
+      refetchQueries: [{ query: GET_USER_PROJECTS }]
     });
 
   const router = useRouter();
@@ -64,7 +64,7 @@ const Dashboard = () => {
     openModal({
       title: "Confirmer la suppression",
       children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
-      onConfirm: () => confirmDelete(projectId),
+      onConfirm: () => confirmDelete(projectId)
     });
   };
 
@@ -76,7 +76,7 @@ const Dashboard = () => {
   const sortedProjects = [...projects]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
     .slice(0, 3);
 
@@ -213,7 +213,7 @@ const Dashboard = () => {
                       toggleLike={() => {
                         console.log(
                           "Toggle like button clicked for project ID:",
-                          e.id,
+                          e.id
                         );
                         toggleLike({ variables: { projectId: e.id } });
                       }}

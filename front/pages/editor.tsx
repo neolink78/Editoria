@@ -14,7 +14,7 @@ import {
   AddFileMutationVariables,
   CreateProjectMutation,
   CreateProjectMutationVariables,
-  Language,
+  Language
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
@@ -76,14 +76,14 @@ function CodeEditor() {
     id: "",
     title: "Nouveau projet",
     description: "",
-    isPublic: false,
+    isPublic: false
   });
   const [project, setProject] = useState<File[]>([
     {
       name: "index.html",
       language: Language.Html,
-      value: "<!-- Write your HTML -->",
-    },
+      value: "<!-- Write your HTML -->"
+    }
   ]);
   // const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
@@ -94,9 +94,9 @@ function CodeEditor() {
 
   const [
     createProjectMutation,
-    { loading: loadingCreateProject, error: errorCreateProject },
+    { loading: loadingCreateProject, error: errorCreateProject }
   ] = useMutation<CreateProjectMutation, CreateProjectMutationVariables>(
-    CREATE_PROJECT,
+    CREATE_PROJECT
   );
 
   const [addFileMutation, { loading: loadingAddFiles, error: errorAddFiles }] =
@@ -109,8 +109,8 @@ function CodeEditor() {
         variables: {
           title: projectInfo.title,
           isPublic: projectInfo.isPublic,
-          description: projectInfo.description,
-        },
+          description: projectInfo.description
+        }
       });
       if (data && data.createProject?.id) {
         setProjectInfo({ ...projectInfo, id: data.createProject.id });
@@ -130,8 +130,8 @@ function CodeEditor() {
             title: file.name,
             code: file.value,
             language: file.language,
-            projectId: id,
-          },
+            projectId: id
+          }
         });
       }
     } catch (error) {
@@ -145,8 +145,8 @@ function CodeEditor() {
       inherit: true,
       rules: [],
       colors: {
-        "editor.background": "#14181F",
-      },
+        "editor.background": "#14181F"
+      }
     });
   };
 
@@ -161,7 +161,7 @@ function CodeEditor() {
       if (file.name === fileName) {
         return {
           ...file,
-          value,
+          value
         };
       }
       return file;
@@ -187,7 +187,7 @@ function CodeEditor() {
   const getGeneratedPageURL = ({
     html,
     css,
-    js,
+    js
   }: {
     html: string;
     css: string;
@@ -220,14 +220,13 @@ function CodeEditor() {
     html: project.find((file) => file.language === Language.Html)?.value || "",
     css: project.find((file) => file.language === Language.Css)?.value || "",
     js:
-      project.find((file) => file.language === Language.Javascript)?.value ||
-      "",
+      project.find((file) => file.language === Language.Javascript)?.value || ""
   });
 
   const removeFileFromTabs = (fileName: string) => {
     setFilesInTabs((prevState) => {
       const updatedTabs = prevState.filter(
-        (fileInTab) => fileInTab !== fileName,
+        (fileInTab) => fileInTab !== fileName
       );
       if (selectedFile?.name === fileName) setFileName(updatedTabs[0]);
       return updatedTabs;

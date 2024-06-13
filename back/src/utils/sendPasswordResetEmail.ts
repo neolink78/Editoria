@@ -1,10 +1,10 @@
 async function sendPasswordResetEmail(
   email: string,
-  resetToken: string,
+  resetToken: string
 ): Promise<void> {
   const mailjetClient = require("node-mailjet").apiConnect(
     process.env.APIKEY_PUBLIC,
-    process.env.APIKEY_PRIVATE,
+    process.env.APIKEY_PRIVATE
   );
 
   const request = mailjetClient.post("send", { version: "v3.1" }).request({
@@ -12,17 +12,17 @@ async function sendPasswordResetEmail(
       {
         From: {
           Email: process.env.EMAIL,
-          Name: "Editoria - reset password",
+          Name: "Editoria - reset password"
         },
         To: [
           {
-            Email: email,
-          },
+            Email: email
+          }
         ],
         Subject: "Réinitialisation du mot de passe",
-        HTMLPart: `<p>Cliquez sur le lien suivant pour réinitialiser votre mot de passe : <a href="${process.env.URL}?token=${resetToken}">Réinitialiser le mot de passe</a></p>`,
-      },
-    ],
+        HTMLPart: `<p>Cliquez sur le lien suivant pour réinitialiser votre mot de passe : <a href="${process.env.URL}?token=${resetToken}">Réinitialiser le mot de passe</a></p>`
+      }
+    ]
   });
 
   try {

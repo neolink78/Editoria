@@ -41,7 +41,7 @@ const Tile = ({
   commentCount,
   content,
   toggleLike,
-  likeCount,
+  likeCount
 }: TileProps) => {
   const relativeDate = createdAt
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })

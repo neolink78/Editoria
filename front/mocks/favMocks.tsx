@@ -9,8 +9,8 @@ const favMocks: MockType[] = [
     description:
       "Navbar responsive using chakra-ui and react, with a toggle button",
     date: "2 months ago",
-    user: "John Doe",
-  },
+    user: "John Doe"
+  }
 ];
 
 export default favMocks;

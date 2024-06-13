@@ -31,12 +31,12 @@ const EditorSidebar = ({
   fileName,
   setFileName,
   setFilesInTabs,
-  filesInTabs,
+  filesInTabs
 }: EditorSidebarProps) => {
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
     Comments: true,
-    Info: true,
+    Info: true
   });
 
   const displayTabContent = (tab: string) => {
@@ -81,7 +81,7 @@ const EditorSidebar = ({
               onClick={() =>
                 setShowTabs({
                   ...showTabs,
-                  [tab]: !showTabs[tab as keyof ShowTabs],
+                  [tab]: !showTabs[tab as keyof ShowTabs]
                 })
               }
             >
@@ -89,7 +89,7 @@ const EditorSidebar = ({
                 style={{
                   transform: showTabs[tab as keyof ShowTabs]
                     ? "rotate(90deg)"
-                    : "",
+                    : ""
                 }}
               />
               {tab}
