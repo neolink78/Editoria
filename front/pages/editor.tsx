@@ -23,7 +23,7 @@ import {
   UpdateFileMutation,
   UpdateFileMutationVariables,
   UpdateProjectMutation,
-  UpdateProjectMutationVariables,
+  UpdateProjectMutationVariables
 } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
@@ -173,8 +173,8 @@ function CodeEditor() {
     owner: {
       id: "",
       username: "",
-      email: "",
-    },
+      email: ""
+    }
   });
   const [project, setProject] = useState<File[]>([
     {
@@ -229,15 +229,15 @@ function CodeEditor() {
         owner: {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
-          email: data.getProjectById.owner.email,
-        },
+          email: data.getProjectById.owner.email
+        }
       });
       setProject(
         data.getProjectById.codeSnippetsOwned.map((snippet) => ({
           id: snippet.id,
           name: snippet.title,
           language: snippet.language,
-          value: snippet.code,
+          value: snippet.code
         }))
       );
       setFilesInTabs(
@@ -261,8 +261,8 @@ function CodeEditor() {
           owner: {
             id: data.createProject.owner.id,
             username: data.createProject.owner.username,
-            email: data.createProject.owner.email,
-          },
+            email: data.createProject.owner.email
+          }
         });
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
@@ -290,7 +290,7 @@ function CodeEditor() {
               if (el.name === file.name) {
                 return {
                   ...el,
-                  id: data.createCodeSnippet.id,
+                  id: data.createCodeSnippet.id
                 };
               }
               return el;
@@ -310,8 +310,8 @@ function CodeEditor() {
           title: projectInfo.title,
           isPublic: projectInfo.isPublic,
           updateProjectId: projectId as string,
-          description: projectInfo.description,
-        },
+          description: projectInfo.description
+        }
       });
 
       const fileToDelete = data?.getProjectById.codeSnippetsOwned.filter(
@@ -321,8 +321,8 @@ function CodeEditor() {
         for (const file of fileToDelete) {
           await deleteFileMutation({
             variables: {
-              deleteCodeSnippetId: file.id,
-            },
+              deleteCodeSnippetId: file.id
+            }
           });
         }
       }
@@ -334,8 +334,8 @@ function CodeEditor() {
               title: file.name,
               code: file.value,
               language: file.language,
-              projectId: projectId as string,
-            },
+              projectId: projectId as string
+            }
           });
         } else {
           await updateFileMutation({
@@ -344,8 +344,8 @@ function CodeEditor() {
               code: file.value,
               title: file.name,
               language: file.language,
-              projectId: projectId as string,
-            },
+              projectId: projectId as string
+            }
           });
         }
       }
@@ -529,7 +529,11 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex w="100%" className="editor-container" height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}>
+      <Flex
+        w="100%"
+        className="editor-container"
+        height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}
+      >
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -593,7 +597,11 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"} width="60%" bg={"#14181F"} />
+              <Box
+                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
+                width="60%"
+                bg={"#14181F"}
+              />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

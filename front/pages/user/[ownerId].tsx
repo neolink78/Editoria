@@ -46,7 +46,7 @@ export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
   const { data } = useQuery(GET_USER, {
-    variables: { ownerId },
+    variables: { ownerId }
   });
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || "1"

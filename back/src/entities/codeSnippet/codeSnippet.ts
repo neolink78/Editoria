@@ -94,11 +94,14 @@ class CodeSnippet extends BaseEntity {
   }
 
   static async getCodeSnippet(): Promise<CodeSnippet[]> {
-    return await CodeSnippet.find({ relations: { project: true }});
+    return await CodeSnippet.find({ relations: { project: true } });
   }
 
   static async getCodeSnippetById(id: string): Promise<CodeSnippet> {
-    const codeSnippet = await CodeSnippet.findOne({ where: { id }, relations: { project: true }});
+    const codeSnippet = await CodeSnippet.findOne({
+      where: { id },
+      relations: { project: true }
+    });
     if (!codeSnippet) {
       throw new Error("Code snippet not found");
     }

@@ -13,7 +13,7 @@ interface PaginationControlsProps {
 export const PaginationControls = ({
   totalItems,
   itemsPerPage,
-  user,
+  user
 }: PaginationControlsProps) => {
   const router = useRouter();
   const currentPage = parseInt(router.query.page as string) || 1;
