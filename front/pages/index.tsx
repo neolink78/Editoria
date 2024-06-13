@@ -47,10 +47,9 @@ export default function HomePage() {
             width={600}
             height={600}
             layout="responsive"
-            style={{ borderRadius: "1vw", width: '100%', height: 'auto' }} // Adjust styles for responsiveness
+            style={{ borderRadius: "1vw", width: "100%", height: "auto" }} // Adjust styles for responsiveness
           />
         </Box>
-
       </Flex>
       <Box fontSize="2.5vw" m="8vw 10.8vw 0 11.2vw">
         Most popular projects

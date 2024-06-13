@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box } from "@chakra-ui/react";
 
 const LogOutIcon = ({ width = "5", height = "5" }) => (
   <Box
@@ -17,8 +17,7 @@ const LogOutIcon = ({ width = "5", height = "5" }) => (
       strokeWidth="2"
     />
     <path d="M12.5 16.5H32" stroke="white" />
-    <path d="M22.5 7L31.5 16.5L22.5 26" stroke="white"
-      strokeWidth="2" />
+    <path d="M22.5 7L31.5 16.5L22.5 26" stroke="white" strokeWidth="2" />
   </Box>
 );
 
