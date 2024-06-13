@@ -73,18 +73,18 @@ const Tile = ({
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon as Language)}
-        <Text isTruncated minWidth="10vw" maxWidth="10vw">
+        <Text isTruncated w="10vw">
           {title}
         </Text>
       </Flex>
       <Flex gap="1vw">
         {content ? (
-          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+          <Text isTruncated w="30vw">
             {" "}
             Commentaire : {description}
           </Text>
         ) : (
-          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+          <Text isTruncated w="30vw">
             {description}
           </Text>
         )}
@@ -115,14 +115,16 @@ const Tile = ({
           ""
         ) : (
           <Text isTruncated w="16vw">
-            {relativeDate} par{" "}
+            {relativeDate}
             {owner ? (
-              <span
-                style={{ color: "#1574EF", cursor: "pointer" }}
-                onClick={() => router.push(`/user/${ownerId}?page=1`)}
-              >
-                {owner}
-              </span>
+              <span>
+                {" "} par {" "}
+                <span
+                  style={{ color: "#1574EF", cursor: "pointer" }}
+                  onClick={() => router.push(`/user/${ownerId}?page=1`)}
+                >
+                  {owner}
+                </span></span>
             ) : (
               ""
             )}

@@ -174,7 +174,7 @@ const Dashboard = () => {
                     toggleLike={() => {
                       toggleLike({ variables: { projectId: e.id } });
                     }}
-                    // isLiked={likedProjects.some((p) => p.id === e.id)}
+                    isLiked={likedProjects.some((p) => p.id === e.id)}
                     onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
@@ -221,19 +221,19 @@ const Dashboard = () => {
                     <Tile
                       ownerId={e.owner.id as UUID}
                       homePage
-                      icon={e.codeSnippetsOwned[0]?.language}
                       key={idx}
+                      icon={e.codeSnippetsOwned[0]?.language}
                       title={e.title}
                       description={e.description}
+                      createdAt={e.createdAt}
+                      owner={e.owner.username}
                       likeCount={e.likes.length}
-                      content
+                      commentCount={e.comments.length}
                       toggleLike={() => {
-                        console.log(
-                          "Toggle like button clicked for project ID:",
-                          e.id,
-                        );
+                        console.log("Toggle like button clicked for project ID:", e.id);
                         toggleLike({ variables: { projectId: e.id } });
                       }}
+                      isLiked
                       onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>
