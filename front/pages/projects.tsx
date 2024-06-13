@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { UUID } from "crypto";
 
 const GETPROJECTS = gql`
-  query GETPROJECTS {
+  query GetProjects {
     getProjects {
       codeSnippetsOwned {
         language

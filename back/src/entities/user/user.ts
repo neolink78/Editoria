@@ -18,7 +18,9 @@ import {
 import CodeSnippet from "../codeSnippet/codeSnippet";
 import UserSession from "./userSession";
 import Project from "../project/project";
+import Comment from "../comment/comment";
 import UserResetSession from "./userResetSession";
+import Like from "../like/like";
 
 export enum Role {
   USER = "USER",
@@ -72,8 +74,15 @@ class User extends BaseEntity {
   @Field(() => [Project])
   likedProjects!: Project[];
 
+  @OneToMany(() => Like, (like) => like.user, { eager: true })
+  @Field(() => [Like])
+  likes!: Like[];
+
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
+
+  @OneToMany(() => Comment, (comment) => comment.owner, { eager: true })
+  comments!: Comment[];
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
   sessionsReset!: UserResetSession[];
@@ -219,6 +228,20 @@ class User extends BaseEntity {
     await user.save();
     user.reload();
     return user;
+  }
+
+  async isProjectOwner(ProjectId: string): Promise<boolean> {
+    try {
+      const project = await Project.getProjectById(ProjectId);
+      return this.id === project.owner.id;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async isCommentOwner(commentId: string): Promise<boolean> {
+    const comment = await Comment.getCommentById(commentId);
+    return comment.owner.id === this.id;
   }
 }
 

@@ -10,6 +10,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import CodeSnippet from "../codeSnippet/codeSnippet";
+import Comment from "../comment/comment";
+import Like from "../like/like";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
 
@@ -52,6 +54,13 @@ class Project extends BaseEntity {
   @Field((type) => [CodeSnippet])
   codeSnippetsOwned!: CodeSnippet[];
 
+  @OneToMany(() => Comment, (comment) => comment.project, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Comment])
+  comments!: Comment[];
+
   @ManyToOne(() => User, (user) => user.projectsOwned, { eager: true })
   @Field(() => User)
   owner!: User;
@@ -59,9 +68,11 @@ class Project extends BaseEntity {
   @ManyToMany(() => User, (collaborators) => collaborators.projects)
   collaborators!: User[];
 
-  @ManyToMany(() => User, (user) => user.likedProjects)
-  @Field(() => [User])
-  likedBy!: User[];
+  @OneToMany(() => Like, (like) => like.project, {
+    eager: true,
+  })
+  @Field(() => [Like])
+  likes!: Like[];
 
   constructor(project?: ProjectArgs) {
     super();
@@ -88,7 +99,7 @@ class Project extends BaseEntity {
     return await Project.find({
       order: {
         createdAt: "DESC",
-      },
+      }
     });
   }
 
@@ -110,7 +121,7 @@ class Project extends BaseEntity {
   }
 
   static async getProjectById(id: string): Promise<Project> {
-    const project = await Project.findOne({ where: { id } });
+    const project = await Project.findOne({ where: { id }, relations: ["owner", "comments", "codeSnippetsOwned", "comments.owner", "comments.project"]});
     if (!project) {
       throw new Error("Project not found");
     }
@@ -125,11 +136,10 @@ class Project extends BaseEntity {
 
   static async updateProject(
     id: string,
-    partialProject: ProjectArgs
+    partialProject: CreateOrUpdateProjectArgs
   ): Promise<Project> {
     const project = await Project.getProjectById(id);
     Object.assign(project, partialProject, { updatedAt: new Date() });
-
     if (partialProject.title === "") {
       throw new Error("Title cannot be empty");
     }

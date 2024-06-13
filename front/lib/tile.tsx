@@ -1,4 +1,4 @@
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import ReactIcon from "@/icons/reactIcon";
@@ -14,7 +14,7 @@ import { UUID } from "crypto";
 
 type TileProps = {
   ownerId: UUID;
-  icon: Language;
+  icon?: Language;
   label?: string;
   description?: string;
   date?: string;
@@ -24,7 +24,11 @@ type TileProps = {
   createdAt?: string;
   owner?: string;
   projectId?: string;
+  commentCount?: number;
+  content?: boolean;
   onDelete?: (e: any) => void;
+  toggleLike?: () => void;
+  likeCount?: number;
 };
 
 const Tile = ({
@@ -39,6 +43,10 @@ const Tile = ({
   owner,
   projectId,
   onDelete,
+  commentCount,
+  content,
+  toggleLike,
+  likeCount,
 }: TileProps) => {
   const router = useRouter();
   const relativeDate = createdAt
@@ -47,7 +55,6 @@ const Tile = ({
 
   return (
     <Flex
-      cursor="pointer"
       justifyContent="space-between"
       alignItems="center"
       p="0.8vw 1.5vw"
@@ -58,30 +65,42 @@ const Tile = ({
       fontSize="0.9vw"
     >
       <Flex alignItems="center" gap="2vw">
-        {getLanguageIcon(icon)}
-        <Box minWidth="10vw" maxWidth="10vw">
+        {getLanguageIcon(icon as Language)}
+        <Text isTruncated minWidth="10vw" maxWidth="10vw">
           {title}
-        </Box>
+        </Text>
       </Flex>
       <Flex gap="1vw">
-        <Box minWidth="30vw" maxWidth="30vw">
-          {description}
-        </Box>
+        {content ? (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {" "}
+            Commentaire : {description}
+          </Text>
+        ) : (
+          <Text isTruncated minWidth="30vw" maxWidth="30vw">
+            {description}
+          </Text>
+        )}
       </Flex>
-      <Flex gap="1vw"></Flex>
       <Flex gap="1vw">
         <Flex alignItems="center">
-          <AiOutlineLike /> 1
+          <AiOutlineLike
+            onClick={() => {
+              toggleLike?.();
+            }}
+            cursor="pointer"
+          />
+          {likeCount !== undefined ? likeCount : 0}
         </Flex>
         <Flex alignItems="center" mr={"3vw"}>
-          <CiChat1 /> 4
+          <CiChat1 /> {commentCount}
         </Flex>
 
         <Box w="16vw">
           {relativeDate} par{" "}
           {owner ? (
             <span
-              style={{ color: "#1574EF" }}
+              style={{ color: "#1574EF", cursor: "pointer" }}
               onClick={() => router.push(`/user/${ownerId}?page=1`)}
             >
               {owner}
