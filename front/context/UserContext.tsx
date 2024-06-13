@@ -12,6 +12,7 @@ type User = {
   email: string;
   username: string;
   description: string;
+  id: string;
 };
 
 interface UserContextType {

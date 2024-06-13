@@ -7,18 +7,22 @@ interface PaginationControlsProps {
   currentPage: number;
   totalItems: number;
   itemsPerPage: number;
+  user?: string;
 }
 
 export const PaginationControls = ({
   totalItems,
   itemsPerPage,
+  user,
 }: PaginationControlsProps) => {
   const router = useRouter();
   const currentPage = parseInt(router.query.page as string) || 1;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const goToPage = (pageNumber: number) => {
-    router.push(`?page=${pageNumber}`);
+    user
+      ? router.push(`${user}?page=${pageNumber}`)
+      : router.push(`?page=${pageNumber}`);
   };
 
   return (

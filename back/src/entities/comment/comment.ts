@@ -4,11 +4,16 @@ import {
   Column,
   ManyToOne,
   BaseEntity,
+  CreateDateColumn,
 } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { CreateOrUpdateCommentArgs } from "./comment.args";
 import Project from "../project/project";
 import User from "../user/user";
+
+export type CommentArgs = CreateOrUpdateCommentArgs & {
+  owner: User;
+};
 
 @Entity()
 @ObjectType()
@@ -34,28 +39,35 @@ class Comment extends BaseEntity {
   @Field(() => User)
   owner!: User;
 
-  constructor(comment?: CreateOrUpdateCommentArgs) {
+  @CreateDateColumn()
+  @Field()
+  createdAt!: Date;
+
+  @CreateDateColumn()
+  @Field()
+  updatedAt!: Date;
+
+  constructor(comment?: CommentArgs) {
     super();
 
     if (comment) {
       this.content = comment.content;
+      this.owner = comment.owner;
     }
   }
 
   static async createComment(
-    commentArgs: CreateOrUpdateCommentArgs
+    commentArgs: CommentArgs
   ): Promise<Comment> {
     const project = await Project.findOne({
       where: { id: commentArgs.projectId },
     });
-    const user = await User.findOne({ where: { id: commentArgs.userId } });
 
-    if (!project || !user) {
+    if (!project) {
       throw new Error("Project or User not found.");
     }
     const newComment = new Comment(commentArgs);
     newComment.project = project;
-    newComment.owner = user;
 
     return await Comment.save(newComment);
   }
@@ -67,6 +79,7 @@ class Comment extends BaseEntity {
     const comment = await Comment.getCommentById(commentId);
 
     comment.content = content;
+    comment.updatedAt = new Date();
     return await Comment.save(comment);
   }
 

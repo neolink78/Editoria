@@ -104,9 +104,7 @@ describe("Project", () => {
         title: "HTML LOADER",
         is_public: true,
         description: "This is a bad loader, don't look please",
-        owner: testUser,
         collaboratorIds: [],
-        codeSnippetsOwned: [codesnippet],
       });
 
       expect(updatedProject).toBeDefined();
@@ -136,9 +134,7 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
         })
       ).rejects.toThrow('invalid input syntax for type uuid: "123"');
     });
@@ -150,9 +146,7 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
         })
       ).rejects.toThrow("Project not found");
     });
@@ -164,9 +158,7 @@ describe("Project", () => {
           is_public: true,
           description:
             "This is a great loader, I want to display my skills and this is the right way to do it, LETS GO",
-          owner: testUser,
           collaboratorIds: [],
-          codeSnippetsOwned: [codesnippet],
         })
       ).rejects.toThrow("Title cannot be empty");
     });
