@@ -258,7 +258,7 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
-
+{/* 
             <Box
               fontSize="1.4vw"
               m={"2vw 0 0 10vw"}
@@ -266,13 +266,13 @@ const Dashboard = () => {
               display="flex"
               alignItems="baseline"
             >
-              {/* Mes projets en collaboration */}
-              {/* {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
+              Mes projets en collaboration
+              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
-              </Box>} */}
+              </Box>}
             </Box>
             <Box mb={12}>
-              {/* {indexMock ? indexMock.slice(-2).map((e, idx) => (
+              {indexMock ? indexMock.slice(-2).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
@@ -296,8 +296,8 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet en collaboration.{" "}
                   </Box>
                 </Flex>
-              } */}
-            </Box>
+              }
+            </Box> */}
             <Box
               fontSize="1.4vw"
               m={"2vw 0 0 10vw"}
