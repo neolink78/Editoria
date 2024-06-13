@@ -99,6 +99,11 @@ class User extends BaseEntity {
   }
 
   static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
+    const existingUser = await User.findOne({ where: { email: userData.email } });
+    if (existingUser) {
+      throw new Error("EMAIL_ALREADY_USED");
+    }
+
     userData.password = await hash(userData.password, 10);
 
     const newUser = new User(userData);

@@ -90,7 +90,7 @@ export default function SignIn() {
                   className="form_control_button"
                 >
                   <SubmitButton w="7vw" bg="#1574EF" type="submit">
-                    <Text>Sign In</Text>
+                    <Text data-testid="sign-in-button">Sign In</Text>
                   </SubmitButton>
                 </FormControl>
               </Flex>

@@ -1,5 +1,5 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
 import Fav from "../../components/user/fav";
@@ -8,7 +8,6 @@ import Settings from "../../components/user/settings";
 import { useAuth } from "../../context/UserContext";
 
 export default function Account() {
-  const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState("dashboard");
   const handlePageChange = (pageName: string | undefined) => {
     !pageName ? setActivePage("dashboard") : setActivePage(pageName);
@@ -18,11 +17,7 @@ export default function Account() {
     { label: "Settings", value: "settings" },
     { label: "Your Favorite Coders", value: "yourfavcoder" },
   ];
-  const { user, refetch } = useAuth();
-  useEffect(() => {
-    refetch();
-    setLoading(false);
-  }, [refetch]);
+  const { user, loading } = useAuth();
 
   return loading ? (
     <Layout>
