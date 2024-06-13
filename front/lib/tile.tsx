@@ -119,7 +119,8 @@ const Tile = ({
             {relativeDate}
             {owner ? (
               <span>
-                {" "} par {" "}
+                {" "}
+                par{" "}
                 <span
                   style={{ color: "#1574EF", cursor: "pointer" }}
                   onClick={(e) => {
@@ -128,7 +129,8 @@ const Tile = ({
                   }}
                 >
                   {owner}
-                </span></span>
+                </span>
+              </span>
             ) : (
               ""
             )}
