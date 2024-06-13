@@ -118,13 +118,15 @@ const Tile = ({
             {relativeDate}
             {owner ? (
               <span>
-                {" "} par {" "}
+                {" "}
+                par{" "}
                 <span
                   style={{ color: "#1574EF", cursor: "pointer" }}
                   onClick={() => router.push(`/user/${ownerId}?page=1`)}
                 >
                   {owner}
-                </span></span>
+                </span>
+              </span>
             ) : (
               ""
             )}

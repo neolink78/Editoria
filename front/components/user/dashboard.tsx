@@ -37,7 +37,7 @@ const Dashboard = () => {
     data: projectData,
     loading,
     error,
-    refetch
+    refetch,
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
   const { data: commentData, loading: commentLoading } =
@@ -230,7 +230,10 @@ const Dashboard = () => {
                       likeCount={e.likes.length}
                       commentCount={e.comments.length}
                       toggleLike={() => {
-                        console.log("Toggle like button clicked for project ID:", e.id);
+                        console.log(
+                          "Toggle like button clicked for project ID:",
+                          e.id,
+                        );
                         toggleLike({ variables: { projectId: e.id } });
                       }}
                       isLiked
