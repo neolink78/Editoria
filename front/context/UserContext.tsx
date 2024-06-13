@@ -19,6 +19,7 @@ interface UserContextType {
   setUser: (user: User | null) => void;
   refetch: () => void;
   signOut: () => Promise<void>;
+  loading: boolean;
 }
 
 const defaultValue: UserContextType = {
@@ -26,6 +27,7 @@ const defaultValue: UserContextType = {
   setUser: () => {},
   refetch: () => {},
   signOut: () => Promise.resolve(),
+  loading: false,
 };
 
 const AuthContext = createContext<UserContextType>(defaultValue);
@@ -55,9 +57,14 @@ const SIGN_OUT = gql`
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const { data, refetch } = useQuery<MyProfileQuery>(GET_MY_PROFIL);
+  const { data, refetch, loading } = useQuery<MyProfileQuery>(GET_MY_PROFIL);
 
-  const [signOutMutation] = useMutation<SignOUtMutation>(SIGN_OUT);
+  const [signOutMutation] = useMutation<SignOUtMutation>(SIGN_OUT, {
+    update: (cache) => {
+      cache.evict({ fieldName: "myProfile" });
+      cache.gc();
+    },
+  });
 
   useEffect(() => {
     if (data && data.myProfile) {
@@ -75,7 +82,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, refetch, signOut }}>
+    <AuthContext.Provider value={{ user, setUser, refetch, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   );
