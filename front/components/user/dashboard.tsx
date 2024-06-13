@@ -135,7 +135,7 @@ const Dashboard = () => {
                   .map((e, idx) => (
                     <Tile
                       homePage={false}
-                      key={e.id}
+                      key={idx}
                       icon={e.codeSnippetsOwned[0]?.language}
                       title={e.title}
                       description={e.description}

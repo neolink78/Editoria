@@ -68,7 +68,6 @@ const Tile = ({
           {description}
         </Box>
       </Flex>
-      {/* {description} */}
       <Flex gap="1vw"></Flex>
       <Flex gap="1vw">
         <Flex alignItems="center">

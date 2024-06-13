@@ -19,7 +19,6 @@ export default function Account() {
     { label: "Your Favorite Coders", value: "yourfavcoder" },
   ];
   const { user, refetch } = useAuth();
-
   useEffect(() => {
     refetch();
     setLoading(false);
@@ -46,7 +45,7 @@ export default function Account() {
           onChange={handlePageChange}
         />
         {activePage === "dashboard" && <Dashboard />}
-        {activePage === "settings" && <Settings />}
+        {activePage === "settings" && <Settings user={user} />}
         {activePage === "yourfavcoder" && <Fav />}
       </Flex>
     </Layout>
