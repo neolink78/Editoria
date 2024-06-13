@@ -9,7 +9,7 @@ import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
 
-const GETPROJECTS = gql`
+export const GETPROJECTS = gql`
   query GetProjects {
     getProjects {
       codeSnippetsOwned {
