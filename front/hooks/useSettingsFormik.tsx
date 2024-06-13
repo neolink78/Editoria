@@ -12,9 +12,9 @@ export const useSettingsFormik = (user: any) => {
     password: Yup.string(),
     passwordConfirmation: Yup.string().oneOf(
       [Yup.ref("password")],
-      "Les mots de passes doivent être identiques",
+      "Les mots de passes doivent être identiques"
     ),
-    description: Yup.string().optional(),
+    description: Yup.string().optional()
   });
   const formik = useFormik({
     initialValues: user.user || {
@@ -22,7 +22,7 @@ export const useSettingsFormik = (user: any) => {
       email: "",
       password: "",
       passwordConfirmation: "",
-      description: "",
+      description: ""
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -40,12 +40,12 @@ export const useSettingsFormik = (user: any) => {
             >
               Vos changements ont bien été enregistrés
             </Box>
-          ),
+          )
         });
       } catch (error) {
         console.log(error);
       }
-    },
+    }
   });
 
   /*useEffect(() => {

@@ -6,12 +6,12 @@ import UserResetSession from "../entities/user/userResetSession";
 
 export function setUserSessionIdInCookie(
   expressResponse: Response,
-  session: UserSession,
+  session: UserSession
 ) {
   expressResponse.cookie("userSessionId", session.id, {
     secure: true,
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 365,
+    maxAge: 1000 * 60 * 60 * 24 * 365
   });
 }
 
@@ -26,12 +26,12 @@ export function getUserSessionIdFromCookie(req: IncomingMessage) {
 
 export function setUserResetSessionIdInCookie(
   expressResponse: Response,
-  session: UserResetSession,
+  session: UserResetSession
 ) {
   expressResponse.cookie("userResetSessionId", session.id, {
     secure: true,
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 365,
+    maxAge: 1000 * 60 * 60 * 24 * 365
   });
 }
 

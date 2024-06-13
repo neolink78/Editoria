@@ -27,7 +27,7 @@ const InputForm = ({
   borderRadius = 10,
   name = "",
   error = "",
-  type = "text",
+  type = "text"
 }: InputFormProps) => {
   return (
     <div>

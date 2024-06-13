@@ -16,7 +16,7 @@ const indexMock = [
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
-    user: "Novak",
+    user: "Novak"
   },
   {
     marginTop: "1.2vw",
@@ -24,7 +24,7 @@ const indexMock = [
     label: "Project-title (forked)",
     description: "Project-description blabalbalalab",
     date: "9 months ago",
-    user: "John",
+    user: "John"
   },
   {
     marginTop: "1.2vw",
@@ -33,8 +33,8 @@ const indexMock = [
     description:
       "this is a parallax effect, using different algorithms and react",
     date: "9 months ago",
-    user: "Mehmet",
-  },
+    user: "Mehmet"
+  }
 ];
 
 export default indexMock;

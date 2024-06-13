@@ -6,8 +6,8 @@ const theme = extendTheme({
     montserratMedium: "Montserrat Medium, sans-serif",
     montserratSemiBold: "Montserrat SemiBold, sans-serif",
     montserratBold: "Montserrat Bold, sans-serif",
-    montserratExtraBold: "Montserrat ExtraBold, sans-serif",
-  },
+    montserratExtraBold: "Montserrat ExtraBold, sans-serif"
+  }
 });
 
 export default theme;

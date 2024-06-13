@@ -15,7 +15,7 @@ export default function Account() {
   const navigationItems = [
     { label: "Dashboard", value: "dashboard" },
     { label: "Settings", value: "settings" },
-    { label: "Your Favorite Coders", value: "yourfavcoder" },
+    { label: "Your Favorite Coders", value: "yourfavcoder" }
   ];
   const { user, loading } = useAuth();
 

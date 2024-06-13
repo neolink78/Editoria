@@ -3,7 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  ReactNode
 } from "react";
 import { MyProfileQuery, SignOUtMutation } from "../gql/graphql";
 import { gql, useMutation, useQuery } from "@apollo/client";

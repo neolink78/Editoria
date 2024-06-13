@@ -27,7 +27,7 @@ const FilesList = ({
   showTabs,
   setFileName,
   setFilesInTabs,
-  filesInTabs,
+  filesInTabs
 }: FilesListProps) => {
   const [showInput, setShowInput] = useState<boolean>(false);
   const [newFileName, setNewFileName] = useState<string>("");
@@ -92,7 +92,7 @@ const FilesList = ({
 
   const deleteFile = (fileToDelete: string) => {
     setProject((prevState) =>
-      prevState.filter((file: File) => file.name !== fileToDelete),
+      prevState.filter((file: File) => file.name !== fileToDelete)
     );
     if (fileToDelete === fileName) setFileName(project[0].name);
     setFilesInTabs(filesInTabs.filter((file) => file !== fileToDelete));

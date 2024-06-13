@@ -181,8 +181,8 @@ function CodeEditor() {
       id: "",
       name: "index.html",
       language: Language.Html,
-      value: "<!-- Write your HTML -->",
-    },
+      value: "<!-- Write your HTML -->"
+    }
   ]);
 
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
@@ -251,8 +251,8 @@ function CodeEditor() {
         variables: {
           title: projectInfo.title,
           isPublic: projectInfo.isPublic,
-          description: projectInfo.description,
-        },
+          description: projectInfo.description
+        }
       });
       if (data && data.createProject?.id) {
         setProjectInfo({
@@ -281,8 +281,8 @@ function CodeEditor() {
             title: file.name,
             code: file.value,
             language: file.language,
-            projectId: id,
-          },
+            projectId: id
+          }
         });
         if (data && data.createCodeSnippet?.id) {
           setProject((prevState) =>
@@ -369,8 +369,8 @@ function CodeEditor() {
       inherit: true,
       rules: [],
       colors: {
-        "editor.background": "#14181F",
-      },
+        "editor.background": "#14181F"
+      }
     });
   };
 
@@ -385,7 +385,7 @@ function CodeEditor() {
       if (file.name === fileName) {
         return {
           ...file,
-          value,
+          value
         };
       }
       return file;
@@ -411,7 +411,7 @@ function CodeEditor() {
   const getGeneratedPageURL = ({
     html,
     css,
-    js,
+    js
   }: {
     html: string;
     css: string;
@@ -444,14 +444,13 @@ function CodeEditor() {
     html: project.find((file) => file.language === Language.Html)?.value || "",
     css: project.find((file) => file.language === Language.Css)?.value || "",
     js:
-      project.find((file) => file.language === Language.Javascript)?.value ||
-      "",
+      project.find((file) => file.language === Language.Javascript)?.value || ""
   });
 
   const removeFileFromTabs = (fileName: string) => {
     setFilesInTabs((prevState) => {
       const updatedTabs = prevState.filter(
-        (fileInTab) => fileInTab !== fileName,
+        (fileInTab) => fileInTab !== fileName
       );
       if (selectedFile?.name === fileName) setFileName(updatedTabs[0]);
       return updatedTabs;

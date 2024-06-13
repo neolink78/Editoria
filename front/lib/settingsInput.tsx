@@ -17,7 +17,7 @@ const SettingsInput = ({
   onChange,
   error,
   name,
-  disabled,
+  disabled
 }: InputType) => {
   return (
     <Box>

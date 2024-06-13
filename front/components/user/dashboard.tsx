@@ -22,7 +22,7 @@ import {
   GetProjectsByUserQuery,
   LikedProjectsQuery,
   ToggleLikeMutation,
-  ToggleLikeMutationVariables,
+  ToggleLikeMutationVariables
 } from "@/gql/graphql";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
@@ -36,7 +36,7 @@ const Dashboard = () => {
   const {
     data: projectData,
     loading,
-    error,
+    error
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
   const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
@@ -50,12 +50,12 @@ const Dashboard = () => {
   >(TOGGLE_LIKE, {
     refetchQueries: [
       { query: GET_LIKED_PROJECTS },
-      { query: GET_USER_PROJECTS },
-    ],
+      { query: GET_USER_PROJECTS }
+    ]
   });
   const [deleteProject, { loading: deleting, error: deleteError }] =
     useMutation(DELETE_PROJECT, {
-      refetchQueries: [{ query: GET_USER_PROJECTS }],
+      refetchQueries: [{ query: GET_USER_PROJECTS }]
     });
 
   const router = useRouter();
@@ -65,7 +65,7 @@ const Dashboard = () => {
     openModal({
       title: "Confirmer la suppression",
       children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
-      onConfirm: () => confirmDelete(projectId),
+      onConfirm: () => confirmDelete(projectId)
     });
   };
 

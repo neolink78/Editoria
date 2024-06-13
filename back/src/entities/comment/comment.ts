@@ -60,7 +60,7 @@ class Comment extends BaseEntity {
     commentArgs: CommentArgs
   ): Promise<Comment> {
     const project = await Project.findOne({
-      where: { id: commentArgs.projectId },
+      where: { id: commentArgs.projectId }
     });
 
     if (!project) {
@@ -74,7 +74,7 @@ class Comment extends BaseEntity {
 
   static async updateComment(
     commentId: string,
-    content: string,
+    content: string
   ): Promise<Comment> {
     const comment = await Comment.getCommentById(commentId);
 
@@ -86,21 +86,21 @@ class Comment extends BaseEntity {
   static async getCommentByProjectId(projectId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { project: { id: projectId } },
-      relations: ["owner", "project"],
+      relations: ["owner", "project"]
     });
   }
 
   static async getCommentByUserId(userId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { owner: { id: userId } },
-      relations: ["owner", "project"],
+      relations: ["owner", "project"]
     });
   }
 
   static async getCommentById(commentId: string): Promise<Comment> {
     const comment = await Comment.findOne({
       where: { id: commentId },
-      relations: ["owner", "project"],
+      relations: ["owner", "project"]
     });
     if (!comment) {
       throw new Error("Comment not found.");

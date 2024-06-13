@@ -58,7 +58,7 @@ const EditorSidebar = ({
   const [showTabs, setShowTabs] = useState<ShowTabs>({
     Files: true,
     Comments: true,
-    Info: true,
+    Info: true
   });
 
   const { data: commentsData, refetch } = useQuery(
@@ -116,7 +116,7 @@ const EditorSidebar = ({
               onClick={() =>
                 setShowTabs({
                   ...showTabs,
-                  [tab]: !showTabs[tab as keyof ShowTabs],
+                  [tab]: !showTabs[tab as keyof ShowTabs]
                 })
               }
             >
@@ -124,7 +124,7 @@ const EditorSidebar = ({
                 style={{
                   transform: showTabs[tab as keyof ShowTabs]
                     ? "rotate(90deg)"
-                    : "",
+                    : ""
                 }}
               />
               {tab}

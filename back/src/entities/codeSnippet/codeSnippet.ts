@@ -4,7 +4,7 @@ import {
   Column,
   ManyToOne,
   BaseEntity,
-  CreateDateColumn,
+  CreateDateColumn
 } from "typeorm";
 import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
 import { CreateOrUpdateCodeSnippetArgs } from "./codeSnippet.args";
@@ -22,11 +22,11 @@ export enum Language {
   CSHARP = "C#",
   HTML = "HTML",
   CSS = "CSS",
-  UNKNOWN = "UNKNOWN",
+  UNKNOWN = "UNKNOWN"
 }
 
 registerEnumType(Language, {
-  name: "Language",
+  name: "Language"
 });
 
 type CodeSnippetArgs = CreateOrUpdateCodeSnippetArgs & {
@@ -61,7 +61,7 @@ class CodeSnippet extends BaseEntity {
   language!: Language;
 
   @ManyToOne(() => Project, (project) => project.codeSnippetsOwned, {
-    onDelete: "CASCADE",
+    onDelete: "CASCADE"
   })
   @Field(() => Project)
   project!: Project;
@@ -77,7 +77,7 @@ class CodeSnippet extends BaseEntity {
   }
 
   static async createCodeSnippet(
-    codeSnippet: CodeSnippetArgs,
+    codeSnippet: CodeSnippetArgs
   ): Promise<CodeSnippet> {
     const newCodeSnippet = new CodeSnippet(codeSnippet);
     if (newCodeSnippet.code.length === 0) {
@@ -86,7 +86,7 @@ class CodeSnippet extends BaseEntity {
 
     if (codeSnippet.projectId) {
       newCodeSnippet.project = await Project.getProjectById(
-        codeSnippet.projectId,
+        codeSnippet.projectId
       );
     }
 
@@ -116,7 +116,7 @@ class CodeSnippet extends BaseEntity {
 
   static async updateCodeSnippet(
     id: string,
-    partialCodeSnippet: CreateOrUpdateCodeSnippetArgs,
+    partialCodeSnippet: CreateOrUpdateCodeSnippetArgs
   ): Promise<CodeSnippet> {
     const codeSnippet = await CodeSnippet.getCodeSnippetById(id);
     Object.assign(codeSnippet, partialCodeSnippet, { updatedAt: new Date() });

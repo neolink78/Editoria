@@ -6,7 +6,7 @@ import {
   SignInMutation,
   SignInMutationVariables,
   SignUpMutation,
-  SignUpMutationVariables,
+  SignUpMutationVariables
 } from "../gql/graphql";
 
 export const SIGN_UP_FORM = gql`
@@ -32,17 +32,17 @@ export const useSignInFormik = (isLogin: boolean) => {
   const router = useRouter();
 
   const [signUpMutation] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_FORM,
+    SIGN_UP_FORM
   );
 
   const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
-    SIGN_IN_FORM,
+    SIGN_IN_FORM
   );
 
   const validationSchema = isLogin
     ? Yup.object({
         email: Yup.string().email("Invalid email").required("Email required"),
-        password: Yup.string().required("Password required"),
+        password: Yup.string().required("Password required")
       })
     : Yup.object({
         username: Yup.string().required("Username required"),
@@ -52,7 +52,7 @@ export const useSignInFormik = (isLogin: boolean) => {
           .min(12, "The password is too short"),
         confirmPassword: Yup.string()
           .oneOf([Yup.ref("password")], "Passwords do not match")
-          .required("Password confirmation not entered"),
+          .required("Password confirmation not entered")
       });
 
   const onSubmit = async () => {
@@ -61,8 +61,8 @@ export const useSignInFormik = (isLogin: boolean) => {
         const { data } = await signInMutation({
           variables: {
             email: formik.values.email,
-            password: formik.values.password,
-          },
+            password: formik.values.password
+          }
         });
         if (data && data.signIn) {
           router.push(`/user/account`);
@@ -70,7 +70,7 @@ export const useSignInFormik = (isLogin: boolean) => {
       } catch (error: any) {
         formik.setErrors({
           email: "Wrong email or password",
-          password: "Wrong email or password",
+          password: "Wrong email or password"
         });
       }
     } else {
@@ -78,16 +78,16 @@ export const useSignInFormik = (isLogin: boolean) => {
         variables: {
           email: formik.values.email,
           username: formik.values.username,
-          password: formik.values.password,
-        },
+          password: formik.values.password
+        }
       });
 
       if (data && data.signUp) {
         const signInData = await signInMutation({
           variables: {
             email: formik.values.email,
-            password: formik.values.password,
-          },
+            password: formik.values.password
+          }
         });
         if (signInData && signInData.data?.signIn) {
           router.push(`/user/account`);
@@ -101,10 +101,10 @@ export const useSignInFormik = (isLogin: boolean) => {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      confirmPassword: ""
     },
     validationSchema,
-    onSubmit,
+    onSubmit
   });
   return formik;
 };
