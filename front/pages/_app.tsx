@@ -7,6 +7,7 @@ import "../styles/globals.css";
 import theme from "../styles/theme";
 import createApolloClient from "../apollo-client";
 import { AuthProvider } from "../context/UserContext";
+import { LikeProvider } from "@/context/LikeContext";
 
 const Fonts = () => (
   <Global
@@ -57,11 +58,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <ApolloProvider client={apolloClient}>
       <ChakraProvider theme={theme}>
         <AuthProvider>
-          <ModalProvider>
-            <CSSReset />
-            <Fonts />
-            <Component {...pageProps} />
-          </ModalProvider>
+          <LikeProvider>
+            <ModalProvider>
+              <CSSReset />
+              <Fonts />
+              <Component {...pageProps} />
+            </ModalProvider>
+          </LikeProvider>
         </AuthProvider>
       </ChakraProvider>
     </ApolloProvider>
