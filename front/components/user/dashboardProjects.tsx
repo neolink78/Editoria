@@ -86,7 +86,9 @@ const DashboardProjects = ({
                 handleOpenProject(project.id);
               }}
               isLiked={likedProjects.some((p) => p.id === project.id)}
-              isCommented={ownComments.some((c) => c.id === project.comments[0]?.id)}
+              isCommented={ownComments.some(
+                (c) => c.id === project.comments[0]?.id,
+              )}
             />
           </Skeleton>
         ))}

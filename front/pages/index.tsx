@@ -76,9 +76,7 @@ export default function HomePage() {
       </Box>
       <Box ml="11.6vw">
         {projects
-          ? sortedProjects
-            .slice(-5)
-            .map((e: ProjectType, idx) => (
+          ? sortedProjects.slice(-5).map((e: ProjectType, idx) => (
               <Tile
                 homePage
                 projectId={e.id}
