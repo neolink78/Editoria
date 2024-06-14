@@ -417,6 +417,26 @@ export type GetProjectsByUserQuery = {
   }>;
 };
 
+export type GetProjectsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetProjectsQuery = {
+  __typename?: "Query";
+  getProjects: Array<{
+    __typename?: "Project";
+    id: string;
+    createdAt: any;
+    title: string;
+    description: string;
+    owner: { __typename?: "User"; id: string; email: string; username: string };
+    comments: Array<{ __typename?: "Comment"; id: string; content: string }>;
+    codeSnippetsOwned: Array<{
+      __typename?: "CodeSnippet";
+      id: string;
+      language: Language;
+    }>;
+  }>;
+};
+
 export type SignUpMutationVariables = Exact<{
   email: Scalars["String"]["input"];
   username: Scalars["String"]["input"];
@@ -553,23 +573,6 @@ export type UpdateProjectMutationVariables = Exact<{
 export type UpdateProjectMutation = {
   __typename?: "Mutation";
   updateProject: { __typename?: "Project"; id: string };
-};
-
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetProjectsQuery = {
-  __typename?: "Query";
-  getProjects: Array<{
-    __typename?: "Project";
-    createdAt: any;
-    description: string;
-    title: string;
-    codeSnippetsOwned: Array<{
-      __typename?: "CodeSnippet";
-      language: Language;
-    }>;
-    owner: { __typename?: "User"; username: string; id: string };
-  }>;
 };
 
 export type GetUserQueryVariables = Exact<{
@@ -1199,6 +1202,77 @@ export const GetProjectsByUserDocument = {
   GetProjectsByUserQuery,
   GetProjectsByUserQueryVariables
 >;
+export const GetProjectsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetProjects" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "getProjects" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "comments" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "content" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "codeSnippetsOwned" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "language" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
 export const SignUpDocument = {
   kind: "Document",
   definitions: [
@@ -2086,60 +2160,6 @@ export const UpdateProjectDocument = {
   UpdateProjectMutation,
   UpdateProjectMutationVariables
 >;
-export const GetProjectsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetProjects" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "getProjects" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "codeSnippetsOwned" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "language" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "username" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                    ],
-                  },
-                },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetUserDocument = {
   kind: "Document",
   definitions: [

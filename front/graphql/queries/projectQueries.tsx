@@ -36,3 +36,28 @@ export const GET_USER_PROJECTS = gql`
     }
   }
 `;
+
+export const GET_PROJECTS = gql`
+query GetProjects {
+    getProjects {
+      id
+      owner {
+        id
+        email
+        username
+      }
+      createdAt
+      title
+      description
+      comments {
+        id
+        content
+      }
+      codeSnippetsOwned {
+        id
+        language
+    }
+  }
+}
+`;
+
