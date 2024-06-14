@@ -12,13 +12,13 @@ import { useSignInFormik } from "@/hooks/form";
 import { useAuth } from "@/context/UserContext";
 
 function LoginModal({ closeModal }: { closeModal: () => void }) {
-  const formik = useSignInFormik({ isLogin: false, editor: true});
-  const { user } = useAuth()
+  const formik = useSignInFormik({ isLogin: false, editor: true });
+  const { user } = useAuth();
 
   if (user) {
-    closeModal()
+    closeModal();
   }
-  
+
   return (
     <Flex
       w={"100%"}

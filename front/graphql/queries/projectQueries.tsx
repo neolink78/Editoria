@@ -57,6 +57,9 @@ export const GET_PROJECTS = gql`
         id
         language
       }
+      likes {
+        id
+      }
     }
   }
 `;
