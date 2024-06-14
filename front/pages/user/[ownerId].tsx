@@ -28,7 +28,7 @@ const GET_USER = gql`
     }
   }
 `;
-type ProjectType = {
+export type ProjectType = {
   owner: {
     username: string;
   };
@@ -37,6 +37,10 @@ type ProjectType = {
   description: string;
   createdAt: string;
   id: string;
+  comments: Array<{
+    id: string;
+    content: string;
+  }>;
 };
 
 type UserType = {
@@ -98,7 +102,7 @@ export default function User() {
                     owner={userData.username}
                     description={project.description}
                     createdAt={project.createdAt}
-                    onOpenProject={ () => handleOpenProject(project.id)}
+                    onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
             </Box>
