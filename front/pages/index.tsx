@@ -11,12 +11,14 @@ import { useEffect } from "react";
 import { Error } from "@/lib/error";
 import { ProjectType } from "./user/[ownerId]";
 import { UUID } from "crypto";
+import { useLikes } from "../context/LikeContext";
 
 export default function HomePage() {
   const router = useRouter();
 
   const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
     variables: { limit: 5 },
+    nextFetchPolicy: "cache-and-network",
   });
   const projects = data?.getProjects || [];
   const sortedProjects = [...projects]
@@ -33,6 +35,8 @@ export default function HomePage() {
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
+
+  const { handleToggleLike, likedProjects } = useLikes();
 
   if (loading) return <Layout>Loading...</Layout>;
   if (error) return <Error></Error>;
@@ -73,21 +77,27 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {projects
           ? sortedProjects
-              .slice(-5)
-              .map((e: ProjectType, idx: any) => (
-                <Tile
-                  key={idx}
-                  icon={e.codeSnippetsOwned[0]?.language}
-                  title={e.title}
-                  description={e.description}
-                  owner={e.owner.username}
-                  ownerId={e.owner.id as UUID}
-                  createdAt={e.createdAt}
-                  onOpenProject={() => handleOpenProject(e.id)}
-                  commentCount={e.comments.length}
-                  homePage
-                />
-              ))
+            .slice(-5)
+            .map((e: ProjectType, idx) => (
+              <Tile
+                homePage
+                projectId={e.id}
+                key={idx}
+                icon={e.codeSnippetsOwned[0]?.language}
+                title={e.title}
+                description={e.description}
+                createdAt={e.createdAt}
+                commentCount={e?.comments.length}
+                ownerId={e.owner.id as UUID}
+                likeCount={e?.likes.length}
+                toggleLike={() => {
+                  handleToggleLike(e.id);
+                }}
+                isLiked={likedProjects.includes(e.id)}
+                // isCommented={ownComments.some((c) => c.project.id === e.id)}
+                onOpenProject={() => handleOpenProject(e.id)}
+              />
+            ))
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
