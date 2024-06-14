@@ -128,6 +128,7 @@ const GET_PROJECT = gql`
         title
       }
       description
+      is_public
       title
       likes {
         id
@@ -227,7 +228,7 @@ function CodeEditor() {
         id: projectId as string,
         title: data.getProjectById.title,
         description: data.getProjectById.description,
-        isPublic: false,
+        isPublic: data.getProjectById.is_public,
         owner: {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,

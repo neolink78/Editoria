@@ -551,6 +551,7 @@ export type GetProjectQuery = {
   getProjectById: {
     __typename?: "Project";
     description: string;
+    is_public: boolean;
     title: string;
     codeSnippetsOwned: Array<{
       __typename?: "CodeSnippet";
@@ -2027,6 +2028,7 @@ export const GetProjectDocument = {
                   },
                 },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "is_public" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
                 {
                   kind: "Field",
