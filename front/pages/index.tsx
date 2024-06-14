@@ -93,7 +93,7 @@ export default function HomePage() {
                 toggleLike={() => {
                   handleToggleLike(e.id);
                 }}
-                isLiked={likedProjects.includes(e.id)}
+                isLiked={likedProjects.some((p) => p.id === e.id)}
                 // isCommented={ownComments.some((c) => c.project.id === e.id)}
                 onOpenProject={() => handleOpenProject(e.id)}
               />
