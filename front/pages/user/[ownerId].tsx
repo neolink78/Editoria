@@ -28,6 +28,8 @@ const GET_USER = gql`
     }
   }
 `;
+
+//TODO: Change location of types definition
 export type ProjectType = {
   owner: {
     id: UUID;
@@ -41,6 +43,9 @@ export type ProjectType = {
   comments: Array<{
     id: string;
     content: string;
+  }>;
+  likes: Array<{
+    id: string;
   }>;
 };
 
