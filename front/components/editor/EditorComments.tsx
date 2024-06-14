@@ -114,7 +114,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
           <Flex justifyContent={"space-between"}>
             <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
               <Link
-                href={`/profile?user=${comment.owner.username}`}
+                href={`/user/${comment.owner.id}`}
                 className="text-sm hover:text-[#1574EF]"
               >
                 <span>@{comment.owner.username}</span>
