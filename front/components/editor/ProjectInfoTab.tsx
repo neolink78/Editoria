@@ -14,9 +14,7 @@ const ProjectInfoTab = ({ info, likes, comments }: ProjectInfoProps) => {
     <Flex direction={"column"} className="px-5 py-3">
       <Flex gap={4}>
         <Box>Photo bg</Box>
-        <Link href={`/user/${info.owner.id}`}>
-          {info.owner.username}
-        </Link>
+        <Link href={`/user/${info.owner.id}`}>{info.owner.username}</Link>
       </Flex>
       <Box fontSize="sm" className="mt-4">
         {info.title}
