@@ -3,30 +3,26 @@ import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
 import { Error } from "../../lib/error";
-import { getLanguageIcon } from "@/utils/languageIcons";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
-import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
-import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
 import {
   GetOwnCommentsQuery,
   GetProjectsByUserQuery,
-  LikedProjectsQuery,
-  ToggleLikeMutation,
-  ToggleLikeMutationVariables,
 } from "@/gql/graphql";
+import { useLikes } from "@/context/LikeContext";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
+// TODO : Creer context pour comments et projects
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -37,34 +33,23 @@ const Dashboard = () => {
     data: projectData,
     loading,
     error,
-    refetch,
-  } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
-  const projects = projectData?.getOwnProject || [];
-  const { data: commentData, loading: commentLoading } =
-    useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
-  const comments = commentData?.getOwnComments || [];
-  const { data: likedProjectsData, loading: likedProjectsLoading } =
-    useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
-  const likedProjects = likedProjectsData?.likedProjects || [];
-  const [toggleLike, { loading: toggleLikeLoading }] = useMutation<
-    ToggleLikeMutation,
-    ToggleLikeMutationVariables
-  >(TOGGLE_LIKE, {
-    refetchQueries: [
-      { query: GET_LIKED_PROJECTS },
-      { query: GET_USER_PROJECTS },
-    ],
+  } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS, {
+    fetchPolicy: "network-only",
   });
-  const [deleteProject, { loading: deleting, error: deleteError }] =
+  const projects = projectData?.getOwnProject || [];
+
+  const { data: ownCommentsData, loading: commentLoading } =
+    useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const ownComments = ownCommentsData?.getOwnComments || [];
+
+  const { handleToggleLike, likedProjects } = useLikes();
+
+  const [deleteProject] =
     useMutation(DELETE_PROJECT, {
       refetchQueries: [{ query: GET_USER_PROJECTS }],
     });
 
   const router = useRouter();
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -85,7 +70,7 @@ const Dashboard = () => {
 
   const newUser =
     projects.length === 0 &&
-    comments.length === 0 &&
+    ownComments.length === 0 &&
     likedProjects.length === 0;
   const sortedProjects = [...projects]
     .sort(
@@ -95,7 +80,7 @@ const Dashboard = () => {
     .slice(0, 3);
 
   if (error) return <Error />;
-  if (loading || commentLoading || likedProjectsLoading)
+  if (loading || commentLoading)
     return (
       <Flex
         flexDirection="column"
@@ -122,7 +107,7 @@ const Dashboard = () => {
               onDelete={handleDelete}
               setShowAllProjects={setShowAllProjects}
               isLoading={loading}
-              toggleLike={toggleLike}
+              ownComments={ownComments}
             />
           </>
         ) : (
@@ -162,6 +147,7 @@ const Dashboard = () => {
                 sortedProjects.slice(-3).map((e, idx) => (
                   <Tile
                     homePage={false}
+                    projectId={e.id}
                     key={idx}
                     icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
@@ -172,9 +158,10 @@ const Dashboard = () => {
                     ownerId={e.owner.id as UUID}
                     likeCount={e.likes.length}
                     toggleLike={() => {
-                      toggleLike({ variables: { projectId: e.id } });
+                      handleToggleLike(e.id);
                     }}
                     isLiked={likedProjects.some((p) => p.id === e.id)}
+                    isCommented={ownComments.some((c) => c.project.id === e.id)}
                     onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
@@ -220,6 +207,7 @@ const Dashboard = () => {
                   <Skeleton isLoaded={!loading} key={idx}>
                     <Tile
                       ownerId={e.owner.id as UUID}
+                      projectId={e.id}
                       homePage
                       key={idx}
                       icon={e.codeSnippetsOwned[0]?.language}
@@ -230,9 +218,10 @@ const Dashboard = () => {
                       likeCount={e.likes.length}
                       commentCount={e.comments.length}
                       toggleLike={() => {
-                        toggleLike({ variables: { projectId: e.id } });
+                        handleToggleLike(e.id);
                       }}
                       isLiked
+                      isCommented={ownComments.some((c) => c.project.id === e.id)}
                       onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>
@@ -305,15 +294,15 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes derniers commentaires
-              {comments.length > 3 && (
+              {ownComments.length > 3 && (
                 <Box fontSize="1vw" ml="2vw">
                   Tout voir
                 </Box>
               )}
             </Box>
             <Box mb={12}>
-              {commentData && comments.length > 0 ? (
-                comments
+              {ownCommentsData && ownComments.length > 0 ? (
+                ownComments
                   .slice(-3)
                   .map((e, idx) => (
                     <Tile
