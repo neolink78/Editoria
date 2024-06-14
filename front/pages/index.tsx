@@ -47,7 +47,6 @@ export default function HomePage() {
             layout="responsive"
           />
         </Box>
-
       </Flex>
       <Box fontSize="2.5vw" m="8vw 10.8vw 0 11.2vw">
         Most popular projects
