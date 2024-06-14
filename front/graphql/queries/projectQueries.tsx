@@ -38,7 +38,7 @@ export const GET_USER_PROJECTS = gql`
 `;
 
 export const GET_PROJECTS = gql`
-query GetProjects {
+  query GetProjects {
     getProjects {
       id
       owner {
@@ -56,8 +56,7 @@ query GetProjects {
       codeSnippetsOwned {
         id
         language
+      }
     }
   }
-}
 `;
-

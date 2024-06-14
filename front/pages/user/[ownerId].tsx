@@ -98,7 +98,7 @@ export default function User() {
                     owner={userData.username}
                     description={project.description}
                     createdAt={project.createdAt}
-                    onOpenProject={ () => handleOpenProject(project.id)}
+                    onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
             </Box>
