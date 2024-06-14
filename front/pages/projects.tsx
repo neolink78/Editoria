@@ -1,6 +1,5 @@
 import Layout from "@/components/layout";
 import { gql, useQuery } from "@apollo/client";
-import { GetProjectsQuery, Language } from "@/gql/graphql";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
@@ -8,26 +7,11 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-
-const GETPROJECTS = gql`
-  query GetProjects {
-    getProjects {
-      codeSnippetsOwned {
-        language
-      }
-      owner {
-        username
-        id
-      }
-      createdAt
-      description
-      title
-    }
-  }
-`;
+import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { GetProjectsQuery } from "@/gql/graphql";
 
 const Projects = () => {
-  const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
+  const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
 
   const router = useRouter();
 
@@ -130,6 +114,7 @@ const Projects = () => {
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    onOpenProject={() => router.push(`/project/${project.id}`)}
                   />
                 ))}
             </Box>
@@ -147,14 +132,15 @@ const Projects = () => {
                 .slice(indexOfFirstProject, indexOfLastProject)
                 .map((project, idx) => (
                   <Tile
-                    homePage
+                    key={idx}
                     ownerId={project.owner.id as UUID}
                     title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
-                    key={idx}
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    onOpenProject={() => router.push(`/project/${project.id}`)}
+                    homePage
                   />
                 ))}
             </Box>

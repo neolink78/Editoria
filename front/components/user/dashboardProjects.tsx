@@ -59,23 +59,26 @@ const DashboardProjects = ({
         </Box>
         {currentProjects.map((project, idx) => (
           <Skeleton isLoaded={!isLoading} key={idx}>
-            {/* <Tile
-                            homePage={false}
-                            projectId={project.id}
-                            icon={getLanguageIcon(project.codeSnippetsOwned[0]?.language)}
-                            title={project.title}
-                            description={project.description}
-                            createdAt={project.createdAt}
-                            owner={project.owner.username}
-                            commentCount={project?.comments.length}
-                            likeCount={project.likes.length}
-                            toggleLike={() => {
-                                toggleLike({ variables: { projectId: project.id } });
-                            }}
-                            onDelete={() => {
-                                onDelete(project.id);
-                            }}
-                        /> */}
+            <Tile
+              homePage={false}
+              projectId={project.id}
+              icon={project.codeSnippetsOwned[0]?.language}
+              title={project.title}
+              description={project.description}
+              createdAt={project.createdAt}
+              owner={project.owner.username}
+              commentCount={project?.comments.length}
+              likeCount={project.likes.length}
+              toggleLike={() => {
+                toggleLike({ variables: { projectId: project.id } });
+              }}
+              onDelete={() => {
+                onDelete(project.id);
+              }}
+              onOpenProject={() => {
+                router.push(`/editor?project=${project.id}`);
+              }}
+            />
           </Skeleton>
         ))}
       </Box>

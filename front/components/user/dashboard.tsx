@@ -3,7 +3,7 @@ import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
@@ -37,11 +37,13 @@ const Dashboard = () => {
     data: projectData,
     loading,
     error,
+    refetch,
   } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS);
   const projects = projectData?.getOwnProject || [];
-  const { data: commentData } = useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+  const { data: commentData, loading: commentLoading } =
+    useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const comments = commentData?.getOwnComments || [];
-  const { data: likedProjectsData } =
+  const { data: likedProjectsData, loading: likedProjectsLoading } =
     useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
   const [toggleLike, { loading: toggleLikeLoading }] = useMutation<
@@ -60,6 +62,14 @@ const Dashboard = () => {
 
   const router = useRouter();
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
     openModal({
@@ -73,7 +83,10 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser = projects.length === 0;
+  const newUser =
+    projects.length === 0 &&
+    comments.length === 0 &&
+    likedProjects.length === 0;
   const sortedProjects = [...projects]
     .sort(
       (a, b) =>
@@ -82,18 +95,18 @@ const Dashboard = () => {
     .slice(0, 3);
 
   if (error) return <Error />;
-  if (loading)
+  if (loading || commentLoading || likedProjectsLoading)
     return (
       <Flex
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        width="78.8vw"
-        mt="40px"
+        width="70vw"
+        mt="50px"
       >
         {Array.from({ length: 10 }).map((_, idx) => (
           <Box key={idx} width="100%" mb="10px">
-            <Skeleton height="56px" width="100%" borderRadius="30px" />
+            <Skeleton height="46px" width="100%" borderRadius="30px" />
           </Box>
         ))}
       </Flex>
@@ -154,7 +167,6 @@ const Dashboard = () => {
                     title={e.title}
                     description={e.description}
                     createdAt={e.createdAt}
-                    owner={e.owner.username}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
                     ownerId={e.owner.id as UUID}
@@ -162,6 +174,8 @@ const Dashboard = () => {
                     toggleLike={() => {
                       toggleLike({ variables: { projectId: e.id } });
                     }}
+                    isLiked={likedProjects.some((p) => p.id === e.id)}
+                    onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
               )}
@@ -207,12 +221,14 @@ const Dashboard = () => {
                     <Tile
                       ownerId={e.owner.id as UUID}
                       homePage
-                      icon={e.codeSnippetsOwned[0]?.language}
                       key={idx}
+                      icon={e.codeSnippetsOwned[0]?.language}
                       title={e.title}
                       description={e.description}
+                      createdAt={e.createdAt}
+                      owner={e.owner.username}
                       likeCount={e.likes.length}
-                      content
+                      commentCount={e.comments.length}
                       toggleLike={() => {
                         console.log(
                           "Toggle like button clicked for project ID:",
@@ -220,6 +236,8 @@ const Dashboard = () => {
                         );
                         toggleLike({ variables: { projectId: e.id } });
                       }}
+                      isLiked
+                      onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>
                 ))
@@ -243,7 +261,7 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
-
+            {/* 
             <Box
               fontSize="1.4vw"
               m={"2vw 0 0 10vw"}
@@ -252,12 +270,12 @@ const Dashboard = () => {
               alignItems="baseline"
             >
               Mes projets en collaboration
-              {/* {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
+              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
                 Tout voir
-              </Box>} */}
+              </Box>}
             </Box>
             <Box mb={12}>
-              {/* {indexMock ? indexMock.slice(-2).map((e, idx) => (
+              {indexMock ? indexMock.slice(-2).map((e, idx) => (
                 <Skeleton isLoaded={!loading} key={idx}>
                   <Tile
                     homePage
@@ -281,8 +299,8 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet en collaboration.{" "}
                   </Box>
                 </Flex>
-              } */}
-            </Box>
+              }
+            </Box> */}
             <Box
               fontSize="1.4vw"
               m={"2vw 0 0 10vw"}
@@ -299,16 +317,19 @@ const Dashboard = () => {
             </Box>
             <Box mb={12}>
               {commentData && comments.length > 0 ? (
-                comments.map((e, idx) => (
-                  <Tile
-                    homePage
-                    ownerId={e.owner.id as UUID}
-                    key={idx}
-                    title={e.project.title}
-                    description={e.content}
-                    content
-                  />
-                ))
+                comments
+                  .slice(-3)
+                  .map((e, idx) => (
+                    <Tile
+                      homePage
+                      ownerId={e.owner.id as UUID}
+                      key={idx}
+                      title={e.project.title}
+                      description={e.content}
+                      content
+                      onOpenProject={() => handleOpenProject(e.project.id)}
+                    />
+                  ))
               ) : (
                 <Flex
                   flexDirection="column"

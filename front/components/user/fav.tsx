@@ -19,7 +19,7 @@ const Fav = () => {
 
   return (
     <>
-      <Box
+      {/* <Box
         fontSize="1.4vw"
         m={"4vw 0 0 10vw"}
         alignSelf={"flex-start"}
@@ -86,7 +86,7 @@ const Fav = () => {
             date={e.date}
           />
         ))}
-      </Box>
+      </Box> */}
     </>
   );
 };
