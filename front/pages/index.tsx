@@ -29,13 +29,12 @@ export default function HomePage() {
     refetch();
   }, []);
 
-
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
 
   if (loading) return <Layout>Loading...</Layout>;
-  if (error) return <Error></Error>
+  if (error) return <Error></Error>;
   return (
     <Layout>
       <Flex className="header_main_title">
@@ -71,19 +70,23 @@ export default function HomePage() {
         Most popular projects
       </Box>
       <Box ml="11.6vw">
-        {projects ? (sortedProjects).slice(-5).map((e: ProjectType, idx: any) => (
-          <Tile
-            key={idx}
-            icon={e.codeSnippetsOwned[0]?.language}
-            title={e.title}
-            description={e.description}
-            owner={e.owner.username}
-            createdAt={e.createdAt}
-            onOpenProject={() => handleOpenProject(e.id)}
-            commentCount={e.comments.length}
-            homePage
-          />
-        )) : null}
+        {projects
+          ? sortedProjects
+              .slice(-5)
+              .map((e: ProjectType, idx: any) => (
+                <Tile
+                  key={idx}
+                  icon={e.codeSnippetsOwned[0]?.language}
+                  title={e.title}
+                  description={e.description}
+                  owner={e.owner.username}
+                  createdAt={e.createdAt}
+                  onOpenProject={() => handleOpenProject(e.id)}
+                  commentCount={e.comments.length}
+                  homePage
+                />
+              ))
+          : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
         <SubmitButton onClick={() => router.push("/projects")} w="10vw">
