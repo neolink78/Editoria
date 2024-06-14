@@ -1,13 +1,15 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import { getLanguageIcon } from "@/utils/languageIcons";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
-import { CiChat1 } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Language } from "@/gql/graphql";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
+import { BsChatSquare, BsChatSquareFill } from "react-icons/bs";
+import { useLikes } from "@/context/LikeContext";
+
 
 type TileProps = {
   ownerId?: UUID;
@@ -27,6 +29,7 @@ type TileProps = {
   toggleLike?: () => void;
   likeCount?: number;
   isLiked?: boolean;
+  isCommented?: boolean;
   onOpenProject: (e: any) => void;
 };
 
@@ -44,9 +47,9 @@ const Tile = ({
   onDelete,
   commentCount,
   content,
-  toggleLike,
   likeCount,
   isLiked,
+  isCommented,
   onOpenProject,
 }: TileProps) => {
   const router = useRouter();
@@ -54,6 +57,14 @@ const Tile = ({
     ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
     : "";
 
+  const { handleToggleLike } = useLikes();
+  const handleToggle = async () => {
+    try {
+      await handleToggleLike(projectId!);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
   return (
     <Flex
       justifyContent="space-between"
@@ -72,7 +83,7 @@ const Tile = ({
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon as Language)}
-        <Text isTruncated w="10vw">
+        <Text isTruncated w="10vw" fontWeight="bold">
           {title}
         </Text>
       </Flex>
@@ -89,28 +100,39 @@ const Tile = ({
         )}
       </Flex>
       <Flex gap="1vw">
-        <Flex alignItems="center">
+        <Flex alignItems="center" mr="2">
           {isLiked ? (
             <AiFillLike
+              size="1.5vw"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleLike?.();
+                handleToggle()
               }}
               cursor="pointer"
             />
           ) : (
             <AiOutlineLike
+              size="1.5vw"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleLike?.();
+                handleToggle()
               }}
               cursor="pointer"
             />
           )}
-          {likeCount !== undefined ? likeCount : 0}
+          <Text ml="0.5vw">
+            {likeCount !== undefined ? likeCount : 0}
+          </Text>
         </Flex>
-        <Flex alignItems="center" mr={"3vw"}>
-          <CiChat1 /> {commentCount}
+        <Flex alignItems="center" mr="3vw">
+          {isCommented ?
+            < BsChatSquareFill size="1.3vw" />
+            :
+            < BsChatSquare size="1.3vw" />
+          }
+          <Text ml="0.5vw">
+            {commentCount}
+          </Text>
         </Flex>
         {content ? (
           ""
