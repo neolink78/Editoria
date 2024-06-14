@@ -434,6 +434,7 @@ export type GetProjectsQuery = {
       id: string;
       language: Language;
     }>;
+    likes: Array<{ __typename?: "Like"; id: string }>;
   }>;
 };
 
@@ -1263,6 +1264,16 @@ export const GetProjectsDocument = {
                         kind: "Field",
                         name: { kind: "Name", value: "language" },
                       },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "likes" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
                     ],
                   },
                 },

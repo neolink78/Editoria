@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
@@ -7,13 +7,36 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
-import { GetProjectsQuery } from "@/gql/graphql";
+import {
+  GET_PROJECTS,
+  GET_USER_PROJECTS,
+} from "@/graphql/queries/projectQueries";
+import {
+  GetProjectsQuery,
+  LikedProjectsQuery,
+  ToggleLikeMutation,
+  ToggleLikeMutationVariables,
+} from "@/gql/graphql";
+import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 
 const Projects = () => {
   const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
 
   const router = useRouter();
+
+  const [toggleLike] = useMutation<
+    ToggleLikeMutation,
+    ToggleLikeMutationVariables
+  >(TOGGLE_LIKE, {
+    refetchQueries: [
+      { query: GET_LIKED_PROJECTS },
+      { query: GET_USER_PROJECTS },
+    ],
+  });
+  const { data: likedProjectsData } =
+    useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
+  const likedProjects = likedProjectsData?.likedProjects || [];
 
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
@@ -118,6 +141,12 @@ const Projects = () => {
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    toggleLike={() => {
+                      toggleLike({ variables: { projectId: project.id } });
+                    }}
+                    isLiked={likedProjects.some((p) => p.id === project.id)}
+                    likeCount={project.likes.length}
+                    commentCount={project.comments.length}
                     onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
@@ -143,6 +172,12 @@ const Projects = () => {
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    likeCount={project.likes.length}
+                    toggleLike={() => {
+                      toggleLike({ variables: { projectId: project.id } });
+                    }}
+                    isLiked={likedProjects.some((p) => p.id === project.id)}
+                    commentCount={project.comments.length}
                     onOpenProject={() => handleOpenProject(project.id)}
                     homePage
                   />
