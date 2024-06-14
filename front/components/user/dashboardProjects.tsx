@@ -2,9 +2,9 @@ import { Box, Skeleton } from "@chakra-ui/react";
 import ArrowLeftIcon from "../../icons/arrowLeftIcon";
 import { PaginationControls } from "../../lib/pagination";
 import Tile from "../../lib/tile";
-import { getLanguageIcon } from "../../utils/languageIcons";
 import { Language } from "@/gql/graphql";
 import { useRouter } from "next/router";
+import { useLikes } from "@/context/LikeContext";
 
 export type Project = {
   id: string;
@@ -22,7 +22,7 @@ interface DashboardProjectsProps {
   onDelete: (projectId: string) => void;
   setShowAllProjects: (show: boolean) => void;
   isLoading: boolean;
-  toggleLike: (options: { variables: { projectId: string } }) => void;
+  ownComments: Array<{ id: string; content: string }>;
 }
 
 const DashboardProjects = ({
@@ -30,9 +30,16 @@ const DashboardProjects = ({
   onDelete,
   setShowAllProjects,
   isLoading,
-  toggleLike,
+  ownComments,
 }: DashboardProjectsProps) => {
   const router = useRouter();
+
+  const { handleToggleLike, likedProjects } = useLikes();
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
   const currentPage = parseInt(router.query.page as string) || 1;
   const projectsPerPage = 8;
 
@@ -70,14 +77,16 @@ const DashboardProjects = ({
               commentCount={project?.comments.length}
               likeCount={project.likes.length}
               toggleLike={() => {
-                toggleLike({ variables: { projectId: project.id } });
+                handleToggleLike(project.id);
               }}
               onDelete={() => {
                 onDelete(project.id);
               }}
               onOpenProject={() => {
-                router.push(`/editor?project=${project.id}`);
+                handleOpenProject(project.id);
               }}
+              isLiked={likedProjects.some((p) => p.id === project.id)}
+              isCommented={ownComments.some((c) => c.id === project.comments[0]?.id)}
             />
           </Skeleton>
         ))}
