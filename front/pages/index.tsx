@@ -52,18 +52,22 @@ export default function HomePage() {
         Most popular projects
       </Box>
       <Box ml="11.6vw">
-        {projects ? projects.slice(-5).map((e: any, idx: any) => (
-          <Tile
-            key={idx}
-            icon={e.codeSnippetsOwned[0]?.language}
-            title={e.title}
-            description={e.description}
-            ownerId={e.owner.username}
-            createdAt={e.createdAt}
-            onOpenProject={() => router.push(`/projects/${e.projectId}`)}
-            homePage
-          />
-        )) : null}
+        {projects
+          ? projects
+              .slice(-5)
+              .map((e: any, idx: any) => (
+                <Tile
+                  key={idx}
+                  icon={e.codeSnippetsOwned[0]?.language}
+                  title={e.title}
+                  description={e.description}
+                  ownerId={e.owner.username}
+                  createdAt={e.createdAt}
+                  onOpenProject={() => router.push(`/projects/${e.projectId}`)}
+                  homePage
+                />
+              ))
+          : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
         <SubmitButton onClick={() => router.push("/projects")} w="10vw">

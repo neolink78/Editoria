@@ -18,7 +18,8 @@ const Projects = () => {
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
   const [filteredProjects, setFilteredProjects] = useState(
-    data?.getProjects || [],);
+    data?.getProjects || [],
+  );
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || 1,
   );
@@ -131,15 +132,15 @@ const Projects = () => {
                 .slice(indexOfFirstProject, indexOfLastProject)
                 .map((project, idx) => (
                   <Tile
-                  key={idx}
-                  ownerId={project.owner.id as UUID}
-                  title={project.title}
-                  icon={project.codeSnippetsOwned[0]?.language}
-                  owner={project.owner.username}
-                  description={project.description}
-                  createdAt={project.createdAt}
-                  onOpenProject={() => router.push(`/project/${project.id}`)}
-                  homePage
+                    key={idx}
+                    ownerId={project.owner.id as UUID}
+                    title={project.title}
+                    icon={project.codeSnippetsOwned[0]?.language}
+                    owner={project.owner.username}
+                    description={project.description}
+                    createdAt={project.createdAt}
+                    onOpenProject={() => router.push(`/project/${project.id}`)}
+                    homePage
                   />
                 ))}
             </Box>
