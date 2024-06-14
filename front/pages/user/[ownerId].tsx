@@ -12,9 +12,11 @@ import { UUID } from "crypto";
 const GET_USER = gql`
   query GetUser($ownerId: ID!) {
     getUser(id: $ownerId) {
+      id
       description
       username
       projects {
+        id
         codeSnippetsOwned {
           language
         }
@@ -26,14 +28,20 @@ const GET_USER = gql`
     }
   }
 `;
-type ProjectType = {
+export type ProjectType = {
   owner: {
+    id: UUID;
     username: string;
   };
   codeSnippetsOwned: Array<{ language: Language }>;
   title: string;
   description: string;
   createdAt: string;
+  id: string;
+  comments: Array<{
+    id: string;
+    content: string;
+  }>;
 };
 
 type UserType = {
@@ -61,6 +69,11 @@ export default function User() {
   useEffect(() => {
     data && setUserData(data.getUser);
   }, [data]);
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
   return (
     <Layout>
       {userData && (
@@ -90,6 +103,7 @@ export default function User() {
                     owner={userData.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
             </Box>

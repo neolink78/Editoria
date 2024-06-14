@@ -72,6 +72,10 @@ const Projects = () => {
     router.push(`?page=${1}`);
   }, []);
 
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
   return (
     <Layout>
       <Flex
@@ -114,7 +118,7 @@ const Projects = () => {
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
-                    onOpenProject={() => router.push(`/project/${project.id}`)}
+                    onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
             </Box>
@@ -139,7 +143,7 @@ const Projects = () => {
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
-                    onOpenProject={() => router.push(`/project/${project.id}`)}
+                    onOpenProject={() => handleOpenProject(project.id)}
                     homePage
                   />
                 ))}
