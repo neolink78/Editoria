@@ -7,8 +7,16 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import { GET_PROJECTS, GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
-import { GetProjectsQuery, LikedProjectsQuery, ToggleLikeMutation, ToggleLikeMutationVariables } from "@/gql/graphql";
+import {
+  GET_PROJECTS,
+  GET_USER_PROJECTS,
+} from "@/graphql/queries/projectQueries";
+import {
+  GetProjectsQuery,
+  LikedProjectsQuery,
+  ToggleLikeMutation,
+  ToggleLikeMutationVariables,
+} from "@/gql/graphql";
 import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
 import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 
