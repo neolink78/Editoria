@@ -583,12 +583,13 @@ export type GetUserQuery = {
   __typename?: "Query";
   getUser: {
     __typename?: "User";
+    id: string;
     description: string;
     username: string;
     projects: Array<{
       __typename?: "Project";
-      title: string;
       id: string;
+      title: string;
       description: string;
       createdAt: any;
       codeSnippetsOwned: Array<{
@@ -2199,6 +2200,7 @@ export const GetUserDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
                 {
@@ -2207,6 +2209,7 @@ export const GetUserDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "codeSnippetsOwned" },
