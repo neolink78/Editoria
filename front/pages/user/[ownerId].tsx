@@ -30,6 +30,7 @@ const GET_USER = gql`
 `;
 export type ProjectType = {
   owner: {
+    id: UUID
     username: string;
   };
   codeSnippetsOwned: Array<{ language: Language }>;

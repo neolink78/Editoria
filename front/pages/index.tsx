@@ -10,6 +10,7 @@ import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
 import { useEffect } from "react";
 import { Error } from "@/lib/error";
 import { ProjectType } from "./user/[ownerId]";
+import { UUID } from "crypto";
 
 export default function HomePage() {
   const router = useRouter();
@@ -72,20 +73,21 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {projects
           ? sortedProjects
-              .slice(-5)
-              .map((e: ProjectType, idx: any) => (
-                <Tile
-                  key={idx}
-                  icon={e.codeSnippetsOwned[0]?.language}
-                  title={e.title}
-                  description={e.description}
-                  owner={e.owner.username}
-                  createdAt={e.createdAt}
-                  onOpenProject={() => handleOpenProject(e.id)}
-                  commentCount={e.comments.length}
-                  homePage
-                />
-              ))
+            .slice(-5)
+            .map((e: ProjectType, idx: any) => (
+              <Tile
+                key={idx}
+                icon={e.codeSnippetsOwned[0]?.language}
+                title={e.title}
+                description={e.description}
+                owner={e.owner.username}
+                ownerId={e.owner.id as UUID}
+                createdAt={e.createdAt}
+                onOpenProject={() => handleOpenProject(e.id)}
+                commentCount={e.comments.length}
+                homePage
+              />
+            ))
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
