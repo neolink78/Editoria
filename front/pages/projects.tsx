@@ -134,10 +134,6 @@ const Projects = () => {
                     description={project.description}
                     createdAt={project.createdAt}
                     toggleLike={() => {
-                      console.log(
-                        "Toggle like button clicked for project ID:",
-                        project.id,
-                      );
                       toggleLike({ variables: { projectId: project.id } });
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
@@ -170,10 +166,6 @@ const Projects = () => {
                     createdAt={project.createdAt}
                     likeCount={project.likes.length}
                     toggleLike={() => {
-                      console.log(
-                        "Toggle like button clicked for project ID:",
-                        project.id,
-                      );
                       toggleLike({ variables: { projectId: project.id } });
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}

@@ -230,10 +230,6 @@ const Dashboard = () => {
                       likeCount={e.likes.length}
                       commentCount={e.comments.length}
                       toggleLike={() => {
-                        console.log(
-                          "Toggle like button clicked for project ID:",
-                          e.id,
-                        );
                         toggleLike({ variables: { projectId: e.id } });
                       }}
                       isLiked
