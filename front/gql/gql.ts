@@ -34,7 +34,7 @@ const documents = {
     types.LikedProjectsDocument,
   "\n  query GetProjectsByUser {\n    getOwnProject {\n      id\n      title\n      description\n      is_public\n      createdAt\n      updatedAt\n      codeSnippetsOwned {\n        id\n        title\n        code\n        language\n      }\n      comments {\n        id\n        content\n        owner {\n          id\n        }\n        project {\n          id\n        }\n      }\n      owner {\n        id\n        email\n        username\n      }\n      likes {\n        id\n      }\n    }\n  }\n":
     types.GetProjectsByUserDocument,
-  "\nquery GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n    }\n  }\n}\n":
+  "\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n":
     types.GetProjectsDocument,
   "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n":
     types.SignUpDocument,
@@ -52,7 +52,7 @@ const documents = {
     types.AddFileDocument,
   "\n  mutation UpdateFile(\n    $updateCodeSnippetId: ID!\n    $code: String!\n    $title: String!\n    $language: Language!\n    $projectId: String!\n  ) {\n    updateCodeSnippet(\n      id: $updateCodeSnippetId\n      code: $code\n      title: $title\n      language: $language\n      projectId: $projectId\n    ) {\n      code\n      id\n    }\n  }\n":
     types.UpdateFileDocument,
-  "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n":
+  "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      is_public\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n":
     types.GetProjectDocument,
   "\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n":
     types.UpdateProjectDocument,
@@ -144,8 +144,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\nquery GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n    }\n  }\n}\n",
-): (typeof documents)["\nquery GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n    }\n  }\n}\n"];
+  source: "\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -198,8 +198,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n",
-): (typeof documents)["\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n"];
+  source: "\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      is_public\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query GetProject($getProjectByIdId: ID!) {\n    getProjectById(id: $getProjectByIdId) {\n      codeSnippetsOwned {\n        code\n        id\n        language\n        title\n      }\n      description\n      is_public\n      title\n      likes {\n        id\n      }\n      owner {\n        username\n        id\n        email\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
