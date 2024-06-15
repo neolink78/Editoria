@@ -9,31 +9,20 @@ import { useRouter } from "next/router";
 import { UUID } from "crypto";
 import {
   GET_PROJECTS,
-  GET_USER_PROJECTS,
 } from "@/graphql/queries/projectQueries";
 import {
   GetProjectsQuery,
   LikedProjectsQuery,
-  ToggleLikeMutation,
-  ToggleLikeMutationVariables,
 } from "@/gql/graphql";
-import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
 import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
+import { useLikes } from "@/context/LikeContext";
 
 const Projects = () => {
   const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
 
   const router = useRouter();
 
-  const [toggleLike] = useMutation<
-    ToggleLikeMutation,
-    ToggleLikeMutationVariables
-  >(TOGGLE_LIKE, {
-    refetchQueries: [
-      { query: GET_LIKED_PROJECTS },
-      { query: GET_USER_PROJECTS },
-    ],
-  });
+  const { handleToggleLike } = useLikes()
   const { data: likedProjectsData } =
     useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
@@ -134,6 +123,7 @@ const Projects = () => {
                 .map((project, idx) => (
                   <Tile
                     homePage
+                    projectId={project.id}
                     ownerId={project.owner.id as UUID}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
@@ -142,7 +132,7 @@ const Projects = () => {
                     description={project.description}
                     createdAt={project.createdAt}
                     toggleLike={() => {
-                      toggleLike({ variables: { projectId: project.id } });
+                      handleToggleLike(project.id)
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
                     likeCount={project.likes.length}
@@ -166,6 +156,7 @@ const Projects = () => {
                 .map((project, idx) => (
                   <Tile
                     key={idx}
+                    projectId={project.id}
                     ownerId={project.owner.id as UUID}
                     title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
@@ -174,7 +165,7 @@ const Projects = () => {
                     createdAt={project.createdAt}
                     likeCount={project.likes.length}
                     toggleLike={() => {
-                      toggleLike({ variables: { projectId: project.id } });
+                      handleToggleLike(project.id)
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
                     commentCount={project.comments.length}
