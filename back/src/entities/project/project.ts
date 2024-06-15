@@ -20,6 +20,15 @@ export type ProjectArgs = CreateOrUpdateProjectArgs & {
   codeSnippetsOwned: CodeSnippet[];
 };
 
+@ObjectType()
+export class ProjectPaginationResponse {
+  @Field(() => [Project])
+  projects!: Project[];
+
+  @Field()
+  totalCount!: number;
+}
+
 @Entity()
 @ObjectType()
 class Project extends BaseEntity {
@@ -95,8 +104,13 @@ class Project extends BaseEntity {
     return await Project.save(newProject);
   }
 
-  static async getProject(): Promise<Project[]> {
-    return await Project.find({
+  static async getProjects(
+    limit: number,
+    offset: number,
+  ): Promise<[Project[], number]> {
+    return await Project.findAndCount({
+      skip: offset,
+      take: limit,
       order: {
         createdAt: "DESC",
       },
