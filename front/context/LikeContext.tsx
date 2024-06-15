@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useMutation, useQuery } from "@apollo/client";
 import { TOGGLE_LIKE } from "../graphql/mutations/likeMutations";
-import { GET_LIKED_PROJECTS } from '@/graphql/queries/likeQueries';
-import { GET_PROJECTS } from '@/graphql/queries/projectQueries';
-import { ProjectType } from '@/pages/user/[ownerId]';
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
+import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { ProjectType } from "@/pages/user/[ownerId]";
 
 type LikeContextType = {
   likedProjects: ProjectType[];
@@ -14,7 +14,7 @@ type LikeContextType = {
 
 const defaultValue: LikeContextType = {
   likedProjects: [],
-  handleToggleLike: async () => { },
+  handleToggleLike: async () => {},
   loading: false,
   error: null,
 };
@@ -42,25 +42,29 @@ export const LikeProvider = ({ children }: LikeProviderProps) => {
     try {
       await toggleLikeMutation({
         variables: { projectId },
-        refetchQueries: [{ query: GET_LIKED_PROJECTS }]
+        refetchQueries: [{ query: GET_LIKED_PROJECTS }],
       });
-      setLikedProjects(current => {
-        const isCurrentlyLiked = current.some(p => p.id === projectId);
+      setLikedProjects((current) => {
+        const isCurrentlyLiked = current.some((p) => p.id === projectId);
         if (isCurrentlyLiked) {
-          return current.filter(p => p.id !== projectId);
+          return current.filter((p) => p.id !== projectId);
         } else {
-          const newLikedProject = data.likedProjects.find((p: ProjectType) => p.id === projectId);
+          const newLikedProject = data.likedProjects.find(
+            (p: ProjectType) => p.id === projectId,
+          );
           return newLikedProject ? [...current, newLikedProject] : current;
         }
       });
       refetch();
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     }
   };
 
   return (
-    <LikeContext.Provider value={{ likedProjects, handleToggleLike, loading, error }}>
+    <LikeContext.Provider
+      value={{ likedProjects, handleToggleLike, loading, error }}
+    >
       {children}
     </LikeContext.Provider>
   );

@@ -14,10 +14,7 @@ import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
-import {
-  GetOwnCommentsQuery,
-  GetProjectsByUserQuery,
-} from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetProjectsByUserQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
@@ -44,10 +41,9 @@ const Dashboard = () => {
 
   const { handleToggleLike, likedProjects } = useLikes();
 
-  const [deleteProject] =
-    useMutation(DELETE_PROJECT, {
-      refetchQueries: [{ query: GET_USER_PROJECTS }],
-    });
+  const [deleteProject] = useMutation(DELETE_PROJECT, {
+    refetchQueries: [{ query: GET_USER_PROJECTS }],
+  });
 
   const router = useRouter();
 
@@ -221,7 +217,9 @@ const Dashboard = () => {
                         handleToggleLike(e.id);
                       }}
                       isLiked
-                      isCommented={ownComments.some((c) => c.project.id === e.id)}
+                      isCommented={ownComments.some(
+                        (c) => c.project.id === e.id,
+                      )}
                       onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>

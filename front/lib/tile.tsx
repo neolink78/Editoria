@@ -10,7 +10,6 @@ import { UUID } from "crypto";
 import { BsChatSquare, BsChatSquareFill } from "react-icons/bs";
 import { useLikes } from "@/context/LikeContext";
 
-
 type TileProps = {
   ownerId?: UUID;
   icon?: Language;
@@ -62,7 +61,7 @@ const Tile = ({
     try {
       await handleToggleLike(projectId!);
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     }
   };
   return (
@@ -106,7 +105,7 @@ const Tile = ({
               size="1.5vw"
               onClick={(e) => {
                 e.stopPropagation();
-                handleToggle()
+                handleToggle();
               }}
               cursor="pointer"
             />
@@ -115,24 +114,20 @@ const Tile = ({
               size="1.5vw"
               onClick={(e) => {
                 e.stopPropagation();
-                handleToggle()
+                handleToggle();
               }}
               cursor="pointer"
             />
           )}
-          <Text ml="0.5vw">
-            {likeCount !== undefined ? likeCount : 0}
-          </Text>
+          <Text ml="0.5vw">{likeCount !== undefined ? likeCount : 0}</Text>
         </Flex>
         <Flex alignItems="center" mr="3vw">
-          {isCommented ?
-            < BsChatSquareFill size="1.3vw" />
-            :
-            < BsChatSquare size="1.3vw" />
-          }
-          <Text ml="0.5vw">
-            {commentCount}
-          </Text>
+          {isCommented ? (
+            <BsChatSquareFill size="1.3vw" />
+          ) : (
+            <BsChatSquare size="1.3vw" />
+          )}
+          <Text ml="0.5vw">{commentCount}</Text>
         </Flex>
         {content ? (
           ""
