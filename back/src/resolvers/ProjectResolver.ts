@@ -5,12 +5,15 @@ import {
   createMethodDecorator,
   Ctx,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
 } from "type-graphql";
 import { Context } from "..";
-import Project from "../entities/project/project";
+import Project, {
+  ProjectPaginationResponse,
+} from "../entities/project/project";
 import { CreateOrUpdateProjectArgs } from "../entities/project/project.args";
 import User from "../entities/user/user";
 
@@ -38,9 +41,16 @@ export class ProjectResolver {
     });
   }
 
-  @Query(() => [Project])
-  getProjects() {
-    return Project.getProject();
+  @Query(() => ProjectPaginationResponse)
+  async getProjects(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("offset", () => Int) offset: number,
+  ): Promise<ProjectPaginationResponse> {
+    const [projects, totalCount] = await Project.getProjects(limit, offset);
+    return {
+      projects,
+      totalCount,
+    };
   }
 
   @Query(() => Project)
@@ -52,11 +62,6 @@ export class ProjectResolver {
   getProjectById(@Arg("id", () => ID) id: string) {
     return Project.getProjectById(id);
   }
-
-  // @Query(() => [Project])
-  // getProjectsByUserId(@Arg("userId", () => ID) userId: string) {
-  //   return Project.getProjectsByUserId(userId);
-  // }
 
   @Authorized()
   @ProjectOwner()
