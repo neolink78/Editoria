@@ -147,12 +147,12 @@ const Projects = () => {
         />
         <Input
           borderRadius="2vw"
-          mt="2vw"
+          m="2vw"
           bgColor="white"
           color="black"
           width="25vw"
           border="solid 1px white"
-          placeholder={"search values"}
+          placeholder={"Search for projects..."}
           value={value}
           onChange={handleSearchChange}
           fontSize="1.2vw"
