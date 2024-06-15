@@ -34,7 +34,7 @@ const documents = {
     types.LikedProjectsDocument,
   "\n  query GetProjectsByUser {\n    getOwnProject {\n      id\n      title\n      description\n      is_public\n      createdAt\n      updatedAt\n      codeSnippetsOwned {\n        id\n        title\n        code\n        language\n      }\n      comments {\n        id\n        content\n        owner {\n          id\n        }\n        project {\n          id\n        }\n      }\n      owner {\n        id\n        email\n        username\n      }\n      likes {\n        id\n      }\n    }\n  }\n":
     types.GetProjectsByUserDocument,
-  "\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n      likes {\n        id\n      }\n    }\n  }\n":
+  "\n  query GetProjects($offset: Int!, $limit: Int!) {\n    getProjects(offset: $offset, limit: $limit) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n":
     types.GetProjectsDocument,
   "\n  mutation SignUp($email: String!, $username: String!, $password: String!) {\n    signUp(email: $email, username: $username, password: $password) {\n      email\n    }\n  }\n":
     types.SignUpDocument,
@@ -144,8 +144,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n      likes {\n        id\n      }\n    }\n  }\n",
-): (typeof documents)["\n  query GetProjects {\n    getProjects {\n      id\n      owner {\n        id\n        email\n        username\n      }\n      createdAt\n      title\n      description\n      comments {\n        id\n        content\n      }\n      codeSnippetsOwned {\n        id\n        language\n      }\n      likes {\n        id\n      }\n    }\n  }\n"];
+  source: "\n  query GetProjects($offset: Int!, $limit: Int!) {\n    getProjects(offset: $offset, limit: $limit) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n",
+): (typeof documents)["\n  query GetProjects($offset: Int!, $limit: Int!) {\n    getProjects(offset: $offset, limit: $limit) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
