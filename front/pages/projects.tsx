@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Input } from "@chakra-ui/react";
+import { Box, Flex, Input, Skeleton } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
 import Tile from "@/lib/tile";
@@ -16,9 +16,10 @@ import {
 } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
+import { Error } from "@/lib/error";
 
 const Projects = () => {
-  const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
 
   const router = useRouter();
 
@@ -88,6 +89,29 @@ const Projects = () => {
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
+
+  if (error) return <Error />;
+  if (loading)
+    return (
+      <Layout>
+        <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="20vh">
+
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            width="70vw"
+            mt="50px"
+          >
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <Box key={idx} width="100%" mb="10px">
+                <Skeleton height="46px" width="100%" borderRadius="30px" />
+              </Box>
+            ))}
+          </Flex>
+        </Flex>
+      </Layout >
+    );
 
   return (
     <Layout>
