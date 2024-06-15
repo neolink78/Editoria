@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Input, Skeleton } from "@chakra-ui/react";
+import { Box, Flex, Input, Skeleton, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
 import Tile from "@/lib/tile";
@@ -17,6 +17,7 @@ import {
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { Error } from "@/lib/error";
+import SubmitButton from "@/lib/submitButton";
 
 const Projects = () => {
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS);
@@ -112,6 +113,23 @@ const Projects = () => {
         </Flex>
       </Layout >
     );
+
+  if (data?.getProjects.length === 0) {
+    return (
+      <Layout>
+        <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="20vh">
+          <Box fontSize="2vw" color="white" mt="10vw" mb="2vw">
+            <Text>
+              No projects found
+            </Text>
+          </Box>
+          <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")} >
+            Start coding
+          </SubmitButton>
+        </Flex>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
