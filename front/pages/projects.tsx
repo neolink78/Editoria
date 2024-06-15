@@ -7,13 +7,8 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import {
-  GET_PROJECTS,
-} from "@/graphql/queries/projectQueries";
-import {
-  GetProjectsQuery,
-  LikedProjectsQuery,
-} from "@/gql/graphql";
+import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { GetProjectsQuery, LikedProjectsQuery } from "@/gql/graphql";
 import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 import { useLikes } from "@/context/LikeContext";
 
@@ -22,7 +17,7 @@ const Projects = () => {
 
   const router = useRouter();
 
-  const { handleToggleLike } = useLikes()
+  const { handleToggleLike } = useLikes();
   const { data: likedProjectsData } =
     useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
   const likedProjects = likedProjectsData?.likedProjects || [];
@@ -132,7 +127,7 @@ const Projects = () => {
                     description={project.description}
                     createdAt={project.createdAt}
                     toggleLike={() => {
-                      handleToggleLike(project.id)
+                      handleToggleLike(project.id);
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
                     likeCount={project.likes.length}
@@ -165,7 +160,7 @@ const Projects = () => {
                     createdAt={project.createdAt}
                     likeCount={project.likes.length}
                     toggleLike={() => {
-                      handleToggleLike(project.id)
+                      handleToggleLike(project.id);
                     }}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
                     commentCount={project.comments.length}
