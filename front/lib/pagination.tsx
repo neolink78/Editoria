@@ -8,12 +8,14 @@ interface PaginationControlsProps {
   totalItems: number;
   itemsPerPage: number;
   user?: string;
+  onPageChange: (pageNumber: number) => void;
 }
 
 export const PaginationControls = ({
   totalItems,
   itemsPerPage,
   user,
+  onPageChange,
 }: PaginationControlsProps) => {
   const router = useRouter();
   const currentPage = parseInt(router.query.page as string) || 1;
@@ -29,9 +31,9 @@ export const PaginationControls = ({
     <Flex mt="8" justifyContent="center" alignItems="center">
       <IconButton
         icon={<ArrowLeftIcon />}
-        onClick={() => goToPage(Math.max(currentPage - 1, 1))}
+        onClick={() =>  onPageChange(Math.max(currentPage - 1, 1))}
         isDisabled={currentPage === 1}
-        aria-label="Page précédente"
+        aria-label="Previous Page"
         mx="2"
         variant="unstyled"
         _hover={{ color: "blue.500" }}
@@ -54,9 +56,9 @@ export const PaginationControls = ({
       ))}
       <IconButton
         icon={<ArrowRightIcon />}
-        onClick={() => goToPage(Math.min(currentPage + 1, totalPages))}
+        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         isDisabled={currentPage === totalPages}
-        aria-label="Page suivante"
+        aria-label="Next Page"
         mx="2"
         variant="unstyled"
         _hover={{ color: "blue.500" }}
