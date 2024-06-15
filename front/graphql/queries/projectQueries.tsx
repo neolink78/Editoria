@@ -38,28 +38,29 @@ export const GET_USER_PROJECTS = gql`
 `;
 
 export const GET_PROJECTS = gql`
-  query GetProjects {
-    getProjects {
-      id
-      owner {
+  query GetProjects($offset: Int!, $limit: Int!) {
+    getProjects(offset: $offset, limit: $limit) {
+      projects {
         id
-        email
-        username
+        title
+        description
+        owner {
+          id
+          username
+        }
+        likes {
+          id
+        }
+        codeSnippetsOwned {
+          id
+          language
+        }
+        createdAt
+        comments {
+          id
+        }
       }
-      createdAt
-      title
-      description
-      comments {
-        id
-        content
-      }
-      codeSnippetsOwned {
-        id
-        language
-      }
-      likes {
-        id
-      }
+      totalCount
     }
   }
 `;
