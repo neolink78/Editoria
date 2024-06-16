@@ -12,12 +12,34 @@ import {
 import {
   GetOwnCommentsQuery,
   GetProjectsQuery,
+  Language,
 } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { Error } from "@/lib/error";
 import SubmitButton from "@/lib/submitButton";
 import Breadcrumb from "@/lib/breadCrumb";
+
+type Project = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  owner: {
+    id: string;
+    username: string;
+  };
+  likes: {
+    id: string;
+  }[];
+  comments: {
+    id: string;
+  }[];
+  codeSnippetsOwned: {
+    id: string;
+    language: Language | undefined;
+  }[];
+};
 
 const Projects = () => {
   const router = useRouter();
@@ -45,9 +67,32 @@ const Projects = () => {
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const ownComments = ownCommentsData?.getOwnComments || [];
 
+  const projects = data?.getProjects.projects || [];
+  const totalCount = data?.getProjects.totalCount || 0;
+
+  const [sortedProjects, setSortedProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    if (data?.getProjects.projects) {
+      let projects = [...data.getProjects.projects];
+      if (activePage === "mostRecents") {
+        projects.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      } else if (activePage === "headLined") {
+        projects.sort((a, b) => b.likes.length - a.likes.length);
+      }
+      setSortedProjects(projects);
+    }
+  }, [data, activePage]);
+
+  const handleBreadcrumbChange = (value: string) => {
+    setActivePage(value);
+  };
+
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    router.push(`/projects?page=${pageNumber}`, undefined, { shallow: true });
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+      router.push(`/projects?page=${pageNumber}`, undefined, { shallow: true });
+    }
   };
 
   const navigationItems = [
@@ -58,20 +103,19 @@ const Projects = () => {
   if (loading)
     return (
       <Layout>
-        <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="20vh">
-          {Array.from({ length: 10 }).map((_, idx) => (
-            <Box key={idx} width="100%" mb="10px">
-              <Skeleton height="46px" width="100%" borderRadius="30px" />
-            </Box>
-          ))}
+        <Flex justify="center" align="center" mt="20vh">
+          <Flex flexDirection="column" justifyContent="center" alignItems="center" alignContent="center" mt="20vh" width="78.8vw">
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <Box key={idx} width="100%" mb="10px">
+                <Skeleton height="46px" width="100%" borderRadius="30px" />
+              </Box>
+            ))}
+          </Flex>
         </Flex>
       </Layout>
     );
 
   if (error) return <Error />;
-
-  const projects = data?.getProjects.projects || [];
-  const totalCount = data?.getProjects.totalCount || 0;
 
   return (
     <Layout>
@@ -79,7 +123,7 @@ const Projects = () => {
         <Breadcrumb
           items={navigationItems}
           value={activePage}
-          onChange={setActivePage}
+          onChange={handleBreadcrumbChange}
         />
         {projects.length === 0 ? (
           <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="20vh">
@@ -94,7 +138,8 @@ const Projects = () => {
           <>
             <Input
               borderRadius="2vw"
-              m="2vw"
+              mt="2vw"
+              mb="5vw"
               bgColor="white"
               color="black"
               width="25vw"
@@ -103,7 +148,7 @@ const Projects = () => {
               fontSize="1.2vw"
             />
             <Box minHeight="52vw">
-              {projects.map((project, idx) => (
+              {sortedProjects.map((project, idx) => (
                 <Tile
                   key={idx}
                   projectId={project.id}
