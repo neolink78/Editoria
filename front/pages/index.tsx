@@ -90,7 +90,7 @@ export default function HomePage() {
               // isCommented={ownComments.some((c) => c.project.id === e.id)}
               onOpenProject={() => handleOpenProject(e.id)}
             />
-          ))
+          )).sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
