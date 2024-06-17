@@ -14,7 +14,7 @@ type LikeContextType = {
 
 const defaultValue: LikeContextType = {
   likedProjects: [],
-  handleToggleLike: async () => {},
+  handleToggleLike: async () => { },
   loading: false,
   error: null,
 };
@@ -27,16 +27,9 @@ interface LikeProviderProps {
 }
 
 export const LikeProvider = ({ children }: LikeProviderProps) => {
-  const { refetch } = useQuery(GET_PROJECTS);
-  const { data, loading, error } = useQuery(GET_LIKED_PROJECTS);
+  const { refetch: refetchProjects } = useQuery(GET_PROJECTS);
+  const { data, loading, error, refetch: refetchLikedProjects } = useQuery(GET_LIKED_PROJECTS);
   const [toggleLikeMutation] = useMutation(TOGGLE_LIKE);
-  const [likedProjects, setLikedProjects] = useState<ProjectType[]>([]);
-
-  useEffect(() => {
-    if (data && data.likedProjects) {
-      setLikedProjects(data.likedProjects);
-    }
-  }, [data]);
 
   const handleToggleLike = async (projectId: string) => {
     try {
@@ -44,26 +37,16 @@ export const LikeProvider = ({ children }: LikeProviderProps) => {
         variables: { projectId },
         refetchQueries: [{ query: GET_LIKED_PROJECTS }],
       });
-      setLikedProjects((current) => {
-        const isCurrentlyLiked = current.some((p) => p.id === projectId);
-        if (isCurrentlyLiked) {
-          return current.filter((p) => p.id !== projectId);
-        } else {
-          const newLikedProject = data.likedProjects.find(
-            (p: ProjectType) => p.id === projectId,
-          );
-          return newLikedProject ? [...current, newLikedProject] : current;
-        }
-      });
-      refetch();
+      refetchProjects();
+      refetchLikedProjects();
     } catch (error) {
-      console.error("Error toggling like:", error);
+      console.error('Error toggling like:', error);
     }
   };
 
   return (
     <LikeContext.Provider
-      value={{ likedProjects, handleToggleLike, loading, error }}
+      value={{ likedProjects: data?.likedProjects, handleToggleLike, loading, error }}
     >
       {children}
     </LikeContext.Provider>
