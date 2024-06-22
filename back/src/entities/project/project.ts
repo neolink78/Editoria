@@ -117,15 +117,21 @@ class Project extends BaseEntity {
     });
   }
 
-  static async getProjectsByUserId(userId: string): Promise<Project[]> {
-    const projects = await Project.find({
+  static async getProjectsByUserId(
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<[Project[], number]> {
+    const [projects, totalCount] = await Project.findAndCount({
       where: { owner: { id: userId } },
+      take: limit,
+      skip: offset,
       order: {
         createdAt: "DESC",
       },
-      relations: ["comments", "comments.owner", "comments.project"],
+      relations: ["comments"],
     });
-    return projects;
+    return [projects, totalCount];
   }
 
   static async getProjectById(id: string): Promise<Project> {
