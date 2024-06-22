@@ -12,26 +12,28 @@ interface PaginationControlsProps {
 }
 
 export const PaginationControls = ({
+  currentPage,
   totalItems,
   itemsPerPage,
   user,
   onPageChange,
 }: PaginationControlsProps) => {
   const router = useRouter();
-  const currentPage = parseInt(router.query.page as string) || 1;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const goToPage = (pageNumber: number) => {
-    router.push(`${user}?page=${pageNumber}`)
+    if (user) {
+      router.push(`${user}?page=${pageNumber}`);
+    } else {
+      onPageChange(pageNumber);
+    }
   };
 
   return (
     <Flex mt="8" justifyContent="center" alignItems="center">
       <IconButton
         icon={<ArrowLeftIcon />}
-        onClick={() => {
-          user ? goToPage(Math.max(currentPage - 1, 1)) : onPageChange(Math.max(currentPage - 1, 1))
-        }}
+        onClick={() => goToPage(Math.max(currentPage - 1, 1))}
         isDisabled={currentPage === 1}
         aria-label="Previous Page"
         mx="2"
@@ -48,7 +50,7 @@ export const PaginationControls = ({
           cursor="pointer"
           fontWeight={currentPage === index + 1 ? "bold" : "lighter"}
           color={currentPage === index + 1 ? "white" : "gray.500"}
-          onClick={() => { user ? goToPage(index + 1) : onPageChange(index + 1) }}
+          onClick={() => goToPage(index + 1)}
           _hover={{ bg: "gray.100", color: "black", borderRadius: "20%" }}
         >
           {index + 1}
@@ -56,9 +58,7 @@ export const PaginationControls = ({
       ))}
       <IconButton
         icon={<ArrowRightIcon />}
-        onClick={() => {
-          user ? goToPage(Math.min(currentPage + 1, totalPages)) : onPageChange(Math.min(currentPage + 1, totalPages))
-        }}
+        onClick={() => goToPage(Math.min(currentPage + 1, totalPages))}
         isDisabled={currentPage === totalPages}
         aria-label="Next Page"
         mx="2"
