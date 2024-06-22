@@ -80,10 +80,7 @@ const Dashboard = () => {
     return project?.likes.length;
   };
 
-  const newUser =
-    !projects &&
-    !ownComments &&
-    !likedProjects
+  const newUser = !projects && !ownComments && !likedProjects;
 
   if (error) {
     console.log("error", error);

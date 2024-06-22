@@ -6,14 +6,8 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import {
-  GET_PROJECTS,
-} from "@/graphql/queries/projectQueries";
-import {
-  GetOwnCommentsQuery,
-  GetProjectsQuery,
-  Language,
-} from "@/gql/graphql";
+import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { GetOwnCommentsQuery, GetProjectsQuery, Language } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { Error } from "@/lib/error";
@@ -53,15 +47,13 @@ const Projects = () => {
     setCurrentPage(1);
   }, [activePage]);
 
-  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS,
-    {
-      variables: {
-        limit: projectsPerPage,
-        offset: offset,
-      },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
+    variables: {
+      limit: projectsPerPage,
+      offset: offset,
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const { data: ownCommentsData } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
@@ -76,7 +68,10 @@ const Projects = () => {
     if (data?.getProjects.projects) {
       let projects = [...data.getProjects.projects];
       if (activePage === "mostRecents") {
-        projects.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        projects.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
       } else if (activePage === "headLined") {
         projects.sort((a, b) => b.likes.length - a.likes.length);
       }
@@ -104,7 +99,14 @@ const Projects = () => {
     return (
       <Layout>
         <Flex justify="center" align="center" mt="20vh">
-          <Flex flexDirection="column" justifyContent="center" alignItems="center" alignContent="center" mt="20vh" width="78.8vw">
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            alignContent="center"
+            mt="20vh"
+            width="78.8vw"
+          >
             {Array.from({ length: 10 }).map((_, idx) => (
               <Box key={idx} width="100%" mb="10px">
                 <Skeleton height="46px" width="100%" borderRadius="30px" />
@@ -119,14 +121,25 @@ const Projects = () => {
 
   return (
     <Layout>
-      <Flex bg="#14181F" color="white" mt="7.8vw" flexDirection="column" alignItems="center">
+      <Flex
+        bg="#14181F"
+        color="white"
+        mt="7.8vw"
+        flexDirection="column"
+        alignItems="center"
+      >
         <Breadcrumb
           items={navigationItems}
           value={activePage}
           onChange={handleBreadcrumbChange}
         />
         {projects.length === 0 ? (
-          <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="20vh">
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            mt="20vh"
+          >
             <Box fontSize="2vw" color="white" mt="10vw" mb="2vw">
               No projects found
             </Box>
@@ -160,10 +173,14 @@ const Projects = () => {
                   createdAt={project.createdAt}
                   likeCount={project.likes.length}
                   commentCount={project.comments.length}
-                  onOpenProject={() => router.push(`/editor?project=${project.id}`)}
+                  onOpenProject={() =>
+                    router.push(`/editor?project=${project.id}`)
+                  }
                   toggleLike={() => handleToggleLike(project.id)}
                   isLiked={likedProjects.some((p) => p.id === project.id)}
-                  isCommented={ownComments.some((c) => c.project.id === project.id)}
+                  isCommented={ownComments.some(
+                    (c) => c.project.id === project.id,
+                  )}
                 />
               ))}
             </Box>
