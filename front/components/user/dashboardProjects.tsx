@@ -8,13 +8,13 @@ import { useLikes } from "@/context/LikeContext";
 
 export type Project = {
   id: string;
-  codeSnippetsOwned: Array<{ language: Language }>;
+  codeSnippetsOwned: { language: Language }[];
   title: string;
   description: string;
   createdAt: string;
   owner: { username: string };
-  comments: Array<{ id: string; content: string }>;
-  likes: Array<{ id: string }>;
+  comments: { id: string; content: string }[];
+  likes: { id: string }[];
 };
 
 interface DashboardProjectsProps {
@@ -23,6 +23,9 @@ interface DashboardProjectsProps {
   setShowAllProjects: (show: boolean) => void;
   isLoading: boolean;
   ownComments: Array<{ id: string; content: string }>;
+  totalItems: number;
+  currentPage: number;
+  onPageChange: (pageNumber: number) => void;
 }
 
 const DashboardProjects = ({
@@ -31,24 +34,24 @@ const DashboardProjects = ({
   setShowAllProjects,
   isLoading,
   ownComments,
+  totalItems,
+  onPageChange,
+  currentPage,
 }: DashboardProjectsProps) => {
   const router = useRouter();
+  const projectsPerPage = 8;
 
-  const { handleToggleLike, likedProjects } = useLikes();
+  const { handleToggleLike, likedProjects, refetchProjects } = useLikes();
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
 
-  const currentPage = parseInt(router.query.page as string) || 1;
-  const projectsPerPage = 8;
+  const handleShowLikeCount = (projectId: string) => {
+    const project = projects.find((p) => p.id === projectId);
+    return project?.likes.length;
+  };
 
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = projects.slice(
-    indexOfFirstProject,
-    indexOfLastProject,
-  );
 
   return (
     <Box mb={10}>
@@ -62,9 +65,9 @@ const DashboardProjects = ({
       >
         <Box display="flex" alignItems="center">
           <ArrowLeftIcon onClick={() => setShowAllProjects(false)} /> Mes
-          projets récents
+          projets
         </Box>
-        {currentProjects.map((project, idx) => (
+        {projects.map((project, idx) => (
           <Skeleton isLoaded={!isLoading} key={idx}>
             <Tile
               homePage={false}
@@ -75,7 +78,7 @@ const DashboardProjects = ({
               createdAt={project.createdAt}
               owner={project.owner.username}
               commentCount={project?.comments.length}
-              likeCount={project.likes.length}
+              likeCount={handleShowLikeCount!(project.id)}
               toggleLike={() => {
                 handleToggleLike(project.id);
               }}
@@ -95,8 +98,9 @@ const DashboardProjects = ({
       </Box>
       <PaginationControls
         currentPage={currentPage}
-        totalItems={projects.length}
+        totalItems={totalItems}
         itemsPerPage={projectsPerPage}
+        onPageChange={onPageChange}
       />
     </Box>
   );
