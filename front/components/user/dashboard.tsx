@@ -21,7 +21,7 @@ import { useLikes } from "@/context/LikeContext";
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
 // TODO : Creer context pour comments et projects
 
-// TODO : IN DASHBOARD , DASHBOARDPROJECTS AND ALLPROJECTS THE LIKE COUNT IS NOT DECREASING
+// TODO : IN DASHBOARD , DASHBOARDPROJECTS , HOMEPAGE AND ALLPROJECTS THE LIKE COUNT IS NOT DECREASING
 
 const Dashboard = () => {
   const { openModal } = useModal();
