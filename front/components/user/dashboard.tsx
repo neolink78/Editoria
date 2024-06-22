@@ -14,32 +14,43 @@ import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
-import { GetOwnCommentsQuery, GetProjectsByUserQuery } from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
 // TODO : Creer context pour comments et projects
 
+// TODO : IN DASHBOARD , DASHBOARDPROJECTS AND ALLPROJECTS THE LIKE COUNT IS NOT DECREASING
+
 const Dashboard = () => {
   const { openModal } = useModal();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: projectData,
     loading,
     error,
-  } = useQuery<GetProjectsByUserQuery>(GET_USER_PROJECTS, {
+  } = useQuery<GetOwnProjectQuery>(GET_USER_PROJECTS, {
+    variables: { limit: 8, offset: (currentPage - 1) * 8 },
     fetchPolicy: "network-only",
   });
-  const projects = projectData?.getOwnProject || [];
+  const projects = projectData?.getOwnProject.projects || [];
+  // console.log("projects", projects);
+  const totalItems = projectData?.getOwnProject.totalCount || 0;
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const { data: ownCommentsData, loading: commentLoading } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const ownComments = ownCommentsData?.getOwnComments || [];
 
-  const { handleToggleLike, likedProjects } = useLikes();
+  const { handleToggleLike, likedProjects, refetchProjects } = useLikes();
+  // console.log("likedProjects", likedProjects);
 
   const [deleteProject] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS }],
@@ -64,18 +75,19 @@ const Dashboard = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  const newUser =
-    projects.length === 0 &&
-    ownComments.length === 0 &&
-    likedProjects.length === 0;
-  const sortedProjects = [...projects]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .slice(0, 3);
+  const handleShowLikeCount = (projectId: string) => {
+    const project = projects.find((p) => p.id === projectId);
+    return project?.likes.length;
+  };
 
-  if (error) return <Error />;
+  const newUser =
+    !projects &&
+    !ownComments &&
+    !likedProjects
+
+  if (error) {
+    console.log("error", error);
+  }
   if (loading || commentLoading)
     return (
       <Flex
@@ -104,6 +116,9 @@ const Dashboard = () => {
               setShowAllProjects={setShowAllProjects}
               isLoading={loading}
               ownComments={ownComments}
+              totalItems={totalItems}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </>
         ) : (
@@ -140,7 +155,7 @@ const Dashboard = () => {
                   ))}
                 </Flex>
               ) : (
-                sortedProjects.slice(-3).map((e, idx) => (
+                projects.slice(-3).map((e, idx) => (
                   <Tile
                     homePage={false}
                     projectId={e.id}
@@ -152,7 +167,7 @@ const Dashboard = () => {
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
                     ownerId={e.owner.id as UUID}
-                    likeCount={e.likes.length}
+                    likeCount={handleShowLikeCount(e.id)}
                     toggleLike={() => {
                       handleToggleLike(e.id);
                     }}
