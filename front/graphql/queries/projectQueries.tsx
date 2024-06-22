@@ -1,38 +1,30 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_PROJECTS = gql`
-  query GetProjectsByUser {
-    getOwnProject {
-      id
-      title
-      description
-      is_public
-      createdAt
-      updatedAt
-      codeSnippetsOwned {
+  query GetOwnProject($offset: Int!, $limit: Int!) {
+    getOwnProject(offset: $offset, limit: $limit) {
+      projects {
         id
         title
-        code
-        language
-      }
-      comments {
-        id
-        content
+        description
+        createdAt
+        codeSnippetsOwned {
+          id
+          language
+        }
+        comments {
+          id
+          content
+        }
         owner {
           id
+          username
         }
-        project {
+        likes {
           id
         }
       }
-      owner {
-        id
-        email
-        username
-      }
-      likes {
-        id
-      }
+      totalCount
     }
   }
 `;
