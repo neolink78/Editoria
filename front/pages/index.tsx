@@ -21,10 +21,11 @@ export default function HomePage() {
     nextFetchPolicy: "cache-and-network",
   });
   const projects = data?.getProjects.projects || [];
+  // console.log("projects", projects);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -33,7 +34,10 @@ export default function HomePage() {
   const { handleToggleLike, likedProjects } = useLikes();
 
   if (loading) return <Layout>Loading...</Layout>;
-  if (error) return <Error />;
+  // if (error) return <Error />;
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <Layout>
@@ -62,7 +66,7 @@ export default function HomePage() {
             alt="home picture"
             width={600}
             height={600}
-            layout="responsive"
+            priority
           />
         </Box>
       </Flex>
@@ -85,8 +89,9 @@ export default function HomePage() {
               likeCount={e?.likes.length}
               toggleLike={() => {
                 handleToggleLike(e.id);
+                refetch();
               }}
-              isLiked={likedProjects.some((p) => p.id === e.id)}
+              isLiked={likedProjects?.some((p) => p.id === e.id)}
               // isCommented={ownComments.some((c) => c.project.id === e.id)}
               onOpenProject={() => handleOpenProject(e.id)}
             />
