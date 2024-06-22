@@ -53,9 +53,21 @@ export class ProjectResolver {
     };
   }
 
-  @Query(() => Project)
-  getProjectsByUserId(@Arg("id", () => ID) id: string) {
-    return Project.getProjectsByUserId(id);
+  @Query(() => ProjectPaginationResponse)
+  async getProjectsByUserId(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("offset", () => Int) offset: number,
+  ): Promise<ProjectPaginationResponse> {
+    const [projects, totalCount] = await Project.getProjectsByUserId(
+      userId,
+      limit,
+      offset,
+    );
+    return {
+      projects,
+      totalCount,
+    };
   }
 
   @Query(() => Project)
@@ -83,12 +95,23 @@ export class ProjectResolver {
   }
 
   @Authorized()
-  @Query(() => [Project])
-  async getOwnProject(@Ctx() { user }: Context) {
+  @Query(() => ProjectPaginationResponse)
+  async getOwnProject(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("offset", () => Int) offset: number,
+    @Ctx() { user }: Context,
+  ): Promise<ProjectPaginationResponse> {
     if (!user) {
       throw new Error("User not found");
     }
-    const projects = await Project.getProjectsByUserId(user.id);
-    return projects;
+    const [projects, totalCount] = await Project.getProjectsByUserId(
+      user.id,
+      limit,
+      offset,
+    );
+    return {
+      projects,
+      totalCount,
+    };
   }
 }
