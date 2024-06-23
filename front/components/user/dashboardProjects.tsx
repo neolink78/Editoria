@@ -26,6 +26,7 @@ interface DashboardProjectsProps {
   totalItems: number;
   currentPage: number;
   onPageChange: (pageNumber: number) => void;
+  canDelete?: string;
 }
 
 const DashboardProjects = ({
@@ -37,6 +38,7 @@ const DashboardProjects = ({
   totalItems,
   onPageChange,
   currentPage,
+  canDelete,
 }: DashboardProjectsProps) => {
   const router = useRouter();
   const projectsPerPage = 8;
@@ -84,6 +86,7 @@ const DashboardProjects = ({
               onDelete={() => {
                 onDelete(project.id);
               }}
+              canDelete={true}
               onOpenProject={() => {
                 handleOpenProject(project.id);
               }}
