@@ -36,6 +36,9 @@ const Dashboard = () => {
     fetchPolicy: "network-only",
   });
   const projects = projectData?.getOwnProject.projects || [];
+  const sampleProjects = [...projects]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 3);
   // console.log("projects", projects);
   const totalItems = projectData?.getOwnProject.totalCount || 0;
 
@@ -51,7 +54,7 @@ const Dashboard = () => {
   // console.log("likedProjects", likedProjects);
 
   const [deleteProject] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_USER_PROJECTS }],
+    refetchQueries: [{ query: GET_USER_PROJECTS, variables: { limit: null, offset: null } }],
   });
 
   const router = useRouter();
@@ -150,11 +153,11 @@ const Dashboard = () => {
                   ))}
                 </Flex>
               ) : (
-                projects.slice(-3).map((e, idx) => (
+                sampleProjects.map((e) => (
                   <Tile
                     homePage={false}
                     projectId={e.id}
-                    key={idx}
+                    key={e.id}
                     icon={e.codeSnippetsOwned[0]?.language}
                     title={e.title}
                     description={e.description}
