@@ -52,7 +52,6 @@ const DashboardProjects = ({
     return project?.likes.length;
   };
 
-
   return (
     <Box mb={10}>
       <Box

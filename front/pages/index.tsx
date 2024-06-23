@@ -16,10 +16,13 @@ import { GetProjectsQuery } from "@/gql/graphql";
 export default function HomePage() {
   const router = useRouter();
 
-  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
-    variables: { limit: 5, offset: 0 },
-    nextFetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
+    GET_PROJECTS,
+    {
+      variables: { limit: 5, offset: 0 },
+      nextFetchPolicy: "cache-and-network",
+    },
+  );
   const projects = data?.getProjects.projects || [];
   // console.log("projects", projects);
 
@@ -75,27 +78,29 @@ export default function HomePage() {
       </Box>
       <Box ml="11.6vw">
         {projects
-          ? projects.map((e, idx) => (
-            <Tile
-              homePage
-              projectId={e.id}
-              key={idx}
-              icon={e.codeSnippetsOwned[0]?.language}
-              title={e.title}
-              description={e.description}
-              createdAt={e.createdAt}
-              commentCount={e?.comments.length}
-              ownerId={e.owner.id as UUID}
-              likeCount={e?.likes.length}
-              toggleLike={() => {
-                handleToggleLike(e.id);
-                refetch();
-              }}
-              isLiked={likedProjects?.some((p) => p.id === e.id)}
-              // isCommented={ownComments.some((c) => c.project.id === e.id)}
-              onOpenProject={() => handleOpenProject(e.id)}
-            />
-          )).sort((a, b) => b.props.likeCount - a.props.likeCount)
+          ? projects
+              .map((e, idx) => (
+                <Tile
+                  homePage
+                  projectId={e.id}
+                  key={idx}
+                  icon={e.codeSnippetsOwned[0]?.language}
+                  title={e.title}
+                  description={e.description}
+                  createdAt={e.createdAt}
+                  commentCount={e?.comments.length}
+                  ownerId={e.owner.id as UUID}
+                  likeCount={e?.likes.length}
+                  toggleLike={() => {
+                    handleToggleLike(e.id);
+                    refetch();
+                  }}
+                  isLiked={likedProjects?.some((p) => p.id === e.id)}
+                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
+                  onOpenProject={() => handleOpenProject(e.id)}
+                />
+              ))
+              .sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">

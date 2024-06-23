@@ -15,10 +15,10 @@ type LikeContextType = {
 
 const defaultValue: LikeContextType = {
   likedProjects: [],
-  handleToggleLike: async () => { },
+  handleToggleLike: async () => {},
   loading: false,
   error: null,
-  refetchProjects: () => { },
+  refetchProjects: () => {},
 };
 
 const LikeContext = createContext<LikeContextType>(defaultValue);
@@ -33,29 +33,36 @@ export const LikeProvider = ({ children }: LikeProviderProps) => {
   const { refetch: refetchProjects } = useQuery(GET_PROJECTS, {
     variables: { limit: null, offset: null },
     nextFetchPolicy: "cache-and-network",
-
   });
-  const { data, loading, error, refetch: refetchLikedProjects } = useQuery(GET_LIKED_PROJECTS);
+  const {
+    data,
+    loading,
+    error,
+    refetch: refetchLikedProjects,
+  } = useQuery(GET_LIKED_PROJECTS);
   const [toggleLikeMutation] = useMutation(TOGGLE_LIKE, {
-    refetchQueries: [
-      { query: GET_PROJECTS, },
-      { query: GET_LIKED_PROJECTS },
-    ],
+    refetchQueries: [{ query: GET_PROJECTS }, { query: GET_LIKED_PROJECTS }],
   });
 
   const handleToggleLike = async (projectId: string) => {
     try {
       await toggleLikeMutation({
-        variables: { projectId }
+        variables: { projectId },
       });
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     }
   };
 
   return (
     <LikeContext.Provider
-      value={{ likedProjects: data?.likedProjects, handleToggleLike, loading, error, refetchProjects }}
+      value={{
+        likedProjects: data?.likedProjects,
+        handleToggleLike,
+        loading,
+        error,
+        refetchProjects,
+      }}
     >
       {children}
     </LikeContext.Provider>

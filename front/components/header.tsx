@@ -10,7 +10,6 @@ const Header = () => {
   const router = useRouter();
   const { user, signOut } = useAuth();
 
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -20,13 +19,15 @@ const Header = () => {
     }
   };
 
-  const projectsPage = router.pathname === "/projects"
+  const projectsPage = router.pathname === "/projects";
 
   return (
     <Flex className="header_home_page">
       <Link href="/">EDITORIA</Link>
       <Flex gap="1.5vw" align="center">
-        {user && projectsPage ? "" : user ? (
+        {user && projectsPage ? (
+          ""
+        ) : user ? (
           <SubmitButton onClick={() => router.push("/projects")}>
             All projects
           </SubmitButton>
