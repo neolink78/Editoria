@@ -25,6 +25,7 @@ type TileProps = {
   commentCount?: number;
   content?: boolean;
   onDelete?: (e: any) => void;
+  canDelete?: boolean;
   toggleLike?: () => void;
   likeCount?: number;
   isLiked?: boolean;
@@ -44,6 +45,7 @@ const Tile = ({
   owner,
   projectId,
   onDelete,
+  canDelete,
   commentCount,
   content,
   likeCount,
@@ -154,7 +156,7 @@ const Tile = ({
           </Text>
         )}
       </Flex>
-      {!homePage && (
+      {!homePage && canDelete && (
         <FaRegTrashAlt
           onClick={(e) => {
             e.stopPropagation();
