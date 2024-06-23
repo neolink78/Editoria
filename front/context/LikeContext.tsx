@@ -28,7 +28,6 @@ interface LikeProviderProps {
   children: React.ReactNode;
 }
 
-
 export const LikeProvider = ({ children }: LikeProviderProps) => {
   const { refetch: refetchProjects } = useQuery(GET_PROJECTS, {
     variables: { limit: null, offset: null },
