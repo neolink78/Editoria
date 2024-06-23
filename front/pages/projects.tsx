@@ -1,18 +1,21 @@
 import Layout from "@/components/layout";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Input, Skeleton, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { GET_PROJECTS, GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 import { GetOwnCommentsQuery, GetProjectsQuery, Language } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { Error } from "@/lib/error";
 import SubmitButton from "@/lib/submitButton";
 import Breadcrumb from "@/lib/breadCrumb";
+import { useModal } from "@/context/ModalContext";
+import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
+import { useAuth } from "@/context/UserContext";
 
 type Project = {
   id: string;
@@ -59,6 +62,13 @@ const Projects = () => {
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const ownComments = ownCommentsData?.getOwnComments || [];
 
+  const { currentUserData } = useAuth();
+  const currentUserId = currentUserData?.myProfile.id;
+
+  const [deleteProject] = useMutation(DELETE_PROJECT, {
+    refetchQueries: [{ query: GET_USER_PROJECTS, variables: { limit: null, offset: null } }],
+  });
+
   const projects = data?.getProjects.projects || [];
   const totalCount = data?.getProjects.totalCount || 0;
 
@@ -94,6 +104,20 @@ const Projects = () => {
     { label: "Headlined", value: "headLined" },
     { label: "Most recents", value: "mostRecents" },
   ];
+
+  const { openModal } = useModal();
+
+  const handleDelete = (projectId: string) => {
+    openModal({
+      title: "Confirmer la suppression",
+      children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
+      onConfirm: () => confirmDelete(projectId),
+    });
+  };
+
+  const confirmDelete = async (projectId: string) => {
+    await deleteProject({ variables: { deleteProjectId: projectId } });
+  };
 
   if (loading)
     return (
@@ -176,6 +200,10 @@ const Projects = () => {
                   onOpenProject={() =>
                     router.push(`/editor?project=${project.id}`)
                   }
+                  canDelete={currentUserId === project.owner.id}
+                  onDelete={() => {
+                    handleDelete(project.id)
+                  }}
                   toggleLike={() => handleToggleLike(project.id)}
                   isLiked={likedProjects.some((p) => p.id === project.id)}
                   isCommented={ownComments.some(
