@@ -28,12 +28,10 @@ interface LikeProviderProps {
   children: React.ReactNode;
 }
 
-const DEFAULT_LIMIT = 8;
-const DEFAULT_OFFSET = 0;
 
 export const LikeProvider = ({ children }: LikeProviderProps) => {
   const { refetch: refetchProjects } = useQuery(GET_PROJECTS, {
-    variables: { limit: DEFAULT_LIMIT, offset: DEFAULT_OFFSET },
+    variables: { limit: null, offset: null },
     nextFetchPolicy: "cache-and-network",
 
   });
