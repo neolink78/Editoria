@@ -16,6 +16,7 @@ import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
+import { useAuth } from "@/context/UserContext";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
@@ -56,6 +57,9 @@ const Dashboard = () => {
   const [deleteProject] = useMutation(DELETE_PROJECT, {
     refetchQueries: [{ query: GET_USER_PROJECTS, variables: { limit: null, offset: null } }],
   });
+
+  const { currentUserData } = useAuth();
+  const currentUserId = currentUserData?.myProfile.id;
 
   const router = useRouter();
 
@@ -117,6 +121,7 @@ const Dashboard = () => {
               totalItems={totalItems}
               currentPage={currentPage}
               onPageChange={handlePageChange}
+              canDelete={currentUserId}
             />
           </>
         ) : (
@@ -164,6 +169,7 @@ const Dashboard = () => {
                     createdAt={e.createdAt}
                     commentCount={e?.comments.length}
                     onDelete={() => handleDelete(e.id)}
+                    canDelete={currentUserId === e.owner.id}
                     ownerId={e.owner.id as UUID}
                     likeCount={handleShowLikeCount(e.id)}
                     toggleLike={() => {
@@ -229,6 +235,8 @@ const Dashboard = () => {
                       toggleLike={() => {
                         handleToggleLike(e.id);
                       }}
+                      onDelete={() => handleDelete(e.id)}
+                      canDelete={currentUserId === e.owner.id}
                       isLiked
                       isCommented={ownComments.some(
                         (c) => c.project.id === e.id,
