@@ -105,8 +105,8 @@ class Project extends BaseEntity {
   }
 
   static async getProjects(
-    limit: number,
-    offset: number,
+    limit: number = 8,
+    offset: number = 0,
   ): Promise<[Project[], number]> {
     return await Project.findAndCount({
       skip: offset,

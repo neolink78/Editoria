@@ -43,8 +43,8 @@ export class ProjectResolver {
 
   @Query(() => ProjectPaginationResponse)
   async getProjects(
-    @Arg("limit", () => Int) limit: number,
-    @Arg("offset", () => Int) offset: number,
+    @Arg("limit", () => Int, { defaultValue: 10 }) limit: number,
+    @Arg("offset", () => Int, { defaultValue: 0 }) offset: number,
   ): Promise<ProjectPaginationResponse> {
     const [projects, totalCount] = await Project.getProjects(limit, offset);
     return {
