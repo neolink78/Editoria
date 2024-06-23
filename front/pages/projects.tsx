@@ -6,7 +6,7 @@ import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
-import { GET_PROJECTS, GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
+import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
 import { GetOwnCommentsQuery, GetProjectsQuery, Language } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
@@ -66,7 +66,7 @@ const Projects = () => {
   const currentUserId = currentUserData?.myProfile.id;
 
   const [deleteProject] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_USER_PROJECTS, variables: { limit: null, offset: null } }],
+    refetchQueries: [{ query: GET_PROJECTS, variables: { limit: projectsPerPage, offset: offset } }],
   });
 
   const projects = data?.getProjects.projects || [];
