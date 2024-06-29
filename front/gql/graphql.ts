@@ -145,6 +145,7 @@ export type MutationSignInArgs = {
 export type MutationSignUpArgs = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
   password: Scalars["String"]["input"];
   username: Scalars["String"]["input"];
 };
@@ -178,6 +179,7 @@ export type MutationUpdateUserArgs = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
   id: Scalars["ID"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
   password: Scalars["String"]["input"];
   username: Scalars["String"]["input"];
 };
@@ -262,6 +264,7 @@ export type User = {
   description: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
+  image?: Maybe<Scalars["String"]["output"]>;
   isPremium: Scalars["Boolean"]["output"];
   likedProjects: Array<Project>;
   likes: Array<Like>;
@@ -305,18 +308,6 @@ export type GetCommentsbyProjectIdQuery = {
   }>;
 };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetUsersQuery = {
-  __typename?: "Query";
-  getUsers: Array<{
-    __typename?: "User";
-    id: string;
-    username: string;
-    email: string;
-  }>;
-};
-
 export type MyProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyProfileQuery = {
@@ -327,6 +318,7 @@ export type MyProfileQuery = {
     email: string;
     id: string;
     username: string;
+    image?: string | null;
   };
 };
 
@@ -490,6 +482,27 @@ export type ResetPasswordMutation = {
     email: string;
     id: string;
     username: string;
+  };
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  email: Scalars["String"]["input"];
+  username: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+  description: Scalars["String"]["input"];
+  updateUserId: Scalars["ID"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type UpdateUserMutation = {
+  __typename?: "Mutation";
+  updateUser: {
+    __typename?: "User";
+    description: string;
+    email: string;
+    username: string;
+    id: string;
+    image?: string | null;
   };
 };
 
@@ -797,33 +810,6 @@ export const GetCommentsbyProjectIdDocument = {
   GetCommentsbyProjectIdQuery,
   GetCommentsbyProjectIdQueryVariables
 >;
-export const GetUsersDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetUsers" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "getUsers" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } },
-                { kind: "Field", name: { kind: "Name", value: "email" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const MyProfileDocument = {
   kind: "Document",
   definitions: [
@@ -844,6 +830,7 @@ export const MyProfileDocument = {
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
               ],
             },
           },
@@ -1566,6 +1553,162 @@ export const ResetPasswordDocument = {
   ResetPasswordMutation,
   ResetPasswordMutationVariables
 >;
+export const UpdateUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "email" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "username" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "password" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "updateUserId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "image" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateUser" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "username" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "username" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "password" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "password" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "description" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "updateUserId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "image" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "image" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
 export const DeleteCodeSnippetDocument = {
   kind: "Document",
   definitions: [

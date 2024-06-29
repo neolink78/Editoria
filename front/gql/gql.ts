@@ -19,9 +19,7 @@ const documents = {
     types.DeleteCommentDocument,
   "\n  query GetCommentsbyProjectId($projectId: String!) {\n    getCommentsbyProjectId(projectId: $projectId) {\n      content\n      id\n      createdAt\n      updatedAt\n      owner {\n        id\n        username\n      }\n    }\n  }\n":
     types.GetCommentsbyProjectIdDocument,
-  "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n":
-    types.GetUsersDocument,
-  "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n":
+  "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n      image\n    }\n  }\n":
     types.MyProfileDocument,
   "\n  mutation SignOUt {\n    signOut\n  }\n": types.SignOUtDocument,
   "\n  mutation ToggleLike($projectId: String!) {\n    toggleLike(projectId: $projectId)\n  }\n":
@@ -44,6 +42,8 @@ const documents = {
     types.ResetUserDocument,
   "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n":
     types.ResetPasswordDocument,
+  "\nmutation UpdateUser($email: String!, $username: String!, $password: String!, $description: String!, $updateUserId: ID!, $image: String) {\n  updateUser(email: $email, username: $username, password: $password, description: $description, id: $updateUserId, image: $image) {\n    description\n    email\n    username\n    id\n    image\n  }\n}\n":
+    types.UpdateUserDocument,
   "\n  mutation DeleteCodeSnippet($deleteCodeSnippetId: ID!) {\n    deleteCodeSnippet(id: $deleteCodeSnippetId) {\n      id\n    }\n  }\n":
     types.DeleteCodeSnippetDocument,
   "\n  mutation CreateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $description: String\n  ) {\n    createProject(\n      title: $title\n      is_public: $isPublic\n      description: $description\n    ) {\n      id\n      owner {\n        email\n        id\n        username\n      }\n    }\n  }\n":
@@ -96,14 +96,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n",
-): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n",
-): (typeof documents)["\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n    }\n  }\n"];
+  source: "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n      image\n    }\n  }\n",
+): (typeof documents)["\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n      image\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -170,6 +164,12 @@ export function graphql(
 export function graphql(
   source: "\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n",
 ): (typeof documents)["\n  mutation ResetPassword($newPassword: String!) {\n    ResetPassword(newPassword: $newPassword) {\n      email\n      id\n      username\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\nmutation UpdateUser($email: String!, $username: String!, $password: String!, $description: String!, $updateUserId: ID!, $image: String) {\n  updateUser(email: $email, username: $username, password: $password, description: $description, id: $updateUserId, image: $image) {\n    description\n    email\n    username\n    id\n    image\n  }\n}\n",
+): (typeof documents)["\nmutation UpdateUser($email: String!, $username: String!, $password: String!, $description: String!, $updateUserId: ID!, $image: String) {\n  updateUser(email: $email, username: $username, password: $password, description: $description, id: $updateUserId, image: $image) {\n    description\n    email\n    username\n    id\n    image\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
