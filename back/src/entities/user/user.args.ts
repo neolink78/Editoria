@@ -18,6 +18,9 @@ export class CreateOrUpdateUser {
 
   @Field({ nullable: true })
   description!: string;
+
+  @Field({ nullable: true })
+  image!: string;
 }
 
 @ArgsType()
