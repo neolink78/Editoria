@@ -8,8 +8,9 @@ import {
   SignUpMutation,
   SignUpMutationVariables,
 } from "../gql/graphql";
+import { useAuth } from "@/context/UserContext";
 
-const SIGN_UP_FORM = gql`
+export const SIGN_UP_FORM = gql`
   mutation SignUp($email: String!, $username: String!, $password: String!) {
     signUp(email: $email, username: $username, password: $password) {
       email
@@ -17,7 +18,7 @@ const SIGN_UP_FORM = gql`
   }
 `;
 
-const SIGN_IN_FORM = gql`
+export const SIGN_IN_FORM = gql`
   mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
       description
@@ -28,32 +29,40 @@ const SIGN_IN_FORM = gql`
   }
 `;
 
-export const useSignInFormik = (isLogin: boolean) => {
+export const useSignInFormik = ({
+  isLogin,
+  editor,
+}: {
+  isLogin?: boolean;
+  editor?: boolean;
+}) => {
   const router = useRouter();
+  const { refetch } = useAuth();
 
   const [signUpMutation] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_FORM
+    SIGN_UP_FORM,
   );
 
   const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
-    SIGN_IN_FORM
+    SIGN_IN_FORM,
   );
 
-  const validationSchema = isLogin
-    ? Yup.object({
-        email: Yup.string().email("Invalid email").required("Email required"),
-        password: Yup.string().required("Password required"),
-      })
-    : Yup.object({
-        username: Yup.string().required("Username required"),
-        email: Yup.string().email("Invalid email").required("Email required"),
-        password: Yup.string()
-          .required("Password required")
-          .min(12, "The password is too short"),
-        confirmPassword: Yup.string()
-          .oneOf([Yup.ref("password")], "Passwords do not match")
-          .required("Password confirmation not entered"),
-      });
+  const validationSchema =
+    isLogin || editor
+      ? Yup.object({
+          email: Yup.string().email("Invalid email").required("Email required"),
+          password: Yup.string().required("Password required"),
+        })
+      : Yup.object({
+          username: Yup.string().required("Username required"),
+          email: Yup.string().email("Invalid email").required("Email required"),
+          password: Yup.string()
+            .required("Password required")
+            .min(12, "The password is too short"),
+          confirmPassword: Yup.string()
+            .oneOf([Yup.ref("password")], "Passwords do not match")
+            .required("Password confirmation not entered"),
+        });
 
   const onSubmit = async () => {
     if (isLogin) {
@@ -66,6 +75,23 @@ export const useSignInFormik = (isLogin: boolean) => {
         });
         if (data && data.signIn) {
           router.push(`/user/account`);
+        }
+      } catch (error: any) {
+        formik.setErrors({
+          email: "Wrong email or password",
+          password: "Wrong email or password",
+        });
+      }
+    } else if (editor) {
+      try {
+        const { data } = await signInMutation({
+          variables: {
+            email: formik.values.email,
+            password: formik.values.password,
+          },
+        });
+        if (data && data.signIn) {
+          refetch();
         }
       } catch (error: any) {
         formik.setErrors({

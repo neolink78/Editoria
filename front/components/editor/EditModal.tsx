@@ -50,10 +50,10 @@ function EditModal({ info, setProjectInfo }: EditModalProps) {
         <Switch
           onChange={(e) =>
             setProjectInfo({ ...info, isPublic: e.target.checked })
-        }
-        checked={info.isPublic}
+          }
+          isChecked={info.isPublic}
         />
-        <Text fontSize='sm'>Public</Text>
+        <Text fontSize="sm">Public</Text>
       </Flex>
     </Flex>
   );

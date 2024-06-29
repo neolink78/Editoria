@@ -14,7 +14,6 @@ const SubmitButton = ({
   children,
   onClick,
   bg = "white",
-  w,
   h = "2.5vw",
   type = "submit",
 }: SubmitButtonProps) => {

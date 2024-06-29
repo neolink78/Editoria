@@ -9,7 +9,7 @@ type sectionTypeProps = {
 };
 
 const Section = ({ title, children, buttonText }: sectionTypeProps) => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <Box color="white" width="32vw">
       <Box className="section_title">{title}</Box>

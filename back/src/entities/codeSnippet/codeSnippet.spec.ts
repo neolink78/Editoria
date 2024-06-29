@@ -32,7 +32,7 @@ describe("CodeSnippet", () => {
       if (entity.name !== "Project" && entity.name !== "User") {
         const repository = database.getRepository(entity.name);
         await repository.query(
-          `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`
+          `TRUNCATE "${entity.tableName}" RESTART IDENTITY CASCADE;`,
         );
       }
     }
@@ -59,9 +59,8 @@ describe("CodeSnippet", () => {
     };
 
     it("should create a new code snippet with correct properties", async () => {
-      const savedSnippet = await CodeSnippet.createCodeSnippet(
-        newSnippetDetails
-      );
+      const savedSnippet =
+        await CodeSnippet.createCodeSnippet(newSnippetDetails);
 
       expect(savedSnippet).toBeDefined();
       expect(savedSnippet.title).toBe(newSnippetDetails.title);
@@ -93,7 +92,7 @@ describe("CodeSnippet", () => {
       };
 
       await expect(
-        CodeSnippet.createCodeSnippet(newSnippetDetails)
+        CodeSnippet.createCodeSnippet(newSnippetDetails),
       ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
@@ -110,9 +109,8 @@ describe("CodeSnippet", () => {
         owner: new User(),
       };
 
-      const savedSnippet = await CodeSnippet.createCodeSnippet(
-        newSnippetDetails
-      );
+      const savedSnippet =
+        await CodeSnippet.createCodeSnippet(newSnippetDetails);
       savedSnippetId = savedSnippet.id;
     });
 
@@ -126,7 +124,7 @@ describe("CodeSnippet", () => {
 
       const updatedSnippet = await CodeSnippet.updateCodeSnippet(
         savedSnippetId,
-        updatedSnippetDetails
+        updatedSnippetDetails,
       );
 
       expect(updatedSnippet).toBeDefined();
@@ -143,7 +141,7 @@ describe("CodeSnippet", () => {
       if (fetchedSnippet) {
         expect(fetchedSnippet!.title).toBe("Introduction to Jest - Updated");
         expect(fetchedSnippet!.code).toBe(
-          "test('expects 3 to be 3', () => { expect(3).toBe(3); });"
+          "test('expects 3 to be 3', () => { expect(3).toBe(3); });",
         );
         expect(fetchedSnippet!.language).toBe(Language.JAVASCRIPT);
       }
@@ -158,7 +156,7 @@ describe("CodeSnippet", () => {
       };
 
       await expect(
-        CodeSnippet.updateCodeSnippet(savedSnippetId, updatedSnippetDetails)
+        CodeSnippet.updateCodeSnippet(savedSnippetId, updatedSnippetDetails),
       ).rejects.toThrow("Code snippet cannot be empty");
     });
   });
@@ -175,16 +173,14 @@ describe("CodeSnippet", () => {
         owner: new User(),
       };
 
-      const savedSnippet = await CodeSnippet.createCodeSnippet(
-        newSnippetDetails
-      );
+      const savedSnippet =
+        await CodeSnippet.createCodeSnippet(newSnippetDetails);
       savedSnippetId = savedSnippet.id;
     });
 
     it("should delete the code snippet from the database", async () => {
-      const deletedSnippet = await CodeSnippet.deleteCodeSnippet(
-        savedSnippetId
-      );
+      const deletedSnippet =
+        await CodeSnippet.deleteCodeSnippet(savedSnippetId);
 
       expect(deletedSnippet).toBeDefined();
       expect(deletedSnippet.id).toBe(savedSnippetId);
@@ -192,14 +188,14 @@ describe("CodeSnippet", () => {
 
     it("should fail when the ID format is invalid", async () => {
       await expect(CodeSnippet.deleteCodeSnippet("invalid-id")).rejects.toThrow(
-        "Invalid UUID"
+        "Invalid UUID",
       );
     });
 
     it("should fail when the code snippet does not exist", async () => {
       const nonExistentUUID = "123e4567-e89b-12d3-a456-426614174000";
       await expect(
-        CodeSnippet.deleteCodeSnippet(nonExistentUUID)
+        CodeSnippet.deleteCodeSnippet(nonExistentUUID),
       ).rejects.toThrow("Code snippet not found");
     });
   });

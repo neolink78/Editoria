@@ -1,49 +1,50 @@
 import Layout from "@/components/layout";
-import { gql, useQuery } from "@apollo/client";
-import { GetProjectsQuery, Language } from "@/gql/graphql";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Input } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import Breadcrumb from "@/lib/breadCrumb";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { useRouter } from "next/router";
-const GETPROJECTS = gql`
-  query GETPROJECTS {
-    getProjects {
-      codeSnippetsOwned {
-        language
-      }
-      owner {
-        username
-      }
-      createdAt
-      description
-      title
-    }
-  }
-`;
+import { UUID } from "crypto";
+import {
+  GET_PROJECTS,
+  GET_USER_PROJECTS,
+} from "@/graphql/queries/projectQueries";
+import {
+  GetProjectsQuery,
+  LikedProjectsQuery,
+  ToggleLikeMutation,
+  ToggleLikeMutationVariables,
+} from "@/gql/graphql";
+import { TOGGLE_LIKE } from "@/graphql/mutations/likeMutations";
+import { GET_LIKED_PROJECTS } from "@/graphql/queries/likeQueries";
 
-type projectType = {
-  owner: {
-    username: string;
-  };
-  codeSnippetsOwned: Array<{ language: Language }>;
-  title: string;
-  description: string;
-  createdAt: string;
-};
 const Projects = () => {
-  const { data } = useQuery<GetProjectsQuery>(GETPROJECTS);
-  console.log(data?.getProjects);
+  const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+
   const router = useRouter();
+
+  const [toggleLike] = useMutation<
+    ToggleLikeMutation,
+    ToggleLikeMutationVariables
+  >(TOGGLE_LIKE, {
+    refetchQueries: [
+      { query: GET_LIKED_PROJECTS },
+      { query: GET_USER_PROJECTS },
+    ],
+  });
+  const { data: likedProjectsData } =
+    useQuery<LikedProjectsQuery>(GET_LIKED_PROJECTS);
+  const likedProjects = likedProjectsData?.likedProjects || [];
 
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
   const [filteredProjects, setFilteredProjects] = useState(
-    data?.getProjects || []
+    data?.getProjects || [],
   );
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || 1
+    parseInt(router.query.page as string) || 1,
   );
   const handlePageChange = (pageName: string | undefined) => {
     setActivePage(pageName || "dashboard");
@@ -68,14 +69,14 @@ const Projects = () => {
       let filtered = data.getProjects.filter(
         (project) =>
           project.title.toLowerCase().includes(value.toLowerCase()) ||
-          project.description.toLowerCase().includes(value.toLowerCase())
+          project.description.toLowerCase().includes(value.toLowerCase()),
       );
 
       if (activePage === "mostRecents") {
         router.push(`?page=${1}`);
         filtered = filtered.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
       }
       setFilteredProjects(filtered);
@@ -93,6 +94,10 @@ const Projects = () => {
   useEffect(() => {
     router.push(`?page=${1}`);
   }, []);
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
 
   return (
     <Layout>
@@ -126,15 +131,23 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
                     homePage
+                    ownerId={project.owner.id as UUID}
                     icon={project.codeSnippetsOwned[0]?.language}
                     key={idx}
                     title={project.title}
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    toggleLike={() => {
+                      toggleLike({ variables: { projectId: project.id } });
+                    }}
+                    isLiked={likedProjects.some((p) => p.id === project.id)}
+                    likeCount={project.likes.length}
+                    commentCount={project.comments.length}
+                    onOpenProject={() => handleOpenProject(project.id)}
                   />
                 ))}
             </Box>
@@ -150,15 +163,23 @@ const Projects = () => {
             <Box minHeight="52vw">
               {filteredProjects
                 .slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: projectType, idx) => (
+                .map((project, idx) => (
                   <Tile
-                    homePage
+                    key={idx}
+                    ownerId={project.owner.id as UUID}
                     title={project.title}
                     icon={project.codeSnippetsOwned[0]?.language}
-                    key={idx}
                     owner={project.owner.username}
                     description={project.description}
                     createdAt={project.createdAt}
+                    likeCount={project.likes.length}
+                    toggleLike={() => {
+                      toggleLike({ variables: { projectId: project.id } });
+                    }}
+                    isLiked={likedProjects.some((p) => p.id === project.id)}
+                    commentCount={project.comments.length}
+                    onOpenProject={() => handleOpenProject(project.id)}
+                    homePage
                   />
                 ))}
             </Box>

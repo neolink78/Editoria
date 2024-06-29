@@ -8,7 +8,6 @@ import { useSettingsFormik } from "../../hooks/useSettingsFormik";
 const Settings = (user: any) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const formikSettings = useSettingsFormik(user);
-
   const editSettings = () => {
     if (isDisabled) {
       setIsDisabled(false);

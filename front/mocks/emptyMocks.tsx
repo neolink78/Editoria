@@ -1,7 +1,5 @@
 import { MockType } from "./indexMock";
 
-const emptyMocks : MockType[] = [
-  
-];
+const emptyMocks: MockType[] = [];
 
 export default emptyMocks;

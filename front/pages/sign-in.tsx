@@ -14,9 +14,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function SignIn() {
-  const formik = useSignInFormik(true);
+  const formik = useSignInFormik({ isLogin: true });
   const router = useRouter();
-  const { email } = router.query;
 
   return (
     <Layout>
@@ -90,7 +89,7 @@ export default function SignIn() {
                   className="form_control_button"
                 >
                   <SubmitButton w="7vw" bg="#1574EF" type="submit">
-                    <Text>Sign In</Text>
+                    <Text data-testid="sign-in-button">Sign In</Text>
                   </SubmitButton>
                 </FormControl>
               </Flex>

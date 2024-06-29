@@ -12,7 +12,7 @@ import SubmitButton from "../lib/submitButton";
 import { useSignInFormik } from "../hooks/form";
 
 export default function SignUp() {
-  const formik = useSignInFormik(false);
+  const formik = useSignInFormik({ isLogin: false });
 
   return (
     <Layout>
@@ -103,7 +103,7 @@ export default function SignUp() {
                   className="form_control_button"
                 >
                   <SubmitButton w="7vw" bg="#1574EF" type="submit">
-                    <Text>Sign Up</Text>
+                    <Text data-testid="sign-up-button">Sign Up</Text>
                   </SubmitButton>
                 </FormControl>
               </Flex>

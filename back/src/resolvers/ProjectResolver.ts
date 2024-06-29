@@ -29,7 +29,7 @@ export class ProjectResolver {
   @Mutation(() => Project)
   createProject(
     @Args() args: CreateOrUpdateProjectArgs,
-    @Ctx() { user }: Context
+    @Ctx() { user }: Context,
   ) {
     return Project.createProject({
       ...args,
@@ -44,9 +44,19 @@ export class ProjectResolver {
   }
 
   @Query(() => Project)
+  getProjectsByUserId(@Arg("id", () => ID) id: string) {
+    return Project.getProjectsByUserId(id);
+  }
+
+  @Query(() => Project)
   getProjectById(@Arg("id", () => ID) id: string) {
     return Project.getProjectById(id);
   }
+
+  // @Query(() => [Project])
+  // getProjectsByUserId(@Arg("userId", () => ID) userId: string) {
+  //   return Project.getProjectsByUserId(userId);
+  // }
 
   @Authorized()
   @ProjectOwner()
@@ -61,12 +71,9 @@ export class ProjectResolver {
   async updateProject(
     @Arg("id", () => ID) id: string,
     @Args() args: CreateOrUpdateProjectArgs,
-    @Ctx() { user }: Context
   ) {
     return Project.updateProject(id, {
       ...args,
-      owner: user as User,
-      codeSnippetsOwned: [],
     });
   }
 

@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  issues: write
+
+jobs:
+  todo-to-issue:
+    name: Create Issue for each new TODO comment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: alstr/todo-to-issue-action@v4.12.3
