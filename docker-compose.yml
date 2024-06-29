@@ -6,6 +6,7 @@ services:
       context: ./back
       target: dev
     environment:
+      - NODE_ENV=dev
       - DATABASE_URL=postgres://postgres:password@database:5432/postgres
       - TEST_DATABASE_URL=postgres://postgres:password@test-database:5432/postgres
     depends_on:
@@ -20,6 +21,22 @@ services:
           target: /app
         - action: rebuild
           path: back/package.json
+
+  upload:
+    build:
+      context: ./upload
+      target: dev
+    ports:
+      - 5001:5001
+    volumes:
+      - upload-public:/app/public
+    develop:
+      watch:
+        - action: sync
+          path: ./upload
+          target: /app
+        - action: rebuild
+          path: upload/package.json
 
   front:
     build: 
@@ -59,3 +76,4 @@ services:
 
 volumes:
   database-data:
+  upload-public:
