@@ -601,6 +601,7 @@ export type GetUserQuery = {
     id: string;
     description: string;
     username: string;
+    image?: string | null;
     projects: Array<{
       __typename?: "Project";
       id: string;
@@ -2359,6 +2360,7 @@ export const GetUserDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "projects" },

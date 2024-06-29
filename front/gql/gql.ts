@@ -56,7 +56,7 @@ const documents = {
     types.GetProjectDocument,
   "\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n":
     types.UpdateProjectDocument,
-  "\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n":
+  "\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      image\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n":
     types.GetUserDocument,
 };
 
@@ -210,8 +210,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n",
-): (typeof documents)["\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n"];
+  source: "\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      image\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      image\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
