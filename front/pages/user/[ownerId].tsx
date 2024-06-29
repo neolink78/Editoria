@@ -15,6 +15,7 @@ const GET_USER = gql`
       id
       description
       username
+      image
       projects {
         id
         codeSnippetsOwned {
@@ -47,6 +48,7 @@ export type ProjectType = {
 type UserType = {
   username: string;
   description: string;
+  image: string;
   projects: ProjectType[];
 };
 
@@ -74,18 +76,22 @@ export default function User() {
     router.push(`/editor?project=${projectId}`);
   };
 
+  const imageUrl = userData?.image || "/default-profile-pic.png";
+
   return (
     <Layout>
       {userData && (
         <Flex flexDirection="column" align="center" mt="5vw">
-          <Box>
-            <Flex align="center" gap="2vw">
+          <Flex justify="start" align="center" width="70%">
+            <Flex gap="2vw">
+              <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
+
               <Box fontSize="2vw">{userData.username}</Box>
               <SubmitButton h="2vw">Follow me</SubmitButton>
             </Flex>
             {userData.description ||
               "Cet utilisateur n'a pas encore de description.. Peut être un jour ?"}
-          </Box>
+          </Flex>
           <Box mt="3vw">
             {userData.projects?.length > 0 &&
               `${userData.username}'s projects (
