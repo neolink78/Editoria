@@ -1,12 +1,21 @@
-import { Box, Flex, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Input, Textarea } from "@chakra-ui/react";
 import SubmitButton from "../../lib/submitButton";
 import PictureIcon from "../../icons/pictureIcon";
 import SettingsInput from "../../lib/settingsInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
+
+//TODO : Remove the need for having to fill the password to update user
 
 const Settings = (user: any) => {
   const [isDisabled, setIsDisabled] = useState(true);
+  const [imageUrl, setImageUrl] = useState(user.user.image || "");
+  console.log(user);
+
+  useEffect(() => {
+    setImageUrl(user.user.image);
+  }, [user]);
+
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
     if (isDisabled) {
@@ -17,10 +26,25 @@ const Settings = (user: any) => {
       });
     }
   };
+
+  const handleFileChange = (event) => {
+    formikSettings.setFieldValue("image", event.target.files[0]);
+    console.log("IMGURL", URL.createObjectURL(event.target.files[0]))
+    setImageUrl(URL.createObjectURL(event.target.files[0]));
+  };
+
+
   return (
     <Flex flexDirection="column" align="flex-start" mb="5vw" mr="37.5vw">
       <Flex alignItems="center" mt="4.4vw" fontSize="2vw" gap="1vw" ml="1.4vw">
-        <PictureIcon />
+        {imageUrl ? (
+          <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
+        ) : (
+          <PictureIcon />
+        )}
+        {!isDisabled && (
+          <Input type="file" accept="image/*" onChange={handleFileChange} />
+        )}
         Your informations
         <SubmitButton onClick={() => editSettings()} w="5.5vw">
           {isDisabled ? "Edit" : "save"}
@@ -57,6 +81,20 @@ const Settings = (user: any) => {
         placeholder="description"
         name="description"
         disabled={isDisabled}
+      />
+      <Box fontSize="1.5vw" fontWeight={600} mt="3.5vw">
+        Password
+      </Box>
+      <SettingsInput
+        label="Password"
+        disabled={isDisabled}
+        placeholder="password"
+        name="password"
+        onChange={formikSettings.handleChange}
+        value={formikSettings.values.password}
+        error={
+          formikSettings.touched.password && formikSettings.errors.password
+        }
       />
       <Box fontSize="1.5vw" fontWeight={600} mt="3.5vw">
         Account deletion
