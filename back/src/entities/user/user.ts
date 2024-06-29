@@ -47,6 +47,10 @@ class User extends BaseEntity {
   username!: string;
 
   @Column({ default: "" })
+  @Field({ nullable: true})
+  image!: string;
+
+  @Column({ default: "" })
   @Field()
   description!: string;
 
@@ -95,6 +99,7 @@ class User extends BaseEntity {
       this.username = user.username;
       this.hashedPassword = user.password;
       this.description = user.description || "";
+      this.image = user.image || "";
     }
   }
 
