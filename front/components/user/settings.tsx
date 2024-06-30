@@ -27,10 +27,13 @@ const Settings = (user: any) => {
     }
   };
 
-  const handleFileChange = (event) => {
-    formikSettings.setFieldValue("image", event.target.files[0]);
-    console.log("IMGURL", URL.createObjectURL(event.target.files[0]))
-    setImageUrl(URL.createObjectURL(event.target.files[0]));
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      formikSettings.setFieldValue("image", file);
+      console.log("IMGURL", URL.createObjectURL(file))
+      setImageUrl(URL.createObjectURL(file));
+    }
   };
 
 
