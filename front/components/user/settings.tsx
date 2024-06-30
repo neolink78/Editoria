@@ -112,18 +112,26 @@ const Settings = (user: any) => {
       <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw">
         Description
       </Box>
-      <Textarea
-        border="none"
-        pl="0"
-        value={formikSettings.values.description}
-        onChange={formikSettings.handleChange}
-        placeholder="description"
-        name="description"
-        disabled={isDisabled}
-      />
-      <Box fontSize="1.5vw" fontWeight={600} mt="3.5vw">
-        Password
-      </Box>
+      {isDisabled ? (
+        <Input
+          border="none"
+          value={formikSettings.values.description}
+          onChange={formikSettings.handleChange}
+          placeholder="description"
+          name="description"
+          disabled={isDisabled}
+          pl="0"
+        />
+      ) : (
+        <Textarea
+          border="none"
+          value={formikSettings.values.description}
+          onChange={formikSettings.handleChange}
+          placeholder="description"
+          name="description"
+          disabled={isDisabled}
+        />
+      )}
       <SettingsInput
         label="Password"
         disabled={isDisabled}
