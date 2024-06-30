@@ -2,7 +2,7 @@ import { Box, Flex, Input, Textarea } from "@chakra-ui/react";
 import SubmitButton from "../../lib/submitButton";
 import PictureIcon from "../../icons/pictureIcon";
 import SettingsInput from "../../lib/settingsInput";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
 
 //TODO : Remove the need for having to fill the password to update user
@@ -11,10 +11,8 @@ const Settings = (user: any) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [imageUrl, setImageUrl] = useState(user.user.image || "");
   console.log(user);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setImageUrl(user.user.image);
-  }, [user]);
 
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
@@ -36,18 +34,56 @@ const Settings = (user: any) => {
     }
   };
 
+  const handleImageClick = () => {
+    if (!isDisabled && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   return (
     <Flex flexDirection="column" align="flex-start" mb="5vw" mr="37.5vw">
       <Flex alignItems="center" mt="4.4vw" fontSize="2vw" gap="1vw" ml="1.4vw">
-        {imageUrl ? (
-          <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
-        ) : (
-          <PictureIcon />
-        )}
-        {!isDisabled && (
-          <Input type="file" accept="image/*" onChange={handleFileChange} />
-        )}
+        <Box position="relative" onClick={handleImageClick} cursor="pointer">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="Profile Pic"
+              style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            <PictureIcon />
+          )}
+          {!isDisabled && (
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              width="100%"
+              height="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius="50%"
+              backgroundColor="rgba(0, 0, 0, 0.5)"
+              color="white"
+              fontSize="1.5rem"
+              fontWeight="bold"
+            >
+              +
+            </Box>
+          )}
+        </Box>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
         Your informations
         <SubmitButton onClick={() => editSettings()} w="5.5vw">
           {isDisabled ? "Edit" : "save"}

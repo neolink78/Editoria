@@ -13,29 +13,29 @@ import { ProjectType } from "./user/[ownerId]";
 import { UUID } from "crypto";
 
 export default function HomePage() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
-    variables: { limit: 5 },
-  });
-  const projects = data?.getProjects || [];
-  const sortedProjects = [...projects]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .slice(0, 3);
+  // const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
+  //   variables: { limit: 5 },
+  // });
+  // const projects = data?.getProjects || [];
+  // const sortedProjects = [...projects]
+  //   .sort(
+  //     (a, b) =>
+  //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  //   )
+  //   .slice(0, 3);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
-  const handleOpenProject = (projectId: string) => {
-    router.push(`/editor?project=${projectId}`);
-  };
+  // const handleOpenProject = (projectId: string) => {
+  //   router.push(`/editor?project=${projectId}`);
+  // };
 
-  if (loading) return <Layout>Loading...</Layout>;
-  if (error) return <Error></Error>;
+  // if (loading) return <Layout>Loading...</Layout>;
+  // if (error) return <Error></Error>;
   return (
     <Layout>
       <Flex className="header_main_title">
@@ -70,7 +70,7 @@ export default function HomePage() {
       <Box fontSize="2.5vw" m="8vw 10.8vw 0 11.2vw">
         Most popular projects
       </Box>
-      <Box ml="11.6vw">
+      {/* <Box ml="11.6vw">
         {projects
           ? sortedProjects
               .slice(-5)
@@ -89,11 +89,11 @@ export default function HomePage() {
                 />
               ))
           : null}
-      </Box>
+      </Box> */}
       <Flex justifyContent="center" mt="3vw" mb="4vw">
-        <SubmitButton onClick={() => router.push("/projects")} w="10vw">
+        {/* <SubmitButton onClick={() => router.push("/projects")} w="10vw">
           See all projects
-        </SubmitButton>
+        </SubmitButton> */}
       </Flex>
     </Layout>
   );
