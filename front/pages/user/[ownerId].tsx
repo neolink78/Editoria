@@ -82,15 +82,17 @@ export default function User() {
     <Layout>
       {userData && (
         <Flex flexDirection="column" align="center" mt="5vw">
-          <Flex justify="start" align="center" width="70%">
-            <Flex gap="2vw">
+          <Flex flexDirection="column" justify="center" align="start" width="70%">
+            <Flex gap="2vw" justify='center' align="center">
               <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
-
               <Box fontSize="2vw">{userData.username}</Box>
               <SubmitButton h="2vw">Follow me</SubmitButton>
             </Flex>
-            {userData.description ||
-              "Cet utilisateur n'a pas encore de description.. Peut être un jour ?"}
+            <Box mt="3vw" fontStyle="italic" >
+              {
+                userData.description ||
+                "This user has not provided a description yet."}
+            </Box>
           </Flex>
           <Box mt="3vw">
             {userData.projects?.length > 0 &&
