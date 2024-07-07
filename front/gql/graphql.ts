@@ -146,7 +146,7 @@ export type MutationSignUpArgs = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
   image?: InputMaybe<Scalars["String"]["input"]>;
-  password: Scalars["String"]["input"];
+  password?: InputMaybe<Scalars["String"]["input"]>;
   username: Scalars["String"]["input"];
 };
 
@@ -180,7 +180,7 @@ export type MutationUpdateUserArgs = {
   email: Scalars["String"]["input"];
   id: Scalars["ID"]["input"];
   image?: InputMaybe<Scalars["String"]["input"]>;
-  password: Scalars["String"]["input"];
+  password?: InputMaybe<Scalars["String"]["input"]>;
   username: Scalars["String"]["input"];
 };
 
@@ -488,7 +488,6 @@ export type ResetPasswordMutation = {
 export type UpdateUserMutationVariables = Exact<{
   email: Scalars["String"]["input"];
   username: Scalars["String"]["input"];
-  password: Scalars["String"]["input"];
   description: Scalars["String"]["input"];
   updateUserId: Scalars["ID"]["input"];
   image?: InputMaybe<Scalars["String"]["input"]>;
@@ -1594,20 +1593,6 @@ export const UpdateUserDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "password" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
             name: { kind: "Name", value: "description" },
           },
           type: {
@@ -1659,14 +1644,6 @@ export const UpdateUserDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "username" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "password" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "password" },
                 },
               },
               {
