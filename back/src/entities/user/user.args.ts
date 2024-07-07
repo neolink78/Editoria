@@ -12,9 +12,9 @@ export class CreateOrUpdateUser {
   @MinLength(1)
   username!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @MinLength(12)
-  password!: string;
+  password?: string;
 
   @Field({ nullable: true })
   description!: string;
