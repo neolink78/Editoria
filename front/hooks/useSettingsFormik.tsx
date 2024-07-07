@@ -5,8 +5,8 @@ import { gql, useMutation } from "@apollo/client";
 import { UpdateUserMutation, UpdateUserMutationVariables } from "@/gql/graphql";
 
 const UPDATE_USER = gql`
-mutation UpdateUser($email: String!, $username: String!, $password: String!, $description: String!, $updateUserId: ID!, $image: String) {
-  updateUser(email: $email, username: $username, password: $password, description: $description, id: $updateUserId, image: $image) {
+mutation UpdateUser($email: String!, $username: String!, $description: String!, $updateUserId: ID!, $image: String) {
+  updateUser(email: $email, username: $username, description: $description, id: $updateUserId, image: $image) {
     description
     email
     username
@@ -70,7 +70,7 @@ export const useSettingsFormik = (user: any) => {
           variables: {
             email: values.email,
             username: values.username,
-            password: values.password,
+            // password: values.password,
             description: values.description,
             updateUserId: user.user.id,
             image: imageUrl,
