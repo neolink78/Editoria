@@ -109,30 +109,19 @@ const Settings = (user: any) => {
         value={formikSettings.values.email}
         error={formikSettings.touched.email && formikSettings.errors.email}
       />
-      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw">
+      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw" ml="1.5vw">
         Description
       </Box>
-      {isDisabled ? (
-        <Input
-          border="none"
-          value={formikSettings.values.description}
-          onChange={formikSettings.handleChange}
-          placeholder="description"
-          name="description"
-          disabled={isDisabled}
-          pl="0"
-        />
-      ) : (
-        <Textarea
-          border="none"
-          value={formikSettings.values.description}
-          onChange={formikSettings.handleChange}
-          placeholder="description"
-          name="description"
-          disabled={isDisabled}
-        />
-      )}
-      <SettingsInput
+      <Textarea
+        border="none"
+        value={formikSettings.values.description}
+        onChange={formikSettings.handleChange}
+        placeholder="description"
+        name="description"
+        disabled={isDisabled}
+        mt="0.5vw"
+      />
+      {/* <SettingsInput
         label="Password"
         disabled={isDisabled}
         placeholder="password"
@@ -142,7 +131,7 @@ const Settings = (user: any) => {
         error={
           formikSettings.touched.password && formikSettings.errors.password
         }
-      />
+      /> */}
       <Box fontSize="1.5vw" fontWeight={600} mt="3.5vw">
         Account deletion
       </Box>
