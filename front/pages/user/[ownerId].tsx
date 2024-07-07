@@ -8,6 +8,7 @@ import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
+import { useAuth } from "@/context/UserContext";
 
 const GET_USER = gql`
   query GetUser($ownerId: ID!) {
@@ -78,6 +79,9 @@ export default function User() {
 
   const imageUrl = userData?.image || "/default-profile-pic.png";
 
+  const auth = useAuth();
+  console.log(auth.user?.id, ownerId);
+
   return (
     <Layout>
       {userData && (
@@ -86,7 +90,7 @@ export default function User() {
             <Flex gap="2vw" justify='center' align="center">
               <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
               <Box fontSize="2vw">{userData.username}</Box>
-              <SubmitButton h="2vw">Follow me</SubmitButton>
+              { auth.user!.id === ownerId && <SubmitButton h="2vw">Follow me</SubmitButton>}
             </Flex>
             <Box mt="3vw" fontStyle="italic" >
               {
