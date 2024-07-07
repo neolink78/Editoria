@@ -97,7 +97,8 @@ class User extends BaseEntity {
     if (user) {
       this.email = user.email;
       this.username = user.username;
-      this.hashedPassword = user.password;
+      if (user.password) this.hashedPassword = user.password;
+      // this.hashedPassword = user.password;
       this.description = user.description || "";
       this.image = user.image || "";
     }
@@ -110,8 +111,8 @@ class User extends BaseEntity {
     if (existingUser) {
       throw new Error("EMAIL_ALREADY_USED");
     }
-
-    userData.password = await hash(userData.password, 10);
+    if (userData.password)
+      userData.password = await hash(userData.password, 10);
 
     const newUser = new User(userData);
     // TODO: return user-friendly error message when email already used
@@ -151,12 +152,14 @@ class User extends BaseEntity {
   ): Promise<User> {
     const user = await User.getUserById(id);
 
-    if (userData.password && userData.password !== user.hashedPassword) {
+    if (userData.password) {
       userData.password = await hash(userData.password, 10);
+      user.hashedPassword = userData.password;
     }
-    user.hashedPassword = userData.password;
+
+    const { password, ...updatedData } = userData;
     console.log(user);
-    Object.assign(user, userData);
+    Object.assign(user, updatedData);
 
     await user.save();
     user.reload();
