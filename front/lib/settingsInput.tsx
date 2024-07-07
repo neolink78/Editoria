@@ -21,7 +21,7 @@ const SettingsInput = ({
 }: InputType) => {
   return (
     <Box>
-      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw">
+      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw" ml="1.5vw">
         {label}
       </Box>
       <Input
@@ -31,7 +31,6 @@ const SettingsInput = ({
         onChange={onChange}
         mt="0.5vw"
         fontSize="1.2vw"
-        pl="0"
         border="none"
         name={name}
       />
