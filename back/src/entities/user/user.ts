@@ -47,7 +47,7 @@ class User extends BaseEntity {
   username!: string;
 
   @Column({ default: "" })
-  @Field({ nullable: true})
+  @Field({ nullable: true })
   image!: string;
 
   @Column({ default: "" })

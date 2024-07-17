@@ -5,20 +5,34 @@ import { gql, useMutation } from "@apollo/client";
 import { UpdateUserMutation, UpdateUserMutationVariables } from "@/gql/graphql";
 
 const UPDATE_USER = gql`
-mutation UpdateUser($email: String!, $username: String!, $description: String!, $updateUserId: ID!, $image: String) {
-  updateUser(email: $email, username: $username, description: $description, id: $updateUserId, image: $image) {
-    description
-    email
-    username
-    id
-    image
+  mutation UpdateUser(
+    $email: String!
+    $username: String!
+    $description: String!
+    $updateUserId: ID!
+    $image: String
+  ) {
+    updateUser(
+      email: $email
+      username: $username
+      description: $description
+      id: $updateUserId
+      image: $image
+    ) {
+      description
+      email
+      username
+      id
+      image
+    }
   }
-}
 `;
 
-
 export const useSettingsFormik = (user: any) => {
-  const [updateUser] = useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UPDATE_USER);
+  const [updateUser] = useMutation<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >(UPDATE_USER);
 
   console.log("user", user);
   const toast = useToast();
@@ -49,7 +63,7 @@ export const useSettingsFormik = (user: any) => {
       try {
         console.log("values", values);
         let imageUrl = values.image;
-        if (values.image && typeof values.image !== 'string') {
+        if (values.image && typeof values.image !== "string") {
           const formData = new FormData();
           formData.append("file", values.image);
           const response = await fetch("/upload/", {
@@ -63,7 +77,14 @@ export const useSettingsFormik = (user: any) => {
           console.log("data", data);
           imageUrl = `/upload/${data.filename}`;
         }
-        console.log("DATAOBJECT", { email: values.email, username: values.username, password: values.password, description: values.description, updateUserId: user.id, image: imageUrl });
+        console.log("DATAOBJECT", {
+          email: values.email,
+          username: values.username,
+          password: values.password,
+          description: values.description,
+          updateUserId: user.id,
+          image: imageUrl,
+        });
 
         // Make your API call to update user here with imageUrl
         const { data: updatedUserData } = await updateUser({
@@ -108,7 +129,6 @@ export const useSettingsFormik = (user: any) => {
             </Box>
           ),
         });
-
       }
     },
   });

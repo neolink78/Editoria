@@ -13,7 +13,6 @@ const Settings = (user: any) => {
   console.log(user);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
     if (isDisabled) {
@@ -29,7 +28,7 @@ const Settings = (user: any) => {
     const file = event.target.files?.[0];
     if (file) {
       formikSettings.setFieldValue("image", file);
-      console.log("IMGURL", URL.createObjectURL(file))
+      console.log("IMGURL", URL.createObjectURL(file));
       setImageUrl(URL.createObjectURL(file));
     }
   };
