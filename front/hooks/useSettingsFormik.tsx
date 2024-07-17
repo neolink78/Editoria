@@ -47,7 +47,6 @@ export const useSettingsFormik = (user: any) => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        console.log("values", values);
         let imageUrl = values.image;
         if (values.image && typeof values.image !== 'string') {
           const formData = new FormData();
@@ -60,12 +59,9 @@ export const useSettingsFormik = (user: any) => {
             throw new Error("Error uploading file");
           }
           const data = await response.json();
-          console.log("data", data);
           imageUrl = `/upload/${data.filename}`;
         }
-        console.log("DATAOBJECT", { email: values.email, username: values.username, password: values.password, description: values.description, updateUserId: user.id, image: imageUrl });
 
-        // Make your API call to update user here with imageUrl
         const { data: updatedUserData } = await updateUser({
           variables: {
             email: values.email,
@@ -76,7 +72,6 @@ export const useSettingsFormik = (user: any) => {
             image: imageUrl,
           },
         });
-        console.log("updatedUserData", updatedUserData);
         toast({
           position: "bottom-right",
           render: () => (
