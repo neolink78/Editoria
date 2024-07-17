@@ -1,7 +1,7 @@
 import Layout from "@/components/layout";
 import SubmitButton from "@/lib/submitButton";
 import { gql, useQuery } from "@apollo/client";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Language } from "@/gql/graphql";
@@ -88,11 +88,12 @@ export default function User() {
         <Flex flexDirection="column" align="center" mt="5vw">
           <Flex flexDirection="column" justify="center" align="start" width="70%">
             <Flex gap="2vw" justify='center' align="center">
-              <img src={imageUrl} alt="Profile Pic" style={{ width: "50px", height: "50px", borderRadius: "50%" }} />
+              <Image src={imageUrl} alt="Profile Pic" boxSize="50px" borderRadius="full" />
               <Box fontSize="2vw">{userData.username}</Box>
-              { auth.user!.id === ownerId && <SubmitButton h="2vw">Follow me</SubmitButton>}
+              {auth.user!.id === ownerId && <SubmitButton h="2vw">Follow me</SubmitButton>}
             </Flex>
             <Box mt="3vw" fontStyle="italic" >
+              <Text fontSize="1.5vw">About me</Text>
               {
                 userData.description ||
                 "This user has not provided a description yet."}
