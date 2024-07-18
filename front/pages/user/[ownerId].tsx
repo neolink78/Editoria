@@ -57,7 +57,6 @@ export default function User() {
   const { ownerId } = router.query;
   const { user } = useAuth();
 
-  const shouldSkipQueries = !ownerId;
 
   const { data: userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
@@ -100,9 +99,7 @@ export default function User() {
   };
 
   useEffect(() => {
-    if (!shouldSkipQueries) {
-      checkIfFollowed();
-    }
+    ownerId && checkIfFollowed();
   }, [followersData]);
 
   const handleFollow = async () => {
