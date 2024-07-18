@@ -8,26 +8,9 @@ import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
+import { GET_USER } from "@/graphql/queries/userQueries";
 
-const GET_USER = gql`
-  query GetUser($ownerId: ID!) {
-    getUser(id: $ownerId) {
-      id
-      description
-      username
-      projects {
-        id
-        codeSnippetsOwned {
-          language
-        }
-        title
-        id
-        description
-        createdAt
-      }
-    }
-  }
-`;
+//TODO: Change location of types definition
 export type ProjectType = {
   owner: {
     id: UUID;
@@ -41,6 +24,9 @@ export type ProjectType = {
   comments: Array<{
     id: string;
     content: string;
+  }>;
+  likes: Array<{
+    id: string;
   }>;
 };
 

@@ -5,12 +5,15 @@ import {
   createMethodDecorator,
   Ctx,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
 } from "type-graphql";
 import { Context } from "..";
-import Project from "../entities/project/project";
+import Project, {
+  ProjectPaginationResponse,
+} from "../entities/project/project";
 import { CreateOrUpdateProjectArgs } from "../entities/project/project.args";
 import User from "../entities/user/user";
 
@@ -38,25 +41,39 @@ export class ProjectResolver {
     });
   }
 
-  @Query(() => [Project])
-  getProjects() {
-    return Project.getProject();
+  @Query(() => ProjectPaginationResponse)
+  async getProjects(
+    @Arg("limit", () => Int, { defaultValue: 10 }) limit: number,
+    @Arg("offset", () => Int, { defaultValue: 0 }) offset: number,
+  ): Promise<ProjectPaginationResponse> {
+    const [projects, totalCount] = await Project.getProjects(limit, offset);
+    return {
+      projects,
+      totalCount,
+    };
   }
 
-  @Query(() => Project)
-  getProjectsByUserId(@Arg("id", () => ID) id: string) {
-    return Project.getProjectsByUserId(id);
+  @Query(() => ProjectPaginationResponse)
+  async getProjectsByUserId(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("offset", () => Int) offset: number,
+  ): Promise<ProjectPaginationResponse> {
+    const [projects, totalCount] = await Project.getProjectsByUserId(
+      userId,
+      limit,
+      offset,
+    );
+    return {
+      projects,
+      totalCount,
+    };
   }
 
   @Query(() => Project)
   getProjectById(@Arg("id", () => ID) id: string) {
     return Project.getProjectById(id);
   }
-
-  // @Query(() => [Project])
-  // getProjectsByUserId(@Arg("userId", () => ID) userId: string) {
-  //   return Project.getProjectsByUserId(userId);
-  // }
 
   @Authorized()
   @ProjectOwner()
@@ -78,12 +95,23 @@ export class ProjectResolver {
   }
 
   @Authorized()
-  @Query(() => [Project])
-  async getOwnProject(@Ctx() { user }: Context) {
+  @Query(() => ProjectPaginationResponse)
+  async getOwnProject(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("offset", () => Int) offset: number,
+    @Ctx() { user }: Context,
+  ): Promise<ProjectPaginationResponse> {
     if (!user) {
       throw new Error("User not found");
     }
-    const projects = await Project.getProjectsByUserId(user.id);
-    return projects;
+    const [projects, totalCount] = await Project.getProjectsByUserId(
+      user.id,
+      limit,
+      offset,
+    );
+    return {
+      projects,
+      totalCount,
+    };
   }
 }
