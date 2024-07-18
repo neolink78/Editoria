@@ -53,6 +53,11 @@ export class ProjectResolver {
     return Project.getProjectById(id);
   }
 
+  @Query(() => [Project])
+  searchProjects(@Arg("query") query: string) {
+    return Project.searchProjects(query);
+  }
+
   // @Query(() => [Project])
   // getProjectsByUserId(@Arg("userId", () => ID) userId: string) {
   //   return Project.getProjectsByUserId(userId);

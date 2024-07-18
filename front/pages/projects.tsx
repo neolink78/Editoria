@@ -10,19 +10,34 @@ import { UUID } from "crypto";
 import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
 import { GetProjectsQuery } from "@/gql/graphql";
 
-const Projects = () => {
-  const { data } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+const SEARCH_PROJECTS = gql`
+  query SearchProjects($query: String!) {
+    searchProjects(query: $query) {
+      owner {
+        username
+        email
+      }
+      title
+    }
+  }
+`;
 
+const Projects = () => {
+  const { data: getProjectsData } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  const { data: searchProjectsData, refetch } = useQuery(SEARCH_PROJECTS, {
+    variables: { query: "" },
+  });
   const router = useRouter();
 
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
   const [filteredProjects, setFilteredProjects] = useState(
-    data?.getProjects || [],
+    getProjectsData?.getProjects || [],
   );
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || 1,
   );
+
   const handlePageChange = (pageName: string | undefined) => {
     setActivePage(pageName || "dashboard");
   };
@@ -30,6 +45,7 @@ const Projects = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
     router.push(`?page=${1}`);
+    refetch({ query: e.target.value });
   };
 
   const navigationItems = [
@@ -42,23 +58,15 @@ const Projects = () => {
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
 
   useEffect(() => {
-    if (data?.getProjects) {
-      let filtered = data.getProjects.filter(
-        (project) =>
-          project.title.toLowerCase().includes(value.toLowerCase()) ||
-          project.description.toLowerCase().includes(value.toLowerCase()),
-      );
-
-      if (activePage === "mostRecents") {
-        router.push(`?page=${1}`);
-        filtered = filtered.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
-      }
-      setFilteredProjects(filtered);
+    if (value.trim() === "") {
+      setFilteredProjects(getProjectsData?.getProjects || []);
+      return;
     }
-  }, [value, data, activePage]);
+
+    if (searchProjectsData?.searchProjects) {
+      setFilteredProjects(searchProjectsData.searchProjects);
+    }
+  }, [searchProjectsData, getProjectsData, value]);
 
   useEffect(() => {
     setCurrentPage(parseInt(router.query.page as string));

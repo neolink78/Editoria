@@ -15,6 +15,7 @@ import { ProjectResolver } from "./resolvers/ProjectResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
 import "dotenv/config";
 import CommentResolver from "./resolvers/CommentResolver";
+import { getCache } from "./cache";
 
 export type Context = {
   res: Response;
@@ -64,6 +65,7 @@ const startApolloServer = async () => {
   });
 
   await getDataSource();
+  await getCache();
   console.log(`🚀  Server ready at: ${url}`);
 };
 

@@ -2,12 +2,13 @@ version: "3.8"
 
 services:
   back:
-    build: 
+    build:
       context: ./back
       target: dev
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/postgres
       - TEST_DATABASE_URL=postgres://postgres:password@test-database:5432/postgres
+      - CACHE_URL=redis://cache
     depends_on:
       database:
         condition: service_healthy
@@ -22,7 +23,7 @@ services:
           path: back/package.json
 
   front:
-    build: 
+    build:
       context: ./front
       target: dev
     ports:
@@ -43,11 +44,14 @@ services:
       - POSTGRES_PASSWORD=password
     healthcheck:
       test: pg_isready -U postgres
-  
+
   test-database:
     image: postgres:15
     environment:
       - POSTGRES_PASSWORD=password
+
+  cache:
+    image: redis
 
   adminer:
     image: adminer

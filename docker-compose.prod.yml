@@ -31,7 +31,10 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
     restart: always
-  
+
+  cache:
+    image: redis
+
   gateway:
     image: nginx
     depends_on:
