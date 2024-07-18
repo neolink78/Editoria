@@ -50,10 +50,12 @@ const Projects = () => {
     setCurrentPage(1);
   }, [activePage]);
 
+  const sortBy = activePage === "headLined" ? "likes" : "createdAt";
   const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
     variables: {
       limit: projectsPerPage,
       offset: offset,
+      sortBy: sortBy
     },
     fetchPolicy: "cache-and-network",
   });
@@ -69,30 +71,13 @@ const Projects = () => {
     refetchQueries: [
       {
         query: GET_PROJECTS,
-        variables: { limit: projectsPerPage, offset: offset },
+        variables: { limit: projectsPerPage, offset: offset, sortBy: sortBy },
       },
     ],
   });
 
   const projects = data?.getProjects.projects || [];
   const totalCount = data?.getProjects.totalCount || 0;
-
-  const [sortedProjects, setSortedProjects] = useState<Project[]>([]);
-
-  useEffect(() => {
-    if (data?.getProjects.projects) {
-      let projects = [...data.getProjects.projects];
-      if (activePage === "mostRecents") {
-        projects.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
-      } else if (activePage === "headLined") {
-        projects.sort((a, b) => b.likes.length - a.likes.length);
-      }
-      setSortedProjects(projects);
-    }
-  }, [data, activePage]);
 
   const handleBreadcrumbChange = (value: string) => {
     setActivePage(value);
@@ -190,7 +175,7 @@ const Projects = () => {
               fontSize="1.2vw"
             />
             <Box minHeight="52vw">
-              {sortedProjects.map((project, idx) => (
+              {projects.map((project, idx) => (
                 <Tile
                   key={idx}
                   projectId={project.id}
