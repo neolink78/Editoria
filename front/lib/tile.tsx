@@ -156,13 +156,18 @@ const Tile = ({
           </Text>
         )}
       </Flex>
-      {!homePage && canDelete && (
+      {!homePage && canDelete ? (
         <FaRegTrashAlt
           onClick={(e) => {
             e.stopPropagation();
             onDelete?.(projectId);
           }}
           cursor="pointer"
+        />
+      ) : (
+        <FaRegTrashAlt
+          opacity="0"
+          pointerEvents="none"
         />
       )}
     </Flex>
