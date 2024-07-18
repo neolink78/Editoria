@@ -1,6 +1,6 @@
 import Layout from "@/components/layout";
 import SubmitButton from "@/lib/submitButton";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box, Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -8,6 +8,9 @@ import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
+import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
+import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
+import { useAuth } from "../../context/UserContext";
 
 const GET_USER = gql`
   query GetUser($ownerId: ID!) {
@@ -50,12 +53,33 @@ type UserType = {
   projects: ProjectType[];
 };
 
+interface FollowerType {
+  follower: {
+    email: string;
+    id: string;
+    username: string;
+  };
+  following: {
+    id: string;
+    email: string;
+    username: string;
+  };
+}
+
 export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
-  const { data } = useQuery(GET_USER, {
+  const { user } = useAuth();
+  const { data:userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
   });
+
+  const { data: followersData, refetch: refetchFollowers } = useQuery(GET_FOLLOWERS, {
+    variables: { followingId: ownerId },
+    skip: !user,
+  });
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW)
+const [isFollowed, setIsFollowed] = useState(false)
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || "1",
   );
@@ -67,12 +91,30 @@ export default function User() {
     setCurrentPage(parseInt(router.query.page as string));
   }, [router.query.page]);
   useEffect(() => {
-    data && setUserData(data.getUser);
-  }, [data]);
+    userDatas && setUserData(userDatas.getUser);
+  }, [userDatas]);
+
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
+
+  const checkIfFollowed = async () => {
+    const {data} = await refetchFollowers()
+    const followerId = data?.getFollowers.find((follower: FollowerType) => follower.follower.id === user?.id)?.follower.id
+    const followingId = data?.getFollowers[0]?.following.id
+    if (followerId === user?.id && followingId === ownerId) setIsFollowed(true)
+      else setIsFollowed(false)
+  }
+
+  const handleFollow = async () => {
+    try {
+      await toggleFollow({variables: {followingId: ownerId}})
+      checkIfFollowed()
+    } catch(err) {
+      console.error(err)
+    }
+  }
 
   return (
     <Layout>
@@ -81,7 +123,11 @@ export default function User() {
           <Box>
             <Flex align="center" gap="2vw">
               <Box fontSize="2vw">{userData.username}</Box>
-              <SubmitButton h="2vw">Follow me</SubmitButton>
+             {user?.id !== ownerId &&  <SubmitButton h="2vw" onClick={user ? handleFollow : () => router.push('/sign-in')}>
+                {user && !isFollowed && 'Follow me'}
+                {!user && 'Please login to follow me'}
+                {user && isFollowed && 'Unfollow me'}
+                </SubmitButton>}
             </Flex>
             {userData.description ||
               "Cet utilisateur n'a pas encore de description.. Peut être un jour ?"}

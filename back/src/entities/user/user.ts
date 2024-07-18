@@ -87,15 +87,14 @@ class User extends BaseEntity {
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
   sessionsReset!: UserResetSession[];
+  
+  @OneToMany(() => Follower, (follower) => follower.follower, { eager: true })
+  @Field(() => [Follower])
+  followers!: Follower[];
 
-  @ManyToMany(() => User, (user) => user.followers)
-  @JoinTable({ name: "user_followers" })
-  @Field(() => [User])
-  followers!: User[];
-
-  @ManyToMany(() => User, (user) => user.following)
-  @Field(() => [User])
-  following!: User[];
+@OneToMany(() => Follower, (follower) => follower.following, { eager: true })
+  @Field(() => [Follower])
+  followings!: Follower[];
 
   constructor(user?: CreateOrUpdateUser) {
     super();

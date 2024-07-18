@@ -151,7 +151,6 @@ class Project extends BaseEntity {
         partialProject.collaboratorIds.map(User.getUserById),
       );
     }
-
     await project.save();
     project.reload();
     return project;
