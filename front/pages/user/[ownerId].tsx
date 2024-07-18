@@ -14,6 +14,7 @@ import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
 import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
 import { GET_USER } from "@/graphql/queries/userQueries";
 import PictureIcon from "@/icons/pictureIcon";
+import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 
 //TODO: Change location of types definition
 export type ProjectType = {
@@ -60,36 +61,53 @@ export default function User() {
   const { ownerId } = router.query;
   const { user } = useAuth();
 
-  const { data: userDatas } = useQuery(GET_USER, {
+  const { data: userDatas, refetch: refetchDatas } = useQuery(GET_USER, {
     variables: { ownerId },
-    skip: !ownerId,
   });
 
   const { data: followersData, refetch: refetchFollowers } = useQuery(
     GET_FOLLOWERS,
     {
       variables: { followingId: ownerId },
-      skip: !ownerId,
     },
   );
 
-  const [toggleFollow] = useMutation(TOGGLE_FOLLOW);
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW, {
+    refetchQueries: [
+      { query: GET_FOLLOWERS, variables: { followingId: ownerId } },
+    ],
+  });
+
   const [isFollowed, setIsFollowed] = useState(false);
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || "1",
+    +(router.query.page as string) || "1",
   );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;
-  const indexOfLastProject = Number(currentPage) * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const { data: projectsData, refetch: refetchProjects } = useQuery(GET_USER_PROJECTS, {
+    variables: {
+      offset: (+currentPage - 1) * projectsPerPage,
+      limit: projectsPerPage,
+    },
+  });
 
   useEffect(() => {
-    setCurrentPage(parseInt(router.query.page as string));
+    setCurrentPage(+(router.query.page as string) || 1);
   }, [router.query.page]);
 
   useEffect(() => {
     userDatas && setUserData(userDatas.getUser);
   }, [userDatas]);
+
+  useEffect(() => {
+    if (projectsData) {
+      setProjects(projectsData.getOwnProject.projects);
+      setTotalCount(projectsData.getOwnProject.totalCount);
+    }
+  }, [projectsData]);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -97,27 +115,30 @@ export default function User() {
 
   const imageUrl = userData?.image
 
-  const checkIfFollowed = async () => {
-    const { data } = await refetchFollowers();
-    const followerId = data?.getFollowers.find(
-      (follower: FollowerType) => follower.follower.id === user?.id,
-    )?.follower.id;
-    const followingId = data?.getFollowers[0]?.following.id;
-    if (followerId === user?.id && followingId === ownerId) setIsFollowed(true);
-    else setIsFollowed(false);
-  };
-
   useEffect(() => {
-    ownerId && checkIfFollowed();
-  }, [followersData]);
+    if (followersData && user) {
+      const followerId = followersData.getFollowers.find(
+        (follower: FollowerType) => follower.follower.id === user.id
+      )?.follower.id;
+      const followingId = followersData.getFollowers[0]?.following.id;
+      followerId === user.id && followingId === ownerId ? setIsFollowed(followerId !== undefined) : setIsFollowed(false);
+    }
+  }, [followersData, user]);
 
   const handleFollow = async () => {
     try {
       await toggleFollow({ variables: { followingId: ownerId } });
-      checkIfFollowed();
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page },
+    });
   };
 
   return (
@@ -159,30 +180,26 @@ export default function User() {
             </Box>
           </Flex>
           <Box mt="3vw">
-            {userData.projects?.length > 0 &&
-              `${userData.username}'s projects (
-              ${userData.projects.length})`}
+            {projects.length > 0 && `${userData.username}'s projects (${totalCount})`}
             <Box minHeight="25vw">
-              {userData.projects
-                ?.slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: ProjectType, idx: number) => (
-                  <Tile
-                    homePage
-                    ownerId={ownerId as UUID}
-                    icon={project.codeSnippetsOwned[0]?.language}
-                    key={idx}
-                    title={project.title}
-                    owner={userData.username}
-                    description={project.description}
-                    createdAt={project.createdAt}
-                    onOpenProject={() => handleOpenProject(project.id)}
-                  />
-                ))}
+              {projects.map((project: ProjectType, idx: number) => (
+                <Tile
+                  homePage
+                  ownerId={ownerId as UUID}
+                  icon={project.codeSnippetsOwned[0]?.language}
+                  key={idx}
+                  title={project.title}
+                  description={project.description}
+                  createdAt={project.createdAt}
+                  onOpenProject={() => handleOpenProject(project.id)}
+                />
+              ))}
             </Box>
             <PaginationControls
-              currentPage={Number(currentPage)}
-              totalItems={userData.projects.length}
-              itemsPerPage={5}
+              onPageChange={() => handlePageChange}
+              currentPage={+currentPage}
+              totalItems={totalCount}
+              itemsPerPage={projectsPerPage}
               user={ownerId as string}
             />
           </Box>
