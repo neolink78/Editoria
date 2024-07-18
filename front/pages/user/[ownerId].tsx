@@ -173,7 +173,7 @@ export default function User() {
                 </SubmitButton>
               )}
             </Flex>
-            <Box mt="3vw" fontStyle="italic">
+            <Box mt="3vw" fontStyle="italic" maxWidth="70vw">
               <Text fontSize="1.5vw">About me</Text>
               {userData.description ||
                 "This user has not provided a description yet."}
