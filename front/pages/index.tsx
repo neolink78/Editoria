@@ -12,24 +12,15 @@ import { Error } from "@/lib/error";
 import { UUID } from "crypto";
 import { useLikes } from "../context/LikeContext";
 import { GetProjectsQuery } from "@/gql/graphql";
+import { useAuth } from "@/context/UserContext";
 
 export default function HomePage() {
   const router = useRouter();
-
-  // const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
-  //   variables: { limit: 5 },
-  // });
-  // const projects = data?.getProjects || [];
-  // const sortedProjects = [...projects]
-  //   .sort(
-  //     (a, b) =>
-  //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  //   )
-  //   .slice(0, 3);
+  const { user } = useAuth();
   const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
     GET_PROJECTS,
     {
-      variables: { limit: 5, offset: 0 },
+      variables: { limit: 5, offset: 0, sortBy: "likes" },
       nextFetchPolicy: "cache-and-network",
     },
   );
@@ -44,12 +35,9 @@ export default function HomePage() {
     router.push(`/editor?project=${projectId}`);
   };
 
-  // if (loading) return <Layout>Loading...</Layout>;
-  // if (error) return <Error></Error>;
   const { handleToggleLike, likedProjects } = useLikes();
 
   if (loading) return <Layout>Loading...</Layout>;
-  // if (error) return <Error />;
   if (error) {
     console.log(error);
   }
@@ -91,34 +79,35 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {projects
           ? projects
-              .map((e, idx) => (
-                <Tile
-                  homePage
-                  projectId={e.id}
-                  key={idx}
-                  icon={e.codeSnippetsOwned[0]?.language}
-                  title={e.title}
-                  description={e.description}
-                  createdAt={e.createdAt}
-                  commentCount={e?.comments.length}
-                  ownerId={e.owner.id as UUID}
-                  likeCount={e?.likes.length}
-                  toggleLike={() => {
-                    handleToggleLike(e.id);
-                    refetch();
-                  }}
-                  isLiked={likedProjects?.some((p) => p.id === e.id)}
-                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
-                  onOpenProject={() => handleOpenProject(e.id)}
-                />
-              ))
-              .sort((a, b) => b.props.likeCount - a.props.likeCount)
+            .map((e, idx) => (
+              <Tile
+                homePage
+                projectId={e.id}
+                key={idx}
+                icon={e.codeSnippetsOwned[0]?.language}
+                title={e.title}
+                description={e.description}
+                createdAt={e.createdAt}
+                commentCount={e?.comments.length}
+                owner={e.owner.id === user!.id ? "" : e.owner.username}
+                ownerId={e.owner.id as UUID}
+                likeCount={e?.likes.length}
+                toggleLike={() => {
+                  handleToggleLike(e.id);
+                  refetch();
+                }}
+                isLiked={likedProjects?.some((p) => p.id === e.id)}
+                // isCommented={ownComments.some((c) => c.project.id === e.id)}
+                onOpenProject={() => handleOpenProject(e.id)}
+              />
+            ))
+            .sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
-        {/* <SubmitButton onClick={() => router.push("/projects")} w="10vw">
+        <SubmitButton onClick={() => router.push("/projects")} w="10vw">
           See all projects
-        </SubmitButton> */}
+        </SubmitButton>
       </Flex>
     </Layout>
   );
