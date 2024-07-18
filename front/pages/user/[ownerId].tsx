@@ -152,7 +152,7 @@ export default function User() {
                   />
                 ))}
             </Box>
-            <PaginationControls
+            <PaginationControls           
               currentPage={Number(currentPage)}
               totalItems={userData.projects.length}
               itemsPerPage={5}
