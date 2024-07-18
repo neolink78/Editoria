@@ -57,7 +57,6 @@ export default function User() {
   const { ownerId } = router.query;
   const { user } = useAuth();
 
-
   const { data: userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
     skip: !ownerId,
