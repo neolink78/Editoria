@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useModal } from "../context/ModalContext";
 
-const ConfirmModal = () => {
+const ConfirmModal: React.FC = () => {
   const { isOpen, closeModal, modalProps } = useModal();
   const { title, children, onConfirm } = modalProps;
 

@@ -11,26 +11,9 @@ import { UUID } from "crypto";
 import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
 import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
 import { useAuth } from "../../context/UserContext";
+import { GET_USER } from "@/graphql/queries/userQueries";
 
-const GET_USER = gql`
-  query GetUser($ownerId: ID!) {
-    getUser(id: $ownerId) {
-      id
-      description
-      username
-      projects {
-        id
-        codeSnippetsOwned {
-          language
-        }
-        title
-        id
-        description
-        createdAt
-      }
-    }
-  }
-`;
+//TODO: Change location of types definition
 export type ProjectType = {
   owner: {
     id: UUID;
@@ -44,6 +27,9 @@ export type ProjectType = {
   comments: Array<{
     id: string;
     content: string;
+  }>;
+  likes: Array<{
+    id: string;
   }>;
 };
 

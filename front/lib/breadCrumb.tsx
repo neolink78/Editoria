@@ -9,7 +9,7 @@ type breadcrumbProps = {
   items: Item[];
   value: string | null;
   className?: string;
-  onChange: (value: string | undefined) => void;
+  onChange: (value: string) => void;
   padding?: string;
 };
 
@@ -31,11 +31,7 @@ const Breadcrumb = ({
             padding={padding}
             m="0.1vw"
             className={`breadcrumb_item_${selected ? "selected" : ""}`}
-            onClick={() => {
-              if (item.value === value) {
-                onChange(undefined);
-              } else onChange(item.value);
-            }}
+            onClick={() => onChange(item.value)}
           >
             {item.label}
           </Box>

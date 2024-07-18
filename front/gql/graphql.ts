@@ -196,6 +196,12 @@ export type Project = {
   updatedAt: Scalars["DateTimeISO"]["output"];
 };
 
+export type ProjectPaginationResponse = {
+  __typename?: "ProjectPaginationResponse";
+  projects: Array<Project>;
+  totalCount: Scalars["Float"]["output"];
+};
+
 export type Query = {
   __typename?: "Query";
   codeSnippet: CodeSnippet;
@@ -204,10 +210,10 @@ export type Query = {
   getCommentsByUserId: Array<Comment>;
   getCommentsbyProjectId: Array<Comment>;
   getOwnComments: Array<Comment>;
-  getOwnProject: Array<Project>;
+  getOwnProject: ProjectPaginationResponse;
   getProjectById: Project;
-  getProjects: Array<Project>;
-  getProjectsByUserId: Project;
+  getProjects: ProjectPaginationResponse;
+  getProjectsByUserId: ProjectPaginationResponse;
   getUser: User;
   getUserByEmail: User;
   getUsers: Array<User>;
@@ -232,12 +238,24 @@ export type QueryGetCommentsbyProjectIdArgs = {
   projectId: Scalars["String"]["input"];
 };
 
+export type QueryGetOwnProjectArgs = {
+  limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
+};
+
 export type QueryGetProjectByIdArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type QueryGetProjectsArgs = {
+  limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
+};
+
 export type QueryGetProjectsByUserIdArgs = {
-  id: Scalars["ID"]["input"];
+  limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
+  userId: Scalars["ID"]["input"];
 };
 
 export type QueryGetUserArgs = {
@@ -388,56 +406,60 @@ export type LikedProjectsQuery = {
   }>;
 };
 
-export type GetProjectsByUserQueryVariables = Exact<{ [key: string]: never }>;
+export type GetOwnProjectQueryVariables = Exact<{
+  offset: Scalars["Int"]["input"];
+  limit: Scalars["Int"]["input"];
+}>;
 
-export type GetProjectsByUserQuery = {
+export type GetOwnProjectQuery = {
   __typename?: "Query";
-  getOwnProject: Array<{
-    __typename?: "Project";
-    id: string;
-    title: string;
-    description: string;
-    is_public: boolean;
-    createdAt: any;
-    updatedAt: any;
-    codeSnippetsOwned: Array<{
-      __typename?: "CodeSnippet";
+  getOwnProject: {
+    __typename?: "ProjectPaginationResponse";
+    totalCount: number;
+    projects: Array<{
+      __typename?: "Project";
       id: string;
       title: string;
-      code: string;
-      language: Language;
+      description: string;
+      createdAt: any;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        id: string;
+        language: Language;
+      }>;
+      comments: Array<{ __typename?: "Comment"; id: string; content: string }>;
+      owner: { __typename?: "User"; id: string; username: string };
+      likes: Array<{ __typename?: "Like"; id: string }>;
     }>;
-    comments: Array<{
-      __typename?: "Comment";
-      id: string;
-      content: string;
-      owner: { __typename?: "User"; id: string };
-      project: { __typename?: "Project"; id: string };
-    }>;
-    owner: { __typename?: "User"; id: string; email: string; username: string };
-    likes: Array<{ __typename?: "Like"; id: string }>;
-  }>;
+  };
 };
 
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetProjectsQueryVariables = Exact<{
+  offset: Scalars["Int"]["input"];
+  limit: Scalars["Int"]["input"];
+}>;
 
 export type GetProjectsQuery = {
   __typename?: "Query";
-  getProjects: Array<{
-    __typename?: "Project";
-    id: string;
-    createdAt: any;
-    title: string;
-    description: string;
-    owner: { __typename?: "User"; id: string; email: string; username: string };
-    comments: Array<{ __typename?: "Comment"; id: string; content: string }>;
-    codeSnippetsOwned: Array<{
-      __typename?: "CodeSnippet";
+  getProjects: {
+    __typename?: "ProjectPaginationResponse";
+    totalCount: number;
+    projects: Array<{
+      __typename?: "Project";
       id: string;
-      language: Language;
+      title: string;
+      description: string;
+      createdAt: any;
+      owner: { __typename?: "User"; id: string; username: string };
+      likes: Array<{ __typename?: "Like"; id: string }>;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        id: string;
+        language: Language;
+      }>;
+      comments: Array<{ __typename?: "Comment"; id: string }>;
     }>;
-    likes: Array<{ __typename?: "Like"; id: string }>;
-  }>;
+  };
 };
 
 export type SignUpMutationVariables = Exact<{
@@ -1093,54 +1115,113 @@ export const LikedProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<LikedProjectsQuery, LikedProjectsQueryVariables>;
-export const GetProjectsByUserDocument = {
+export const GetOwnProjectDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "GetProjectsByUser" },
+      name: { kind: "Name", value: "GetOwnProject" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "offset" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "limit" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           {
             kind: "Field",
             name: { kind: "Name", value: "getOwnProject" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "offset" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "offset" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "limit" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "limit" },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "is_public" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "codeSnippetsOwned" },
+                  name: { kind: "Name", value: "projects" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "title" } },
-                      { kind: "Field", name: { kind: "Name", value: "code" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "language" },
+                        name: { kind: "Name", value: "description" },
                       },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "comments" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "content" },
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "codeSnippetsOwned" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "language" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "comments" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                          ],
+                        },
                       },
                       {
                         kind: "Field",
@@ -1152,12 +1233,16 @@ export const GetProjectsByUserDocument = {
                               kind: "Field",
                               name: { kind: "Name", value: "id" },
                             },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "username" },
+                            },
                           ],
                         },
                       },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "project" },
+                        name: { kind: "Name", value: "likes" },
                         selectionSet: {
                           kind: "SelectionSet",
                           selections: [
@@ -1171,31 +1256,7 @@ export const GetProjectsByUserDocument = {
                     ],
                   },
                 },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "email" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "username" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "likes" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "totalCount" } },
               ],
             },
           },
@@ -1203,10 +1264,7 @@ export const GetProjectsByUserDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<
-  GetProjectsByUserQuery,
-  GetProjectsByUserQueryVariables
->;
+} as unknown as DocumentNode<GetOwnProjectQuery, GetOwnProjectQueryVariables>;
 export const GetProjectsDocument = {
   kind: "Document",
   definitions: [
@@ -1214,72 +1272,137 @@ export const GetProjectsDocument = {
       kind: "OperationDefinition",
       operation: "query",
       name: { kind: "Name", value: "GetProjects" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "offset" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "limit" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           {
             kind: "Field",
             name: { kind: "Name", value: "getProjects" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "offset" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "offset" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "limit" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "limit" },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "owner" },
+                  name: { kind: "Name", value: "projects" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "username" },
+                        name: { kind: "Name", value: "description" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "owner" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "username" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "likes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "codeSnippetsOwned" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "language" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "comments" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
                 },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "comments" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "content" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "codeSnippetsOwned" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "language" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "likes" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "totalCount" } },
               ],
             },
           },
