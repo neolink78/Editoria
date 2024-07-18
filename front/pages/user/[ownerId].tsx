@@ -70,16 +70,19 @@ export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
   const { user } = useAuth();
-  const { data:userDatas } = useQuery(GET_USER, {
+  const { data: userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
   });
 
-  const { data: followersData, refetch: refetchFollowers } = useQuery(GET_FOLLOWERS, {
-    variables: { followingId: ownerId },
-    skip: !user,
-  });
-  const [toggleFollow] = useMutation(TOGGLE_FOLLOW)
-const [isFollowed, setIsFollowed] = useState(false)
+  const { data: followersData, refetch: refetchFollowers } = useQuery(
+    GET_FOLLOWERS,
+    {
+      variables: { followingId: ownerId },
+      skip: !user,
+    },
+  );
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW);
+  const [isFollowed, setIsFollowed] = useState(false);
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || "1",
   );
@@ -94,27 +97,28 @@ const [isFollowed, setIsFollowed] = useState(false)
     userDatas && setUserData(userDatas.getUser);
   }, [userDatas]);
 
-
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
   };
 
   const checkIfFollowed = async () => {
-    const {data} = await refetchFollowers()
-    const followerId = data?.getFollowers.find((follower: FollowerType) => follower.follower.id === user?.id)?.follower.id
-    const followingId = data?.getFollowers[0]?.following.id
-    if (followerId === user?.id && followingId === ownerId) setIsFollowed(true)
-      else setIsFollowed(false)
-  }
+    const { data } = await refetchFollowers();
+    const followerId = data?.getFollowers.find(
+      (follower: FollowerType) => follower.follower.id === user?.id,
+    )?.follower.id;
+    const followingId = data?.getFollowers[0]?.following.id;
+    if (followerId === user?.id && followingId === ownerId) setIsFollowed(true);
+    else setIsFollowed(false);
+  };
 
   const handleFollow = async () => {
     try {
-      await toggleFollow({variables: {followingId: ownerId}})
-      checkIfFollowed()
-    } catch(err) {
-      console.error(err)
+      await toggleFollow({ variables: { followingId: ownerId } });
+      checkIfFollowed();
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   return (
     <Layout>
@@ -123,11 +127,16 @@ const [isFollowed, setIsFollowed] = useState(false)
           <Box>
             <Flex align="center" gap="2vw">
               <Box fontSize="2vw">{userData.username}</Box>
-             {user?.id !== ownerId &&  <SubmitButton h="2vw" onClick={user ? handleFollow : () => router.push('/sign-in')}>
-                {user && !isFollowed && 'Follow me'}
-                {!user && 'Please login to follow me'}
-                {user && isFollowed && 'Unfollow me'}
-                </SubmitButton>}
+              {user?.id !== ownerId && (
+                <SubmitButton
+                  h="2vw"
+                  onClick={user ? handleFollow : () => router.push("/sign-in")}
+                >
+                  {user && !isFollowed && "Follow me"}
+                  {!user && "Please login to follow me"}
+                  {user && isFollowed && "Unfollow me"}
+                </SubmitButton>
+              )}
             </Flex>
             {userData.description ||
               "Cet utilisateur n'a pas encore de description.. Peut être un jour ?"}

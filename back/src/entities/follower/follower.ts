@@ -1,4 +1,10 @@
-import { BaseEntity, Entity,CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Entity,
+  CreateDateColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import User from "../user/user";
 @Entity()
@@ -20,37 +26,39 @@ class Follower extends BaseEntity {
   @Field(() => User)
   following!: User;
 
-  static async toggleFollow(follower: User, followingId: string){
-    const following= await User.findOne({
-      where: {id: followingId}})
-      if (follower.id === followingId) throw new Error("You can't follow yourself")
-      if (!following) throw new Error('following user not found')
+  static async toggleFollow(follower: User, followingId: string) {
+    const following = await User.findOne({
+      where: { id: followingId },
+    });
+    if (follower.id === followingId)
+      throw new Error("You can't follow yourself");
+    if (!following) throw new Error("following user not found");
     const follow = await Follower.findOne({
       where: {
-        follower:{id: follower.id},
-        following: {id: followingId}
-      }
-    })
+        follower: { id: follower.id },
+        following: { id: followingId },
+      },
+    });
     if (follow) {
-      await Follower.remove(follow)
-      return false
-    }else {
-       const onFollow = await Follower.create({
-        follower: follower, 
-        following: following})
-        await onFollow.save()
-        return true
+      await Follower.remove(follow);
+      return false;
+    } else {
+      const onFollow = await Follower.create({
+        follower: follower,
+        following: following,
+      });
+      await onFollow.save();
+      return true;
     }
   }
 
-  static async getFollowers(followingId: string){
-const followers = await Follower.find({
-  where: {following: {id: followingId}},
-  relations: ["follower", "following"]
-})
-return followers
+  static async getFollowers(followingId: string) {
+    const followers = await Follower.find({
+      where: { following: { id: followingId } },
+      relations: ["follower", "following"],
+    });
+    return followers;
   }
-
 }
 
 export default Follower;
