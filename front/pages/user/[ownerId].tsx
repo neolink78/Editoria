@@ -98,8 +98,8 @@ export default function User() {
   };
 
   useEffect(() => {
-    checkIfFollowed()
-  },[followersData])
+    checkIfFollowed();
+  }, [followersData]);
 
   const handleFollow = async () => {
     try {
