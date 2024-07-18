@@ -89,7 +89,7 @@ export default function HomePage() {
                 description={e.description}
                 createdAt={e.createdAt}
                 commentCount={e?.comments.length}
-                owner={e.owner.id === user!.id ? "" : e.owner.username}
+                owner={e.owner.id === user?.id ? "" : e.owner.username}
                 ownerId={e.owner.id as UUID}
                 likeCount={e?.likes.length}
                 toggleLike={() => {
