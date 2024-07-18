@@ -66,7 +66,12 @@ const Projects = () => {
   const currentUserId = currentUserData?.myProfile.id;
 
   const [deleteProject] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [{ query: GET_PROJECTS, variables: { limit: projectsPerPage, offset: offset } }],
+    refetchQueries: [
+      {
+        query: GET_PROJECTS,
+        variables: { limit: projectsPerPage, offset: offset },
+      },
+    ],
   });
 
   const projects = data?.getProjects.projects || [];
@@ -202,7 +207,7 @@ const Projects = () => {
                   }
                   canDelete={currentUserId === project.owner.id}
                   onDelete={() => {
-                    handleDelete(project.id)
+                    handleDelete(project.id);
                   }}
                   toggleLike={() => handleToggleLike(project.id)}
                   isLiked={likedProjects.some((p) => p.id === project.id)}
