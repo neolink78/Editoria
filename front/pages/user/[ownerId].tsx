@@ -8,31 +8,10 @@ import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
-// import { useAuth } from "@/context/UserContext";
+import { useAuth } from "@/context/UserContext";
 
-// const GET_USER = gql`
-//   query GetUser($ownerId: ID!) {
-//     getUser(id: $ownerId) {
-//       id
-//       description
-//       username
-//       image
-//       projects {
-//         id
-//         codeSnippetsOwned {
-//           language
-//         }
-//         title
-//         id
-//         description
-//         createdAt
-//       }
-//     }
-//   }
-// `;
 import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
 import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
-import { useAuth } from "../../context/UserContext";
 import { GET_USER } from "@/graphql/queries/userQueries";
 import PictureIcon from "@/icons/pictureIcon";
 
@@ -116,7 +95,7 @@ export default function User() {
     router.push(`/editor?project=${projectId}`);
   };
 
-  const imageUrl = userData?.image || "/default-profile-pic.png";
+  const imageUrl = userData?.image
 
   const checkIfFollowed = async () => {
     const { data } = await refetchFollowers();
@@ -152,12 +131,15 @@ export default function User() {
             width="70%"
           >
             <Flex gap="2vw" justify="center" align="center">
-              <Image
-                src={imageUrl}
-                alt="Profile Pic"
-                boxSize="50px"
-                borderRadius="full"
-              />
+              {
+                imageUrl ? <Image
+                  src={imageUrl}
+                  alt="Profile Pic"
+                  boxSize="50px"
+                  borderRadius="full"
+                /> :
+                  <PictureIcon />
+              }
               <Box fontSize="2vw">{userData.username}</Box>
               {user?.id !== ownerId && (
                 <SubmitButton
