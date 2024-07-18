@@ -165,10 +165,7 @@ const Tile = ({
           cursor="pointer"
         />
       ) : (
-        <FaRegTrashAlt
-          opacity="0"
-          pointerEvents="none"
-        />
+        <FaRegTrashAlt opacity="0" pointerEvents="none" />
       )}
     </Flex>
   );
