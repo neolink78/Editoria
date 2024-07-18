@@ -279,6 +279,8 @@ export type User = {
   __typename?: "User";
   description: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
+  followers: Array<User>;
+  following: Array<User>;
   id: Scalars["ID"]["output"];
   isPremium: Scalars["Boolean"]["output"];
   likedProjects: Array<Project>;

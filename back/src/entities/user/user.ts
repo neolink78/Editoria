@@ -21,6 +21,7 @@ import Project from "../project/project";
 import Comment from "../comment/comment";
 import UserResetSession from "./userResetSession";
 import Like from "../like/like";
+import Follower from "../follower/follower";
 
 export enum Role {
   USER = "USER",
@@ -86,6 +87,14 @@ class User extends BaseEntity {
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
   sessionsReset!: UserResetSession[];
+
+  @OneToMany(() => Follower, (follower) => follower.follower, { eager: true })
+  @Field(() => [Follower])
+  followers!: Follower[];
+
+  @OneToMany(() => Follower, (follower) => follower.following, { eager: true })
+  @Field(() => [Follower])
+  followings!: Follower[];
 
   constructor(user?: CreateOrUpdateUser) {
     super();

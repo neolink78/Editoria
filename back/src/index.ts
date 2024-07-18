@@ -15,7 +15,7 @@ import { ProjectResolver } from "./resolvers/ProjectResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
 import "dotenv/config";
 import CommentResolver from "./resolvers/CommentResolver";
-
+import FollowerResolver from "./resolvers/FollowerResolver";
 export type Context = {
   res: Response;
   user: User | null;
@@ -36,6 +36,7 @@ const startApolloServer = async () => {
       ProjectResolver,
       LikeResolver,
       CommentResolver,
+      FollowerResolver,
     ],
     validate: true,
     authChecker,
