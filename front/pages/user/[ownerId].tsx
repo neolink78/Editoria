@@ -64,14 +64,19 @@ export default function User() {
     skip: shouldSkipQueries,
   });
 
-  const { data: followersData, refetch: refetchFollowers } = useQuery(GET_FOLLOWERS, {
-    variables: { followingId: ownerId },
-    skip: shouldSkipQueries,
-  });
+  const { data: followersData, refetch: refetchFollowers } = useQuery(
+    GET_FOLLOWERS,
+    {
+      variables: { followingId: ownerId },
+      skip: shouldSkipQueries,
+    },
+  );
 
   const [toggleFollow] = useMutation(TOGGLE_FOLLOW);
   const [isFollowed, setIsFollowed] = useState(false);
-  const [currentPage, setCurrentPage] = useState(parseInt(router.query.page as string) || "1");
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(router.query.page as string) || "1",
+  );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;
   const indexOfLastProject = Number(currentPage) * projectsPerPage;
