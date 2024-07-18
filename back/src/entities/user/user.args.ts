@@ -3,7 +3,7 @@ import { IsEmail, MinLength } from "class-validator";
 import { Role } from "./user";
 
 @ArgsType()
-export class CreateOrUpdateUser {
+export class CreateUser {
   @Field()
   @IsEmail()
   email!: string;
@@ -14,7 +14,24 @@ export class CreateOrUpdateUser {
 
   @Field({ nullable: true })
   @MinLength(12)
-  password?: string;
+  password!: string;
+
+  @Field({ nullable: true })
+  description!: string;
+
+  @Field({ nullable: true })
+  image!: string;
+}
+
+@ArgsType()
+export class UpdateUser {
+  @Field()
+  @IsEmail()
+  email!: string;
+
+  @Field()
+  @MinLength(1)
+  username!: string;
 
   @Field({ nullable: true })
   description!: string;

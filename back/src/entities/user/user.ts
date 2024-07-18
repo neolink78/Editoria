@@ -10,7 +10,8 @@ import {
 } from "typeorm";
 import { compare, hash } from "bcrypt";
 import {
-  CreateOrUpdateUser,
+  CreateUser,
+  UpdateUser,
   ResetPassword,
   ResetUser,
   SignInUser,
@@ -100,20 +101,21 @@ class User extends BaseEntity {
   @Field(() => [Follower])
   followings!: Follower[];
 
-  constructor(user?: CreateOrUpdateUser) {
+  constructor(user?: CreateUser | UpdateUser) {
     super();
 
     if (user) {
       this.email = user.email;
       this.username = user.username;
-      if (user.password) this.hashedPassword = user.password;
-      // this.hashedPassword = user.password;
+      if ("password" in user && user.password !== undefined) {
+        this.hashedPassword = user.password;
+      } // this.hashedPassword = user.password;
       this.description = user.description || "";
       this.image = user.image || "";
     }
   }
 
-  static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
+  static async saveNewUser(userData: CreateUser): Promise<User> {
     const existingUser = await User.findOne({
       where: { email: userData.email },
     });
@@ -155,20 +157,11 @@ class User extends BaseEntity {
     return user;
   }
 
-  static async updateUser(
-    id: string,
-    userData: CreateOrUpdateUser,
-  ): Promise<User> {
+  static async updateUser(id: string, userData: UpdateUser): Promise<User> {
     const user = await User.getUserById(id);
 
-    if (userData.password) {
-      userData.password = await hash(userData.password, 10);
-      user.hashedPassword = userData.password;
-    }
-
-    const { password, ...updatedData } = userData;
     console.log(user);
-    Object.assign(user, updatedData);
+    Object.assign(user, userData);
 
     await user.save();
     user.reload();
