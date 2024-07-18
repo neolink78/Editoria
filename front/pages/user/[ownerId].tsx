@@ -60,14 +60,14 @@ export default function User() {
 
   const { data: userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
-    skip: shouldSkipQueries,
+    skip: !ownerId,
   });
 
   const { data: followersData, refetch: refetchFollowers } = useQuery(
     GET_FOLLOWERS,
     {
       variables: { followingId: ownerId },
-      skip: shouldSkipQueries,
+      skip: !ownerId,
     },
   );
 
