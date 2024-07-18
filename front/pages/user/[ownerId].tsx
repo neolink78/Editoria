@@ -1,35 +1,42 @@
 import Layout from "@/components/layout";
 import SubmitButton from "@/lib/submitButton";
-import { gql, useQuery } from "@apollo/client";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
-import { useAuth } from "@/context/UserContext";
+// import { useAuth } from "@/context/UserContext";
 
-const GET_USER = gql`
-  query GetUser($ownerId: ID!) {
-    getUser(id: $ownerId) {
-      id
-      description
-      username
-      image
-      projects {
-        id
-        codeSnippetsOwned {
-          language
-        }
-        title
-        id
-        description
-        createdAt
-      }
-    }
-  }
-`;
+// const GET_USER = gql`
+//   query GetUser($ownerId: ID!) {
+//     getUser(id: $ownerId) {
+//       id
+//       description
+//       username
+//       image
+//       projects {
+//         id
+//         codeSnippetsOwned {
+//           language
+//         }
+//         title
+//         id
+//         description
+//         createdAt
+//       }
+//     }
+//   }
+// `;
+import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
+import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
+import { useAuth } from "../../context/UserContext";
+import { GET_USER } from "@/graphql/queries/userQueries";
+import PictureIcon from "@/icons/pictureIcon";
+
+//TODO: Change location of types definition
 export type ProjectType = {
   owner: {
     id: UUID;
@@ -44,6 +51,9 @@ export type ProjectType = {
     id: string;
     content: string;
   }>;
+  likes: Array<{
+    id: string;
+  }>;
 };
 
 type UserType = {
@@ -53,12 +63,39 @@ type UserType = {
   projects: ProjectType[];
 };
 
+interface FollowerType {
+  follower: {
+    email: string;
+    id: string;
+    username: string;
+  };
+  following: {
+    id: string;
+    email: string;
+    username: string;
+  };
+}
+
 export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
-  const { data } = useQuery(GET_USER, {
+  const { user } = useAuth();
+
+  const { data: userDatas } = useQuery(GET_USER, {
     variables: { ownerId },
+    skip: !ownerId,
   });
+
+  const { data: followersData, refetch: refetchFollowers } = useQuery(
+    GET_FOLLOWERS,
+    {
+      variables: { followingId: ownerId },
+      skip: !ownerId,
+    },
+  );
+
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW);
+  const [isFollowed, setIsFollowed] = useState(false);
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || "1",
   );
@@ -66,12 +103,14 @@ export default function User() {
   const projectsPerPage = 5;
   const indexOfLastProject = Number(currentPage) * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+
   useEffect(() => {
     setCurrentPage(parseInt(router.query.page as string));
   }, [router.query.page]);
+
   useEffect(() => {
-    data && setUserData(data.getUser);
-  }, [data]);
+    userDatas && setUserData(userDatas.getUser);
+  }, [userDatas]);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -79,8 +118,28 @@ export default function User() {
 
   const imageUrl = userData?.image || "/default-profile-pic.png";
 
-  const auth = useAuth();
-  console.log(auth.user?.id, ownerId);
+  const checkIfFollowed = async () => {
+    const { data } = await refetchFollowers();
+    const followerId = data?.getFollowers.find(
+      (follower: FollowerType) => follower.follower.id === user?.id,
+    )?.follower.id;
+    const followingId = data?.getFollowers[0]?.following.id;
+    if (followerId === user?.id && followingId === ownerId) setIsFollowed(true);
+    else setIsFollowed(false);
+  };
+
+  useEffect(() => {
+    ownerId && checkIfFollowed();
+  }, [followersData]);
+
+  const handleFollow = async () => {
+    try {
+      await toggleFollow({ variables: { followingId: ownerId } });
+      checkIfFollowed();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Layout>
@@ -100,8 +159,15 @@ export default function User() {
                 borderRadius="full"
               />
               <Box fontSize="2vw">{userData.username}</Box>
-              {auth.user!.id === ownerId && (
-                <SubmitButton h="2vw">Follow me</SubmitButton>
+              {user?.id !== ownerId && (
+                <SubmitButton
+                  h="2vw"
+                  onClick={user ? handleFollow : () => router.push("/sign-in")}
+                >
+                  {user && !isFollowed && "Follow me"}
+                  {!user && "Please login to follow me"}
+                  {user && isFollowed && "Unfollow me"}
+                </SubmitButton>
               )}
             </Flex>
             <Box mt="3vw" fontStyle="italic">

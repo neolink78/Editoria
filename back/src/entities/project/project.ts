@@ -20,6 +20,15 @@ export type ProjectArgs = CreateOrUpdateProjectArgs & {
   codeSnippetsOwned: CodeSnippet[];
 };
 
+@ObjectType()
+export class ProjectPaginationResponse {
+  @Field(() => [Project])
+  projects!: Project[];
+
+  @Field()
+  totalCount!: number;
+}
+
 @Entity()
 @ObjectType()
 class Project extends BaseEntity {
@@ -95,23 +104,34 @@ class Project extends BaseEntity {
     return await Project.save(newProject);
   }
 
-  static async getProject(): Promise<Project[]> {
-    return await Project.find({
+  static async getProjects(
+    limit: number = 8,
+    offset: number = 0,
+  ): Promise<[Project[], number]> {
+    return await Project.findAndCount({
+      skip: offset,
+      take: limit,
       order: {
         createdAt: "DESC",
       },
     });
   }
 
-  static async getProjectsByUserId(userId: string): Promise<Project[]> {
-    const projects = await Project.find({
+  static async getProjectsByUserId(
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<[Project[], number]> {
+    const [projects, totalCount] = await Project.findAndCount({
       where: { owner: { id: userId } },
+      take: limit,
+      skip: offset,
       order: {
         createdAt: "DESC",
       },
-      relations: ["comments", "comments.owner", "comments.project"],
+      relations: ["comments"],
     });
-    return projects;
+    return [projects, totalCount];
   }
 
   static async getProjectById(id: string): Promise<Project> {
@@ -151,7 +171,6 @@ class Project extends BaseEntity {
         partialProject.collaboratorIds.map(User.getUserById),
       );
     }
-
     await project.save();
     project.reload();
     return project;

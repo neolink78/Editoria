@@ -5,15 +5,10 @@ import UserIcon from "../icons/userIcon";
 import LogOutIcon from "../icons/logOutIcon";
 import SubmitButton from "../lib/submitButton";
 import { useAuth } from "../context/UserContext";
-import { useEffect } from "react";
 
 const Header = () => {
   const router = useRouter();
-  const { user, refetch, signOut } = useAuth();
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -24,11 +19,15 @@ const Header = () => {
     }
   };
 
+  const projectsPage = router.pathname === "/projects";
+
   return (
     <Flex className="header_home_page">
       <Link href="/">EDITORIA</Link>
       <Flex gap="1.5vw" align="center">
-        {user ? (
+        {user && projectsPage ? (
+          ""
+        ) : user ? (
           <SubmitButton onClick={() => router.push("/projects")}>
             All projects
           </SubmitButton>

@@ -43,7 +43,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
     restart: always
-  
+
   gateway:
     image: nginx
     depends_on:

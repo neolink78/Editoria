@@ -67,6 +67,8 @@ describe("User", () => {
             ...user,
             comments: [],
             likes: [],
+            followers: [],
+            followings: [],
           });
 
           // await expect(
@@ -103,6 +105,8 @@ describe("User", () => {
         ...user,
         comments: [],
         likes: [],
+        followers: [],
+        followings: [],
       });
 
       // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);

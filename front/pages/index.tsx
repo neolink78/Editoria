@@ -9,11 +9,12 @@ import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
 import { useEffect } from "react";
 import { Error } from "@/lib/error";
-import { ProjectType } from "./user/[ownerId]";
 import { UUID } from "crypto";
+import { useLikes } from "../context/LikeContext";
+import { GetProjectsQuery } from "@/gql/graphql";
 
 export default function HomePage() {
-  // const router = useRouter();
+  const router = useRouter();
 
   // const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
   //   variables: { limit: 5 },
@@ -25,17 +26,34 @@ export default function HomePage() {
   //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   //   )
   //   .slice(0, 3);
+  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
+    GET_PROJECTS,
+    {
+      variables: { limit: 5, offset: 0 },
+      nextFetchPolicy: "cache-and-network",
+    },
+  );
+  const projects = data?.getProjects.projects || [];
+  // console.log("projects", projects);
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
-  // const handleOpenProject = (projectId: string) => {
-  //   router.push(`/editor?project=${projectId}`);
-  // };
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
 
   // if (loading) return <Layout>Loading...</Layout>;
   // if (error) return <Error></Error>;
+  const { handleToggleLike, likedProjects } = useLikes();
+
+  if (loading) return <Layout>Loading...</Layout>;
+  // if (error) return <Error />;
+  if (error) {
+    console.log(error);
+  }
+
   return (
     <Layout>
       <Flex className="header_main_title">
@@ -49,7 +67,7 @@ export default function HomePage() {
         </Section>
         <Box
           style={{
-            filter: "drop-shadow(0 0 2em #58a6ff80)",
+            filter: "drop-shadow(0 0 2em #089b0b80)",
             borderRadius: "1vw",
             overflow: "hidden",
             maxWidth: "29vw",
@@ -59,37 +77,44 @@ export default function HomePage() {
           }}
         >
           <Image
-            src="/code.webp"
+            src="/editoria.webp"
             alt="home picture"
             width={600}
             height={600}
-            layout="responsive"
+            priority
           />
         </Box>
       </Flex>
       <Box fontSize="2.5vw" m="8vw 10.8vw 0 11.2vw">
         Most popular projects
       </Box>
-      {/* <Box ml="11.6vw">
+      <Box ml="11.6vw">
         {projects
-          ? sortedProjects
-              .slice(-5)
-              .map((e: ProjectType, idx: any) => (
+          ? projects
+              .map((e, idx) => (
                 <Tile
+                  homePage
+                  projectId={e.id}
                   key={idx}
                   icon={e.codeSnippetsOwned[0]?.language}
                   title={e.title}
                   description={e.description}
-                  owner={e.owner.username}
-                  ownerId={e.owner.id as UUID}
                   createdAt={e.createdAt}
+                  commentCount={e?.comments.length}
+                  ownerId={e.owner.id as UUID}
+                  likeCount={e?.likes.length}
+                  toggleLike={() => {
+                    handleToggleLike(e.id);
+                    refetch();
+                  }}
+                  isLiked={likedProjects?.some((p) => p.id === e.id)}
+                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
                   onOpenProject={() => handleOpenProject(e.id)}
-                  commentCount={e.comments.length}
-                  homePage
                 />
               ))
+              .sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
-      </Box> */}
+      </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
         {/* <SubmitButton onClick={() => router.push("/projects")} w="10vw">
           See all projects

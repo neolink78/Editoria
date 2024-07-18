@@ -21,6 +21,7 @@ interface UserContextType {
   refetch: () => void;
   signOut: () => Promise<void>;
   loading: boolean;
+  currentUserData: MyProfileQuery | undefined;
 }
 
 const defaultValue: UserContextType = {
@@ -29,6 +30,7 @@ const defaultValue: UserContextType = {
   refetch: () => {},
   signOut: () => Promise.resolve(),
   loading: false,
+  currentUserData: undefined,
 };
 
 const AuthContext = createContext<UserContextType>(defaultValue);
@@ -59,7 +61,11 @@ const SIGN_OUT = gql`
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const { data, refetch, loading } = useQuery<MyProfileQuery>(GET_MY_PROFIL);
+  const {
+    data: currentUserData,
+    refetch,
+    loading,
+  } = useQuery<MyProfileQuery>(GET_MY_PROFIL);
 
   const [signOutMutation] = useMutation<SignOUtMutation>(SIGN_OUT, {
     update: (cache) => {
@@ -69,10 +75,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   });
 
   useEffect(() => {
-    if (data && data.myProfile) {
-      setUser(data.myProfile);
+    if (currentUserData && currentUserData.myProfile) {
+      setUser(currentUserData.myProfile);
     }
-  }, [data]);
+  }, [currentUserData]);
 
   const signOut = async () => {
     try {
@@ -84,7 +90,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, refetch, signOut, loading }}>
+    <AuthContext.Provider
+      value={{ user, setUser, refetch, signOut, loading, currentUserData }}
+    >
       {children}
     </AuthContext.Provider>
   );
