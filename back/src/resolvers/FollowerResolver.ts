@@ -4,25 +4,25 @@ import Follower from "../entities/follower/follower";
 import { Context } from "..";
 
 @Resolver()
- class FollowerResolver {
+class FollowerResolver {
   @Authorized()
   @Mutation(() => Boolean)
   async followUser(
-    @Ctx() {user}: Context,
+    @Ctx() { user }: Context,
     @Arg("followingId") followingId: string,
-  ):Promise<boolean> 
-  {
-if (!user) throw new Error('authentication required')
-return await Follower.toggleFollow(user, followingId)
+  ): Promise<boolean> {
+    if (!user) throw new Error("authentication required");
+    return await Follower.toggleFollow(user, followingId);
   }
 
   @Query(() => [Follower])
-  async getFollowers(@Ctx() {user}: Context,    
-  @Arg("followingId") followingId: string,
-) {
+  async getFollowers(
+    @Ctx() { user }: Context,
+    @Arg("followingId") followingId: string,
+  ) {
     if (!user) throw new Error("Authentication required");
-    return await Follower.getFollowers(followingId)
+    return await Follower.getFollowers(followingId);
   }
 }
 
-export default FollowerResolver
+export default FollowerResolver;

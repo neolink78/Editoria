@@ -8,21 +8,25 @@ interface PaginationControlsProps {
   totalItems: number;
   itemsPerPage: number;
   user?: string;
+  onPageChange: (pageNumber: number) => void;
 }
 
 export const PaginationControls = ({
+  currentPage,
   totalItems,
   itemsPerPage,
   user,
+  onPageChange,
 }: PaginationControlsProps) => {
   const router = useRouter();
-  const currentPage = parseInt(router.query.page as string) || 1;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const goToPage = (pageNumber: number) => {
-    user
-      ? router.push(`${user}?page=${pageNumber}`)
-      : router.push(`?page=${pageNumber}`);
+    if (user) {
+      router.push(`${user}?page=${pageNumber}`);
+    } else {
+      onPageChange(pageNumber);
+    }
   };
 
   return (
@@ -31,7 +35,7 @@ export const PaginationControls = ({
         icon={<ArrowLeftIcon />}
         onClick={() => goToPage(Math.max(currentPage - 1, 1))}
         isDisabled={currentPage === 1}
-        aria-label="Page précédente"
+        aria-label="Previous Page"
         mx="2"
         variant="unstyled"
         _hover={{ color: "blue.500" }}
@@ -56,7 +60,7 @@ export const PaginationControls = ({
         icon={<ArrowRightIcon />}
         onClick={() => goToPage(Math.min(currentPage + 1, totalPages))}
         isDisabled={currentPage === totalPages}
-        aria-label="Page suivante"
+        aria-label="Next Page"
         mx="2"
         variant="unstyled"
         _hover={{ color: "blue.500" }}
