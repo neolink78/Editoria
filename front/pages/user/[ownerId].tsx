@@ -107,6 +107,10 @@ const [isFollowed, setIsFollowed] = useState(false)
       else setIsFollowed(false)
   }
 
+  useEffect(() => {
+    checkIfFollowed()
+  },[followersData])
+
   const handleFollow = async () => {
     try {
       await toggleFollow({variables: {followingId: ownerId}})
