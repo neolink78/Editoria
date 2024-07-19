@@ -13,6 +13,18 @@ services:
     expose:
       - 4000
     restart: always
+  
+  upload:
+    build:
+      context: ./upload
+      target: prod
+    environment:
+      - NODE_ENV=production
+    expose:
+      - 5001
+    volumes:
+      - upload-public:/app/public
+    restart: always
 
   front:
     build:
@@ -48,3 +60,4 @@ services:
 
 volumes:
   database-data:
+  upload-public:

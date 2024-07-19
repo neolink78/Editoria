@@ -29,6 +29,7 @@ import { useRouter } from "next/router";
 import EditModal from "@/components/editor/EditModal";
 import { isClickOutside } from "../utils/event";
 import { useAuth } from "@/context/UserContext";
+import LoginModal from "@/components/loginModal";
 
 export type File = {
   id: string;
@@ -127,6 +128,7 @@ const GET_PROJECT = gql`
         title
       }
       description
+      is_public
       title
       likes {
         id
@@ -186,6 +188,7 @@ function CodeEditor() {
   ]);
 
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const selectedFile = project.find((file) => file.name === fileName);
 
@@ -225,7 +228,7 @@ function CodeEditor() {
         id: projectId as string,
         title: data.getProjectById.title,
         description: data.getProjectById.description,
-        isPublic: false,
+        isPublic: data.getProjectById.is_public,
         owner: {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
@@ -478,6 +481,7 @@ function CodeEditor() {
 
   return (
     <>
+      {isModalOpen && <LoginModal closeModal={() => setIsModalOpen(false)} />}
       <Flex
         w="100%"
         bg="#2F3138"
@@ -524,7 +528,7 @@ function CodeEditor() {
               )}
             </>
           ) : (
-            <SubmitButton bg="#1574EF" onClick={() => router.push("/sign-in")}>
+            <SubmitButton bg="#1574EF" onClick={() => setIsModalOpen(true)}>
               Sign in to save your project
             </SubmitButton>
           )}

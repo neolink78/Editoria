@@ -11,7 +11,8 @@ import {
 import { Context } from "..";
 import User from "../entities/user/user";
 import {
-  CreateOrUpdateUser,
+  CreateUser,
+  UpdateUser,
   ResetPassword,
   ResetUser,
   SignInUser,
@@ -29,7 +30,7 @@ import UserResetSession from "../entities/user/userResetSession";
 @Resolver()
 export class UserResolver {
   @Mutation(() => User)
-  signUp(@Args() args: CreateOrUpdateUser) {
+  signUp(@Args() args: CreateUser) {
     return User.saveNewUser(args);
   }
 
@@ -39,10 +40,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  updateUser(
-    @Arg("id", () => ID) id: string,
-    @Args() args: CreateOrUpdateUser,
-  ) {
+  updateUser(@Arg("id", () => ID) id: string, @Args() args: UpdateUser) {
     return User.updateUser(id, args);
   }
 

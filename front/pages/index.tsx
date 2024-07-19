@@ -4,18 +4,43 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import SubmitButton from "../lib/submitButton";
 import Tile from "../lib/tile";
-import indexMock from "../mocks/indexMock";
 import Layout from "../components/layout";
 import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
+import { useEffect } from "react";
+import { Error } from "@/lib/error";
+import { UUID } from "crypto";
+import { useLikes } from "../context/LikeContext";
+import { GetProjectsQuery } from "@/gql/graphql";
+import { useAuth } from "@/context/UserContext";
 
 export default function HomePage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
+    GET_PROJECTS,
+    {
+      variables: { limit: 5, offset: 0, sortBy: "likes" },
+      nextFetchPolicy: "cache-and-network",
+    },
+  );
+  const projects = data?.getProjects.projects || [];
+  // console.log("projects", projects);
 
-  const { data, loading, error } = useQuery(GET_PROJECTS, {
-    variables: { limit: 5 },
-  });
-  const projects = data?.getProjects || [];
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
+  const { handleToggleLike, likedProjects } = useLikes();
+
+  if (loading) return <Layout>Loading...</Layout>;
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <Layout>
@@ -30,7 +55,7 @@ export default function HomePage() {
         </Section>
         <Box
           style={{
-            filter: "drop-shadow(0 0 2em #58a6ff80)",
+            filter: "drop-shadow(0 0 2em #089b0b80)",
             borderRadius: "1vw",
             overflow: "hidden",
             maxWidth: "29vw",
@@ -40,11 +65,11 @@ export default function HomePage() {
           }}
         >
           <Image
-            src="/code.webp"
+            src="/editoria.webp"
             alt="home picture"
             width={600}
             height={600}
-            layout="responsive"
+            priority
           />
         </Box>
       </Flex>
@@ -54,19 +79,29 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {projects
           ? projects
-              .slice(-5)
-              .map((e: any, idx: any) => (
+              .map((e, idx) => (
                 <Tile
+                  homePage
+                  projectId={e.id}
                   key={idx}
                   icon={e.codeSnippetsOwned[0]?.language}
                   title={e.title}
                   description={e.description}
-                  ownerId={e.owner.username}
                   createdAt={e.createdAt}
-                  onOpenProject={() => router.push(`/projects/${e.projectId}`)}
-                  homePage
+                  commentCount={e?.comments.length}
+                  owner={e.owner.id === user?.id ? "" : e.owner.username}
+                  ownerId={e.owner.id as UUID}
+                  likeCount={e?.likes.length}
+                  toggleLike={() => {
+                    handleToggleLike(e.id);
+                    refetch();
+                  }}
+                  isLiked={likedProjects?.some((p) => p.id === e.id)}
+                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
+                  onOpenProject={() => handleOpenProject(e.id)}
                 />
               ))
+              .sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">

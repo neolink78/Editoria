@@ -10,7 +10,8 @@ import {
 } from "typeorm";
 import { compare, hash } from "bcrypt";
 import {
-  CreateOrUpdateUser,
+  CreateUser,
+  UpdateUser,
   ResetPassword,
   ResetUser,
   SignInUser,
@@ -21,6 +22,7 @@ import Project from "../project/project";
 import Comment from "../comment/comment";
 import UserResetSession from "./userResetSession";
 import Like from "../like/like";
+import Follower from "../follower/follower";
 
 export enum Role {
   USER = "USER",
@@ -45,6 +47,10 @@ class User extends BaseEntity {
   @Column({ unique: true })
   @Field()
   username!: string;
+
+  @Column({ default: "" })
+  @Field({ nullable: true })
+  image!: string;
 
   @Column({ default: "" })
   @Field()
@@ -87,26 +93,37 @@ class User extends BaseEntity {
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
   sessionsReset!: UserResetSession[];
 
-  constructor(user?: CreateOrUpdateUser) {
+  @OneToMany(() => Follower, (follower) => follower.follower, { eager: true })
+  @Field(() => [Follower])
+  followers!: Follower[];
+
+  @OneToMany(() => Follower, (follower) => follower.following, { eager: true })
+  @Field(() => [Follower])
+  followings!: Follower[];
+
+  constructor(user?: CreateUser | UpdateUser) {
     super();
 
     if (user) {
       this.email = user.email;
       this.username = user.username;
-      this.hashedPassword = user.password;
+      if ("password" in user && user.password !== undefined) {
+        this.hashedPassword = user.password;
+      } // this.hashedPassword = user.password;
       this.description = user.description || "";
+      this.image = user.image || "";
     }
   }
 
-  static async saveNewUser(userData: CreateOrUpdateUser): Promise<User> {
+  static async saveNewUser(userData: CreateUser): Promise<User> {
     const existingUser = await User.findOne({
       where: { email: userData.email },
     });
     if (existingUser) {
       throw new Error("EMAIL_ALREADY_USED");
     }
-
-    userData.password = await hash(userData.password, 10);
+    if (userData.password)
+      userData.password = await hash(userData.password, 10);
 
     const newUser = new User(userData);
     // TODO: return user-friendly error message when email already used
@@ -140,16 +157,9 @@ class User extends BaseEntity {
     return user;
   }
 
-  static async updateUser(
-    id: string,
-    userData: CreateOrUpdateUser,
-  ): Promise<User> {
+  static async updateUser(id: string, userData: UpdateUser): Promise<User> {
     const user = await User.getUserById(id);
 
-    if (userData.password && userData.password !== user.hashedPassword) {
-      userData.password = await hash(userData.password, 10);
-    }
-    user.hashedPassword = userData.password;
     console.log(user);
     Object.assign(user, userData);
 

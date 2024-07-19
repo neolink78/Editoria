@@ -6,6 +6,7 @@ import Project from "./entities/project/project";
 import Comment from "./entities/comment/comment";
 import Like from "./entities/like/like";
 import UserResetSession from "./entities/user/userResetSession";
+import Follower from "./entities/follower/follower";
 
 let dataSource: DataSource;
 
@@ -25,6 +26,7 @@ export const getDataSource = async () => {
         Like,
         UserResetSession,
         Comment,
+        Follower,
       ],
       synchronize: true,
     });

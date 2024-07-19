@@ -14,9 +14,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function SignIn() {
-  const formik = useSignInFormik(true);
+  const formik = useSignInFormik({ isLogin: true });
   const router = useRouter();
-  const { email } = router.query;
 
   return (
     <Layout>

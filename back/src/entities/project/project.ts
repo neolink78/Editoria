@@ -22,6 +22,15 @@ export type ProjectArgs = CreateOrUpdateProjectArgs & {
   codeSnippetsOwned: CodeSnippet[];
 };
 
+@ObjectType()
+export class ProjectPaginationResponse {
+  @Field(() => [Project])
+  projects!: Project[];
+
+  @Field()
+  totalCount!: number;
+}
+
 @Entity()
 @ObjectType()
 class Project extends BaseEntity {
@@ -97,23 +106,43 @@ class Project extends BaseEntity {
     return await Project.save(newProject);
   }
 
-  static async getProject(): Promise<Project[]> {
-    return await Project.find({
-      order: {
-        createdAt: "DESC",
-      },
-    });
+  static async getProjects(
+    limit: number,
+    offset: number,
+    sortBy: string,
+  ): Promise<[Project[], number]> {
+    let projects = await Project.find();
+
+    if (sortBy === "likes") {
+      projects = projects.sort((a, b) => b.likes.length - a.likes.length);
+    } else if (sortBy === "createdAt") {
+      projects = projects.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    }
+
+    const totalCount = projects.length;
+    const paginatedProjects = projects.slice(offset, offset + limit);
+
+    return [paginatedProjects, totalCount];
   }
 
-  static async getProjectsByUserId(userId: string): Promise<Project[]> {
-    const projects = await Project.find({
+  static async getProjectsByUserId(
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<[Project[], number]> {
+    const [projects, totalCount] = await Project.findAndCount({
       where: { owner: { id: userId } },
+      take: limit,
+      skip: offset,
       order: {
         createdAt: "DESC",
       },
-      relations: ["comments", "comments.owner", "comments.project"],
+      relations: ["comments"],
     });
-    return projects;
+    return [projects, totalCount];
   }
 
   static async getProjectById(id: string): Promise<Project> {
@@ -153,7 +182,6 @@ class Project extends BaseEntity {
         partialProject.collaboratorIds.map(User.getUserById),
       );
     }
-
     await project.save();
     project.reload();
     return project;

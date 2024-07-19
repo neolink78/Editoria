@@ -39,6 +39,7 @@ describe("User", () => {
             username: "Omar",
             password: "otherpassword",
             description: "",
+            image: "",
           });
 
           await expect(
@@ -54,6 +55,7 @@ describe("User", () => {
             username: "Omar",
             password,
             description: "",
+            image: "",
           });
 
           const actualUser = await User.getUserWithEmailAndPassword({
@@ -65,6 +67,8 @@ describe("User", () => {
             ...user,
             comments: [],
             likes: [],
+            followers: [],
+            followings: [],
           });
 
           // await expect(
@@ -89,6 +93,7 @@ describe("User", () => {
         username,
         password,
         description,
+        image: "",
       });
 
       const actualUser = await User.getUserWithEmailAndPassword({
@@ -100,6 +105,8 @@ describe("User", () => {
         ...user,
         comments: [],
         likes: [],
+        followers: [],
+        followings: [],
       });
 
       // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
@@ -111,6 +118,7 @@ describe("User", () => {
         username: "Tom",
         password: "azerty123456",
         description: "",
+        image: "",
       });
 
       await expect(
@@ -119,6 +127,7 @@ describe("User", () => {
           username: "Thibaut",
           password: "123456azerty",
           description: "",
+          image: "",
         }),
       ).rejects.toThrow("EMAIL_ALREADY_USED");
     });
@@ -138,6 +147,7 @@ describe("User", () => {
         username,
         password,
         description,
+        image: "",
       });
 
       await expect(

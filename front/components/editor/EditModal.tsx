@@ -51,7 +51,7 @@ function EditModal({ info, setProjectInfo }: EditModalProps) {
           onChange={(e) =>
             setProjectInfo({ ...info, isPublic: e.target.checked })
           }
-          checked={info.isPublic}
+          isChecked={info.isPublic}
         />
         <Text fontSize="sm">Public</Text>
       </Flex>

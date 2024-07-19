@@ -1,102 +1,212 @@
 import Layout from "@/components/layout";
 import SubmitButton from "@/lib/submitButton";
-import { gql, useQuery } from "@apollo/client";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Language } from "@/gql/graphql";
 import Tile from "@/lib/tile";
 import { PaginationControls } from "@/lib/pagination";
 import { UUID } from "crypto";
+import { useAuth } from "@/context/UserContext";
 
-const GET_USER = gql`
-  query GetUser($ownerId: ID!) {
-    getUser(id: $ownerId) {
-      description
-      username
-      projects {
-        codeSnippetsOwned {
-          language
-        }
-        title
-        id
-        description
-        createdAt
-      }
-    }
-  }
-`;
-type ProjectType = {
+import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
+import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
+import { GET_USER } from "@/graphql/queries/userQueries";
+import PictureIcon from "@/icons/pictureIcon";
+import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
+
+//TODO: Change location of types definition
+export type ProjectType = {
   owner: {
+    id: UUID;
     username: string;
   };
   codeSnippetsOwned: Array<{ language: Language }>;
   title: string;
   description: string;
   createdAt: string;
+  id: string;
+  comments: Array<{
+    id: string;
+    content: string;
+  }>;
+  likes: Array<{
+    id: string;
+  }>;
 };
 
 type UserType = {
   username: string;
   description: string;
+  image: string;
   projects: ProjectType[];
 };
+
+interface FollowerType {
+  follower: {
+    email: string;
+    id: string;
+    username: string;
+  };
+  following: {
+    id: string;
+    email: string;
+    username: string;
+  };
+}
 
 export default function User() {
   const router = useRouter();
   const { ownerId } = router.query;
-  const { data } = useQuery(GET_USER, {
+  const { user } = useAuth();
+
+  const { data: userDatas, refetch: refetchDatas } = useQuery(GET_USER, {
     variables: { ownerId },
   });
+
+  const { data: followersData, refetch: refetchFollowers } = useQuery(
+    GET_FOLLOWERS,
+    {
+      variables: { followingId: ownerId },
+    },
+  );
+
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW, {
+    refetchQueries: [
+      { query: GET_FOLLOWERS, variables: { followingId: ownerId } },
+    ],
+  });
+
+  const [isFollowed, setIsFollowed] = useState(false);
   const [currentPage, setCurrentPage] = useState(
-    parseInt(router.query.page as string) || "1",
+    +(router.query.page as string) || "1",
   );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;
-  const indexOfLastProject = Number(currentPage) * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const { data: projectsData, refetch: refetchProjects } = useQuery(
+    GET_USER_PROJECTS,
+    {
+      variables: {
+        offset: (+currentPage - 1) * projectsPerPage,
+        limit: projectsPerPage,
+      },
+    },
+  );
+
   useEffect(() => {
-    setCurrentPage(parseInt(router.query.page as string));
+    setCurrentPage(+(router.query.page as string) || 1);
   }, [router.query.page]);
+
   useEffect(() => {
-    data && setUserData(data.getUser);
-  }, [data]);
+    userDatas && setUserData(userDatas.getUser);
+  }, [userDatas]);
+
+  useEffect(() => {
+    if (projectsData) {
+      setProjects(projectsData.getOwnProject.projects);
+      setTotalCount(projectsData.getOwnProject.totalCount);
+    }
+  }, [projectsData]);
+
+  const handleOpenProject = (projectId: string) => {
+    router.push(`/editor?project=${projectId}`);
+  };
+
+  const imageUrl = userData?.image;
+
+  useEffect(() => {
+    if (followersData && user) {
+      const followerId = followersData.getFollowers.find(
+        (follower: FollowerType) => follower.follower.id === user.id,
+      )?.follower.id;
+      const followingId = followersData.getFollowers[0]?.following.id;
+      followerId === user.id && followingId === ownerId
+        ? setIsFollowed(followerId !== undefined)
+        : setIsFollowed(false);
+    }
+  }, [followersData, user]);
+
+  const handleFollow = async () => {
+    try {
+      await toggleFollow({ variables: { followingId: ownerId } });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page },
+    });
+  };
+
   return (
     <Layout>
       {userData && (
         <Flex flexDirection="column" align="center" mt="5vw">
-          <Box>
-            <Flex align="center" gap="2vw">
+          <Flex
+            flexDirection="column"
+            justify="center"
+            align="start"
+            width="70%"
+          >
+            <Flex gap="2vw" justify="center" align="center">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt="Profile Pic"
+                  boxSize="50px"
+                  borderRadius="full"
+                />
+              ) : (
+                <PictureIcon />
+              )}
               <Box fontSize="2vw">{userData.username}</Box>
-              <SubmitButton h="2vw">Follow me</SubmitButton>
+              {user?.id !== ownerId && (
+                <SubmitButton
+                  h="2vw"
+                  onClick={user ? handleFollow : () => router.push("/sign-in")}
+                >
+                  {user && !isFollowed && "Follow me"}
+                  {!user && "Please login to follow me"}
+                  {user && isFollowed && "Unfollow me"}
+                </SubmitButton>
+              )}
             </Flex>
-            {userData.description ||
-              "Cet utilisateur n'a pas encore de description.. Peut être un jour ?"}
-          </Box>
+            <Box mt="3vw" fontStyle="italic" maxWidth="70vw">
+              <Text fontSize="1.5vw">About me</Text>
+              {userData.description ||
+                "This user has not provided a description yet."}
+            </Box>
+          </Flex>
           <Box mt="3vw">
-            {userData.projects?.length > 0 &&
-              `${userData.username}'s projects (
-              ${userData.projects.length})`}
+            {projects.length > 0 &&
+              `${userData.username}'s projects (${totalCount})`}
             <Box minHeight="25vw">
-              {userData.projects
-                ?.slice(indexOfFirstProject, indexOfLastProject)
-                .map((project: ProjectType, idx: number) => (
-                  <Tile
-                    homePage
-                    ownerId={ownerId as UUID}
-                    icon={project.codeSnippetsOwned[0]?.language}
-                    key={idx}
-                    title={project.title}
-                    owner={userData.username}
-                    description={project.description}
-                    createdAt={project.createdAt}
-                  />
-                ))}
+              {projects.map((project: ProjectType, idx: number) => (
+                <Tile
+                  homePage
+                  ownerId={ownerId as UUID}
+                  icon={project.codeSnippetsOwned[0]?.language}
+                  key={idx}
+                  title={project.title}
+                  description={project.description}
+                  createdAt={project.createdAt}
+                  onOpenProject={() => handleOpenProject(project.id)}
+                />
+              ))}
             </Box>
             <PaginationControls
-              currentPage={Number(currentPage)}
-              totalItems={userData.projects.length}
-              itemsPerPage={5}
+              onPageChange={() => handlePageChange}
+              currentPage={+currentPage}
+              totalItems={totalCount}
+              itemsPerPage={projectsPerPage}
               user={ownerId as string}
             />
           </Box>

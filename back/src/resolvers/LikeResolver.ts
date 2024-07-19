@@ -22,9 +22,7 @@ export class LikeResolver {
     @Args() args: ToggleLikeArgs,
     @Ctx() { user }: Context,
   ): Promise<boolean> {
-    if (!user) {
-      throw new Error("Authentication required");
-    }
+    if (!user) throw new Error("Authentication required");
     return Like.toggleLike(user, args.projectId);
   }
 

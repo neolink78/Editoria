@@ -12,7 +12,7 @@ import SubmitButton from "../lib/submitButton";
 import { useSignInFormik } from "../hooks/form";
 
 export default function SignUp() {
-  const formik = useSignInFormik(false);
+  const formik = useSignInFormik({ isLogin: false });
 
   return (
     <Layout>

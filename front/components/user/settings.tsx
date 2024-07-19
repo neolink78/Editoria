@@ -1,12 +1,18 @@
-import { Box, Flex, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Input, Textarea } from "@chakra-ui/react";
 import SubmitButton from "../../lib/submitButton";
 import PictureIcon from "../../icons/pictureIcon";
 import SettingsInput from "../../lib/settingsInput";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
+
+//TODO : Remove the need for having to fill the password to update user
 
 const Settings = (user: any) => {
   const [isDisabled, setIsDisabled] = useState(true);
+  const [imageUrl, setImageUrl] = useState(user.user.image || "");
+  console.log(user);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
     if (isDisabled) {
@@ -17,10 +23,66 @@ const Settings = (user: any) => {
       });
     }
   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      formikSettings.setFieldValue("image", file);
+      console.log("IMGURL", URL.createObjectURL(file));
+      setImageUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageClick = () => {
+    if (!isDisabled && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <Flex flexDirection="column" align="flex-start" mb="5vw" mr="37.5vw">
       <Flex alignItems="center" mt="4.4vw" fontSize="2vw" gap="1vw" ml="1.4vw">
-        <PictureIcon />
+        <Box position="relative" onClick={handleImageClick} cursor="pointer">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="Profile Pic"
+              style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            <PictureIcon />
+          )}
+          {!isDisabled && (
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              width="100%"
+              height="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius="50%"
+              backgroundColor="rgba(0, 0, 0, 0.5)"
+              color="white"
+              fontSize="1.5rem"
+              fontWeight="bold"
+            >
+              +
+            </Box>
+          )}
+        </Box>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
         Your informations
         <SubmitButton onClick={() => editSettings()} w="5.5vw">
           {isDisabled ? "Edit" : "save"}
@@ -46,18 +108,29 @@ const Settings = (user: any) => {
         value={formikSettings.values.email}
         error={formikSettings.touched.email && formikSettings.errors.email}
       />
-      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw">
+      <Box fontSize="1.5vw" fontWeight={600} mt="1.9vw" ml="1.5vw">
         Description
       </Box>
       <Textarea
         border="none"
-        pl="0"
         value={formikSettings.values.description}
         onChange={formikSettings.handleChange}
         placeholder="description"
         name="description"
         disabled={isDisabled}
+        mt="0.5vw"
       />
+      {/* <SettingsInput
+        label="Password"
+        disabled={isDisabled}
+        placeholder="password"
+        name="password"
+        onChange={formikSettings.handleChange}
+        value={formikSettings.values.password}
+        error={
+          formikSettings.touched.password && formikSettings.errors.password
+        }
+      /> */}
       <Box fontSize="1.5vw" fontWeight={600} mt="3.5vw">
         Account deletion
       </Box>
