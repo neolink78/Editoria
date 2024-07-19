@@ -307,7 +307,7 @@ export type User = {
   followers: Array<Follower>;
   followings: Array<Follower>;
   id: Scalars["ID"]["output"];
-  image?: Maybe<Scalars["String"]["output"]>;
+  image: Scalars["String"]["output"];
   isPremium: Scalars["Boolean"]["output"];
   likedProjects: Array<Project>;
   likes: Array<Like>;
@@ -373,7 +373,7 @@ export type MyProfileQuery = {
     email: string;
     id: string;
     username: string;
-    image?: string | null;
+    image: string;
   };
 };
 
@@ -533,7 +533,7 @@ export type GetUserQuery = {
     id: string;
     description: string;
     username: string;
-    image?: string | null;
+    image: string;
     projects: Array<{
       __typename?: "Project";
       id: string;
@@ -619,7 +619,7 @@ export type UpdateUserMutation = {
     email: string;
     username: string;
     id: string;
-    image?: string | null;
+    image: string;
   };
 };
 
@@ -643,7 +643,13 @@ export type CreateProjectMutation = {
   createProject: {
     __typename?: "Project";
     id: string;
-    owner: { __typename?: "User"; email: string; id: string; username: string };
+    owner: {
+      __typename?: "User";
+      email: string;
+      id: string;
+      username: string;
+      image: string;
+    };
   };
 };
 
@@ -691,7 +697,13 @@ export type GetProjectQuery = {
       title: string;
     }>;
     likes: Array<{ __typename?: "Like"; id: string }>;
-    owner: { __typename?: "User"; username: string; id: string; email: string };
+    owner: {
+      __typename?: "User";
+      username: string;
+      id: string;
+      email: string;
+      image: string;
+    };
   };
 };
 
@@ -2295,6 +2307,7 @@ export const CreateProjectDocument = {
                         kind: "Field",
                         name: { kind: "Name", value: "username" },
                       },
+                      { kind: "Field", name: { kind: "Name", value: "image" } },
                     ],
                   },
                 },
@@ -2637,6 +2650,7 @@ export const GetProjectDocument = {
                       },
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "email" } },
+                      { kind: "Field", name: { kind: "Name", value: "image" } },
                     ],
                   },
                 },

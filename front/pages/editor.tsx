@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Text, useToast } from "@chakra-ui/react";
 import Link from "next/link";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
@@ -47,6 +47,7 @@ export type ProjectInfo = {
     id: string;
     username: string;
     email: string;
+    image: string;
   };
 };
 
@@ -74,6 +75,7 @@ const CREATE_PROJECT = gql`
         email
         id
         username
+        image
       }
     }
   }
@@ -137,6 +139,7 @@ const GET_PROJECT = gql`
         username
         id
         email
+        image
       }
     }
   }
@@ -163,6 +166,7 @@ const UPDATE_PROJECT = gql`
 function CodeEditor() {
   const router = useRouter();
   const { user } = useAuth();
+  const toast = useToast();
   const { project: projectId } = router.query;
   const modalRef = useRef<HTMLInputElement | null>(null);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
@@ -176,6 +180,7 @@ function CodeEditor() {
       id: "",
       username: "",
       email: "",
+      image: "",
     },
   });
   const [project, setProject] = useState<File[]>([
@@ -191,6 +196,10 @@ function CodeEditor() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const selectedFile = project.find((file) => file.name === fileName);
+
+  const isOwnProject = projectInfo.owner.id === user?.id;
+
+  const displaySaveButton = isOwnProject || !router.query.project;
 
   const [createProjectMutation] = useMutation<
     CreateProjectMutation,
@@ -217,10 +226,10 @@ function CodeEditor() {
     DeleteCodeSnippetMutationVariables
   >(DELETE_FILE);
 
-  const { data, refetch } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
-    GET_PROJECT,
-    { variables: { getProjectByIdId: projectId as string } },
-  );
+  const { data, refetch: refetchProject } = useQuery<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >(GET_PROJECT, { variables: { getProjectByIdId: projectId as string } });
 
   useEffect(() => {
     if (data && projectId) {
@@ -233,6 +242,7 @@ function CodeEditor() {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
           email: data.getProjectById.owner.email,
+          image: data.getProjectById.owner.image,
         },
       });
       setProject(
@@ -265,12 +275,13 @@ function CodeEditor() {
             id: data.createProject.owner.id,
             username: data.createProject.owner.username,
             email: data.createProject.owner.email,
+            image: data.createProject.owner.image,
           },
         });
         router.push(`/editor?project=${data.createProject.id}`);
         await addProject(data.createProject.id);
       }
-      refetch();
+      refetchProject();
     } catch (error) {
       console.error(error);
     }
@@ -360,7 +371,15 @@ function CodeEditor() {
   const handleSave = async () => {
     if (router.query.project) {
       await updateProject();
-      refetch();
+      refetchProject();
+      toast({
+        title: "Project saved",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+        colorScheme: "blue",
+      });
     } else {
       await createProject();
     }
@@ -491,8 +510,10 @@ function CodeEditor() {
         align={"center"}
         className="relative"
       >
-        <Link href="/">EDITORIA</Link>
-        {user && (
+        <Link href="/" className="leading-8">
+          EDITORIA
+        </Link>
+        {displaySaveButton && (
           <Flex
             align={"center"}
             gap={2}
@@ -534,11 +555,7 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex
-        w="100%"
-        className="editor-container"
-        height={user ? "calc(100vh - 64px)" : "calc(100vh - 56px)"}
-      >
+      <Flex w="100%" className="editor-container" height="calc(100vh - 64px)">
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -548,6 +565,7 @@ function CodeEditor() {
           filesInTabs={filesInTabs}
           projectInfo={projectInfo}
           likes={data?.getProjectById.likes.length}
+          refetchProject={refetchProject}
         />
         <Flex
           direction={"column"}
@@ -591,7 +609,7 @@ function CodeEditor() {
             {filesInTabs.length !== 0 ? (
               <Editor
                 className="pt-2 bg-[#14181F]"
-                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
+                height="calc(100vh - 100px)"
                 width="60%"
                 path={selectedFile?.name}
                 language={selectedFile?.language.toLowerCase()}
@@ -602,11 +620,7 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box
-                height={user ? "calc(100vh - 100px)" : "calc(100vh - 92px)"}
-                width="60%"
-                bg={"#14181F"}
-              />
+              <Box height="calc(100vh - 100px)" width="60%" bg={"#14181F"} />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />

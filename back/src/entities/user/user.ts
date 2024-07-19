@@ -49,7 +49,7 @@ class User extends BaseEntity {
   username!: string;
 
   @Column({ default: "" })
-  @Field({ nullable: true })
+  @Field()
   image!: string;
 
   @Column({ default: "" })

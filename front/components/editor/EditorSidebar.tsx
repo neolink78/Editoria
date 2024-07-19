@@ -5,8 +5,9 @@ import { File, ProjectInfo } from "../../pages/editor";
 import FilesList from "./FilesList";
 import ProjectInfoTab from "./ProjectInfoTab";
 import EditorComments from "./EditorComments";
-import { gql, useQuery } from "@apollo/client";
+import { ApolloQueryResult, gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import { GetProjectQuery } from "@/gql/graphql";
 
 type EditorSidebarProps = {
   project: File[];
@@ -17,6 +18,7 @@ type EditorSidebarProps = {
   filesInTabs: string[];
   projectInfo: ProjectInfo;
   likes: number | undefined;
+  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>;
 };
 
 type ShowTabs = {
@@ -51,6 +53,7 @@ const EditorSidebar = ({
   setFilesInTabs,
   filesInTabs,
   likes,
+  refetchProject,
 }: EditorSidebarProps) => {
   const router = useRouter();
 
@@ -94,6 +97,7 @@ const EditorSidebar = ({
             info={projectInfo}
             likes={likes}
             comments={commentsData?.getCommentsbyProjectId?.length}
+            refetchProject={refetchProject}
           />
         );
     }

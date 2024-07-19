@@ -4,13 +4,11 @@ import PictureIcon from "../../icons/pictureIcon";
 import SettingsInput from "../../lib/settingsInput";
 import { useRef, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
-
-//TODO : Remove the need for having to fill the password to update user
+import Image from "next/image";
 
 const Settings = (user: any) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [imageUrl, setImageUrl] = useState(user.user.image || "");
-  console.log(user);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formikSettings = useSettingsFormik(user);
