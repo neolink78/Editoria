@@ -44,13 +44,14 @@ export const useSignInFormik = ({
   );
 
   const [signInMutation] = useMutation<SignInMutation, SignInMutationVariables>(
-    SIGN_IN_FORM, { 
+    SIGN_IN_FORM,
+    {
       onCompleted: (data) => {
         if (data.signIn) {
           refetch();
         }
-      }
-    }
+      },
+    },
   );
 
   const validationSchema =
