@@ -1,19 +1,41 @@
+import { useLikes } from "@/context/LikeContext";
+import { GetProjectQuery } from "@/gql/graphql";
 import { ProjectInfo } from "@/pages/editor";
+import { ApolloQueryResult } from "@apollo/client";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { AiOutlineLike } from "react-icons/ai";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { CiChat1 } from "react-icons/ci";
 
 type ProjectInfoProps = {
   info: ProjectInfo;
   comments: number | undefined;
   likes: number | undefined;
+  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>
 };
 
-const ProjectInfoTab = ({ info, likes, comments }: ProjectInfoProps) => {
+const ProjectInfoTab = ({ info, likes, comments, refetchProject }: ProjectInfoProps) => {
+  const { handleToggleLike, likedProjects } = useLikes();
+  const router = useRouter();
+
+  const isLiked = likedProjects?.some((project) => project.id === router.query.project);
+
+  const handleToggle = async () => {
+    try {
+      await handleToggleLike(router.query.project as string);
+      await refetchProject()
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
   return (
     <Flex direction={"column"} className="px-5 py-3">
       <Flex gap={4}>
-        <Box>Photo bg</Box>
+        <Box>
+          <Image src={info.owner.image} alt="profile picture" width={30} height={30} />
+        </Box>
         <Link href={`/user/${info.owner.id}`}>{info.owner.username}</Link>
       </Flex>
       <Box fontSize="sm" className="mt-4">
@@ -25,7 +47,17 @@ const ProjectInfoTab = ({ info, likes, comments }: ProjectInfoProps) => {
       <Flex gap={4} fontSize="xs" className="mt-2 opacity-60">
         <Flex gap={1} align={"center"}>
           <Text>{likes}</Text>
-          <AiOutlineLike />
+          {isLiked ? <AiFillLike 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggle();
+          }}
+          cursor="pointer" /> : <AiOutlineLike 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggle();
+          }}
+          cursor="pointer" />}
         </Flex>
         <Flex gap={1} align={"center"}>
           <Text>{comments}</Text>
