@@ -34,16 +34,18 @@ const ProjectInfoTab = ({ info, likes, comments, refetchProject }: ProjectInfoPr
     <Flex direction={"column"} className="px-5 py-3">
       <Flex gap={4}>
         <Box>
-          <Image src={info.owner.image} alt="profile picture" width={30} height={30} />
+          {info.owner?.image && <Image src={info.owner.image} alt="profile picture" width={30} height={30} />}
         </Box>
-        <Link href={`/user/${info.owner.id}`}>{info.owner.username}</Link>
+        {info.owner?.username && <Link href={`/user/${info.owner.id}`} className="pb-4">{info.owner.username}</Link>}
       </Flex>
-      <Box fontSize="sm" className="mt-4">
+      <Box fontSize="sm">
         {info.title}
       </Box>
       <Text fontSize="xs" className="opacity-60">
         {info.description}
       </Text>
+      {
+        router.query?.project &&
       <Flex gap={4} fontSize="xs" className="mt-2 opacity-60">
         <Flex gap={1} align={"center"}>
           <Text>{likes}</Text>
@@ -64,6 +66,7 @@ const ProjectInfoTab = ({ info, likes, comments, refetchProject }: ProjectInfoPr
           <CiChat1 />
         </Flex>
       </Flex>
+      }
     </Flex>
   );
 };
