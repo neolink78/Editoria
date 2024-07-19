@@ -12,19 +12,26 @@ type ProjectInfoProps = {
   info: ProjectInfo;
   comments: number | undefined;
   likes: number | undefined;
-  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>
+  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>;
 };
 
-const ProjectInfoTab = ({ info, likes, comments, refetchProject }: ProjectInfoProps) => {
+const ProjectInfoTab = ({
+  info,
+  likes,
+  comments,
+  refetchProject,
+}: ProjectInfoProps) => {
   const { handleToggleLike, likedProjects } = useLikes();
   const router = useRouter();
 
-  const isLiked = likedProjects?.some((project) => project.id === router.query.project);
+  const isLiked = likedProjects?.some(
+    (project) => project.id === router.query.project,
+  );
 
   const handleToggle = async () => {
     try {
       await handleToggleLike(router.query.project as string);
-      await refetchProject()
+      await refetchProject();
     } catch (error) {
       console.error("Error toggling like:", error);
     }
@@ -49,17 +56,23 @@ const ProjectInfoTab = ({ info, likes, comments, refetchProject }: ProjectInfoPr
       <Flex gap={4} fontSize="xs" className="mt-2 opacity-60">
         <Flex gap={1} align={"center"}>
           <Text>{likes}</Text>
-          {isLiked ? <AiFillLike 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggle();
-          }}
-          cursor="pointer" /> : <AiOutlineLike 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggle();
-          }}
-          cursor="pointer" />}
+          {isLiked ? (
+            <AiFillLike
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggle();
+              }}
+              cursor="pointer"
+            />
+          ) : (
+            <AiOutlineLike
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggle();
+              }}
+              cursor="pointer"
+            />
+          )}
         </Flex>
         <Flex gap={1} align={"center"}>
           <Text>{comments}</Text>

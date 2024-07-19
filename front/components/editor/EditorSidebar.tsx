@@ -18,7 +18,7 @@ type EditorSidebarProps = {
   filesInTabs: string[];
   projectInfo: ProjectInfo;
   likes: number | undefined;
-  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>
+  refetchProject: () => Promise<ApolloQueryResult<GetProjectQuery>>;
 };
 
 type ShowTabs = {
@@ -53,7 +53,7 @@ const EditorSidebar = ({
   setFilesInTabs,
   filesInTabs,
   likes,
-  refetchProject
+  refetchProject,
 }: EditorSidebarProps) => {
   const router = useRouter();
 
