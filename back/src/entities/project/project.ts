@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ILike,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -14,6 +15,7 @@ import Comment from "../comment/comment";
 import Like from "../like/like";
 import User from "../user/user";
 import { CreateOrUpdateProjectArgs } from "./project.args";
+import { getCache } from "../../cache";
 
 export type ProjectArgs = CreateOrUpdateProjectArgs & {
   owner: User;
@@ -183,6 +185,28 @@ class Project extends BaseEntity {
     await project.save();
     project.reload();
     return project;
+  }
+
+  static async searchProjects(query: string): Promise<Project[]> {
+    const cache = await getCache();
+
+    const cachedResult = await cache.get(query);
+    if (cachedResult) {
+      console.log(`Cache hit for query: ${query}`);
+      return JSON.parse(cachedResult);
+    }
+
+    console.log(`Cache miss for query: ${query}`);
+    const databaseResult = await Project.find({
+      where: [
+        { title: ILike(`%${query}%`) },
+        { description: ILike(`%${query}%`) },
+      ],
+    });
+
+    cache.set(query, JSON.stringify(databaseResult), { EX: 600 });
+
+    return databaseResult;
   }
 }
 

@@ -80,6 +80,11 @@ export class ProjectResolver {
     return Project.getProjectById(id);
   }
 
+  @Query(() => [Project])
+  searchProjects(@Arg("query") query: string) {
+    return Project.searchProjects(query);
+  }
+
   @Authorized()
   @ProjectOwner()
   @Mutation(() => Project)

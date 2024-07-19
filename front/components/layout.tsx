@@ -7,15 +7,17 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   return (
-    <Box bg="#14181F" color="#fbfbfb" fontFamily="body" minH="100vh">
+    <Box bg="#14181F" color="#fbfbfb" fontFamily="body" minH="100vh" pb="72px">
       <Header />
       {children}
       <Flex
         bg="#111113"
-        p="3.2vw 0 3.2vw 7.8vw"
-        fontSize="1vw"
+        p="24px"
+        fontSize="1rem"
         w="100%"
         mt="5vw"
+        position="absolute"
+        bottom="0"
       >
         © 2024 Editoria. All rights reserved.
       </Flex>

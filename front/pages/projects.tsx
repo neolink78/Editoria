@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import { useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Input, Skeleton, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Tile from "@/lib/tile";
@@ -38,10 +38,40 @@ type Project = {
   }[];
 };
 
+const SEARCH_PROJECTS = gql`
+  query SearchProjects($query: String!) {
+    searchProjects(query: $query) {
+      owner {
+        username
+        email
+      }
+      title
+    }
+  }
+`;
+
 const Projects = () => {
+  const { data: getProjectsData } = useQuery<GetProjectsQuery>(GET_PROJECTS);
+  const { data: searchProjectsData, refetch } = useQuery(SEARCH_PROJECTS, {
+    variables: { query: "" },
+  });
+
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
+  const [filteredProjects, setFilteredProjects] = useState(
+    getProjectsData?.getProjects || [],
+  );
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(router.query.page as string) || 1,
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    router.push(`?page=${1}`);
+    refetch({ query: e.target.value });
+  };
+
   const { handleToggleLike, likedProjects } = useLikes();
   const projectsPerPage = 10;
   const offset = (currentPage - 1) * projectsPerPage;
@@ -97,6 +127,16 @@ const Projects = () => {
 
   const { openModal } = useModal();
 
+  useEffect(() => {
+    if (value.trim() === "") {
+      setFilteredProjects(getProjectsData?.getProjects || []);
+      return;
+    }
+
+    if (searchProjectsData?.searchProjects) {
+      setFilteredProjects(searchProjectsData.searchProjects);
+    }
+  }, [searchProjectsData, getProjectsData, value]);
   const handleDelete = (projectId: string) => {
     openModal({
       title: "Confirmer la suppression",
@@ -166,13 +206,16 @@ const Projects = () => {
             <Input
               borderRadius="2vw"
               mt="2vw"
-              mb="5vw"
+              mb="3vw"
               bgColor="white"
               color="black"
               width="25vw"
               border="solid 1px white"
-              placeholder="Search for projects..."
+              placeholder={"search values"}
+              value={value}
+              onChange={handleSearchChange}
               fontSize="1.2vw"
+              name="searchBar"
             />
             <Box minHeight="52vw">
               {projects.map((project, idx) => (

@@ -64,6 +64,8 @@ const documents = {
     types.GetProjectDocument,
   "\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n":
     types.UpdateProjectDocument,
+  "\n  query SearchProjects($query: String!) {\n    searchProjects(query: $query) {\n      owner {\n        username\n        email\n      }\n      title\n    }\n  }\n":
+    types.SearchProjectsDocument,
 };
 
 /**
@@ -236,6 +238,12 @@ export function graphql(
 export function graphql(
   source: "\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n",
 ): (typeof documents)["\n  mutation UpdateProject(\n    $title: String!\n    $isPublic: Boolean!\n    $updateProjectId: ID!\n    $description: String\n  ) {\n    updateProject(\n      title: $title\n      is_public: $isPublic\n      id: $updateProjectId\n      description: $description\n    ) {\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n  query SearchProjects($query: String!) {\n    searchProjects(query: $query) {\n      owner {\n        username\n        email\n      }\n      title\n    }\n  }\n",
+): (typeof documents)["\n  query SearchProjects($query: String!) {\n    searchProjects(query: $query) {\n      owner {\n        username\n        email\n      }\n      title\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
