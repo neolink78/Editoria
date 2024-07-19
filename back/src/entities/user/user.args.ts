@@ -12,7 +12,7 @@ export class CreateUser {
   @MinLength(1)
   username!: string;
 
-  @Field({ nullable: true })
+  @Field()
   @MinLength(12)
   password!: string;
 
