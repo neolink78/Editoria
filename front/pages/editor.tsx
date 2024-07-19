@@ -180,7 +180,7 @@ function CodeEditor() {
       id: "",
       username: "",
       email: "",
-      image: ""
+      image: "",
     },
   });
   const [project, setProject] = useState<File[]>([
@@ -226,10 +226,10 @@ function CodeEditor() {
     DeleteCodeSnippetMutationVariables
   >(DELETE_FILE);
 
-  const { data, refetch: refetchProject } = useQuery<GetProjectQuery, GetProjectQueryVariables>(
-    GET_PROJECT,
-    { variables: { getProjectByIdId: projectId as string } },
-  );
+  const { data, refetch: refetchProject } = useQuery<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >(GET_PROJECT, { variables: { getProjectByIdId: projectId as string } });
 
   useEffect(() => {
     if (data && projectId) {
@@ -242,7 +242,7 @@ function CodeEditor() {
           id: data.getProjectById.owner.id,
           username: data.getProjectById.owner.username,
           email: data.getProjectById.owner.email,
-          image: data.getProjectById.owner.image
+          image: data.getProjectById.owner.image,
         },
       });
       setProject(
@@ -275,7 +275,7 @@ function CodeEditor() {
             id: data.createProject.owner.id,
             username: data.createProject.owner.username,
             email: data.createProject.owner.email,
-            image: data.createProject.owner.image
+            image: data.createProject.owner.image,
           },
         });
         router.push(`/editor?project=${data.createProject.id}`);
@@ -373,13 +373,13 @@ function CodeEditor() {
       await updateProject();
       refetchProject();
       toast({
-        title: 'Project saved',
-        status: 'success',
-        position: 'top',
+        title: "Project saved",
+        status: "success",
+        position: "top",
         duration: 3000,
         isClosable: true,
-        colorScheme: 'blue'
-      })
+        colorScheme: "blue",
+      });
     } else {
       await createProject();
     }
@@ -510,7 +510,9 @@ function CodeEditor() {
         align={"center"}
         className="relative"
       >
-        <Link href="/" className="leading-8">EDITORIA</Link>
+        <Link href="/" className="leading-8">
+          EDITORIA
+        </Link>
         {displaySaveButton && (
           <Flex
             align={"center"}
@@ -553,11 +555,7 @@ function CodeEditor() {
           )}
         </Box>
       </Flex>
-      <Flex
-        w="100%"
-        className="editor-container"
-        height="calc(100vh - 64px)"
-      >
+      <Flex w="100%" className="editor-container" height="calc(100vh - 64px)">
         <EditorSidebar
           project={project}
           fileName={fileName}
@@ -622,11 +620,7 @@ function CodeEditor() {
                 onMount={handleEditorDidMount}
               />
             ) : (
-              <Box
-                height="calc(100vh - 100px)"
-                width="60%"
-                bg={"#14181F"}
-              />
+              <Box height="calc(100vh - 100px)" width="60%" bg={"#14181F"} />
             )}
             <Box w="40%">
               <iframe src={url} className="w-full h-full" />
