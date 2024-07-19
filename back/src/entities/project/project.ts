@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  FindManyOptions,
   ILike,
   ManyToMany,
   ManyToOne,
@@ -107,25 +108,47 @@ class Project extends BaseEntity {
   }
 
   static async getProjects(
-    limit: number,
-    offset: number,
-    sortBy: string,
+    limit: number = 8,
+    offset: number = 0,
+    sortBy: string = "createdAt",
+    search?: string,
   ): Promise<[Project[], number]> {
-    let projects = await Project.find();
+    const cache = await getCache();
 
-    if (sortBy === "likes") {
-      projects = projects.sort((a, b) => b.likes.length - a.likes.length);
-    } else if (sortBy === "createdAt") {
-      projects = projects.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+    const cacheKey = `projects_${search || "all"}_${limit}_${offset}_${sortBy}`;
+
+    const cachedResult = await cache.get(cacheKey);
+    if (cachedResult) {
+      console.log(`Cache hit for query: ${cacheKey}`);
+      return JSON.parse(cachedResult);
     }
 
-    const totalCount = projects.length;
-    const paginatedProjects = projects.slice(offset, offset + limit);
+    console.log(`Cache miss for query: ${cacheKey}`);
 
-    return [paginatedProjects, totalCount];
+    const options: FindManyOptions<Project> = {
+      skip: offset,
+      take: limit,
+      order: {
+        [sortBy === "likes" ? "createdAt" : sortBy]: "DESC",
+      },
+    };
+
+    if (search) {
+      options.where = [
+        { title: ILike(`%${search}%`) },
+        { description: ILike(`%${search}%`) },
+      ];
+    }
+
+    const [projects, totalCount] = await this.findAndCount(options);
+
+    if (sortBy === "likes") {
+      projects.sort((a, b) => b.likes.length - a.likes.length);
+    }
+
+    cache.set(cacheKey, JSON.stringify([projects, totalCount]), { EX: 600 });
+
+    return [projects, totalCount];
   }
 
   static async getProjectsByUserId(
