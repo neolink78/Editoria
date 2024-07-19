@@ -17,75 +17,32 @@ import { useModal } from "@/context/ModalContext";
 import { DELETE_PROJECT } from "@/graphql/mutations/projectMutations";
 import { useAuth } from "@/context/UserContext";
 
-type Project = {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  owner: {
-    id: string;
-    username: string;
-  };
-  likes: {
-    id: string;
-  }[];
-  comments: {
-    id: string;
-  }[];
-  codeSnippetsOwned: {
-    id: string;
-    language: Language | undefined;
-  }[];
-};
-
-const SEARCH_PROJECTS = gql`
-  query SearchProjects($query: String!) {
-    searchProjects(query: $query) {
-      owner {
-        username
-        email
-      }
-      title
-    }
-  }
-`;
+const navigationItems = [
+  { label: "Headlined", value: "headLined" },
+  { label: "Most recents", value: "mostRecents" },
+];
 
 const Projects = () => {
-  const { data: getProjectsData } = useQuery<GetProjectsQuery>(GET_PROJECTS);
-  const { data: searchProjectsData, refetch } = useQuery(SEARCH_PROJECTS, {
-    variables: { query: "" },
-  });
-
   const router = useRouter();
   const [value, setValue] = useState("");
   const [activePage, setActivePage] = useState("headLined");
-  const [filteredProjects, setFilteredProjects] = useState(
-    getProjectsData?.getProjects || [],
-  );
+  const [debouncedValue, setDebouncedValue] = useState(value);
   const [currentPage, setCurrentPage] = useState(
     parseInt(router.query.page as string) || 1,
   );
+  const { openModal } = useModal();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    router.push(`?page=${1}`);
-    refetch({ query: e.target.value });
-  };
-
-  const { handleToggleLike, likedProjects } = useLikes();
+  const { handleToggleLike, likedProjects = [] } = useLikes();
   const projectsPerPage = 10;
   const offset = (currentPage - 1) * projectsPerPage;
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [activePage]);
-
   const sortBy = activePage === "headLined" ? "likes" : "createdAt";
-  const { data, loading, error } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
+  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
     variables: {
       limit: projectsPerPage,
       offset: offset,
       sortBy: sortBy,
+      search: debouncedValue,
     },
     fetchPolicy: "cache-and-network",
   });
@@ -101,7 +58,7 @@ const Projects = () => {
     refetchQueries: [
       {
         query: GET_PROJECTS,
-        variables: { limit: projectsPerPage, offset: offset, sortBy: sortBy },
+        variables: { limit: projectsPerPage, offset: offset, sortBy: sortBy, search: debouncedValue },
       },
     ],
   });
@@ -109,34 +66,26 @@ const Projects = () => {
   const projects = data?.getProjects.projects || [];
   const totalCount = data?.getProjects.totalCount || 0;
 
-  const handleBreadcrumbChange = (value: string) => {
-    setActivePage(value);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
+      refetch({ limit: projectsPerPage, offset: (pageNumber - 1) * projectsPerPage, sortBy: sortBy, search: debouncedValue });
       router.push(`/projects?page=${pageNumber}`, undefined, { shallow: true });
     }
   };
 
-  const navigationItems = [
-    { label: "Headlined", value: "headLined" },
-    { label: "Most recents", value: "mostRecents" },
-  ];
+  const handleBreadcrumbChange = (value: string) => {
+    setActivePage(value);
+    setCurrentPage(1);
+    refetch({ limit: projectsPerPage, offset: 0, sortBy: sortBy, search: debouncedValue });
+    router.push(`?page=${1}`, undefined, { shallow: true });
+  };
 
-  const { openModal } = useModal();
-
-  useEffect(() => {
-    if (value.trim() === "") {
-      setFilteredProjects(getProjectsData?.getProjects || []);
-      return;
-    }
-
-    if (searchProjectsData?.searchProjects) {
-      setFilteredProjects(searchProjectsData.searchProjects);
-    }
-  }, [searchProjectsData, getProjectsData, value]);
   const handleDelete = (projectId: string) => {
     openModal({
       title: "Confirmer la suppression",
@@ -149,27 +98,19 @@ const Projects = () => {
     await deleteProject({ variables: { deleteProjectId: projectId } });
   };
 
-  if (loading)
-    return (
-      <Layout>
-        <Flex justify="center" align="center" mt="20vh">
-          <Flex
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            alignContent="center"
-            mt="20vh"
-            width="78.8vw"
-          >
-            {Array.from({ length: 10 }).map((_, idx) => (
-              <Box key={idx} width="100%" mb="10px">
-                <Skeleton height="46px" width="100%" borderRadius="30px" />
-              </Box>
-            ))}
-          </Flex>
-        </Flex>
-      </Layout>
-    );
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activePage]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value]);
 
   if (error) return <Error />;
 
@@ -187,63 +128,76 @@ const Projects = () => {
           value={activePage}
           onChange={handleBreadcrumbChange}
         />
-        {projects.length === 0 ? (
-          <Flex
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            mt="20vh"
-          >
-            <Box fontSize="2vw" color="white" mt="10vw" mb="2vw">
-              No projects found
-            </Box>
-            <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
-              Start coding
-            </SubmitButton>
+        <Input
+          borderRadius="2vw"
+          mt="2vw"
+          mb="2rem"
+          bgColor="white"
+          color="black"
+          width="25vw"
+          border="solid 1px white"
+          placeholder={"Search for projects..."}
+          value={value}
+          onChange={handleSearchChange}
+          fontSize="1.2vw"
+          name="searchBar"
+        />
+        {loading && !projects.length ? (
+          <Flex justify="center" align="center" mt="">
+            <Flex
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              alignContent="center"
+              mt="2rem"
+              width="78.8vw"
+            >
+              {Array.from({ length: 10 }).map((_, idx) => (
+                <Box key={idx} width="100%" mb="10px">
+                  <Skeleton height="46px" width="100%" borderRadius="30px" />
+                </Box>
+              ))}
+            </Flex>
           </Flex>
         ) : (
           <>
-            <Input
-              borderRadius="2vw"
-              mt="2vw"
-              mb="3vw"
-              bgColor="white"
-              color="black"
-              width="25vw"
-              border="solid 1px white"
-              placeholder={"search values"}
-              value={value}
-              onChange={handleSearchChange}
-              fontSize="1.2vw"
-              name="searchBar"
-            />
             <Box minHeight="52vw">
-              {projects.map((project, idx) => (
-                <Tile
-                  key={idx}
-                  projectId={project.id}
-                  ownerId={project.owner.id as UUID}
-                  owner={project.owner.username}
-                  icon={project.codeSnippetsOwned[0]?.language}
-                  title={project.title}
-                  description={project.description}
-                  createdAt={project.createdAt}
-                  likeCount={project.likes.length}
-                  commentCount={project.comments.length}
-                  onOpenProject={() =>
-                    router.push(`/editor?project=${project.id}`)
-                  }
-                  canDelete={currentUserId === project.owner.id}
-                  onDelete={() => {
-                    handleDelete(project.id);
-                  }}
-                  toggleLike={() => handleToggleLike(project.id)}
-                  isLiked={likedProjects.some((p) => p.id === project.id)}
-                  isCommented={ownComments.some(
-                    (c) => c.project.id === project.id,
-                  )}
-                />
-              ))}
+              {projects.length === 0 ? (
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  mt="20vh"
+                >
+                  <Box fontSize="2vw" color="white" mt="2rem" mb="2vw">
+                    No projects found
+                  </Box>
+                  <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
+                    Start coding
+                  </SubmitButton>
+                </Flex>
+              ) : (
+                projects.map((project, idx) => (
+                  <Tile
+                    key={idx}
+                    projectId={project.id}
+                    ownerId={project.owner.id as UUID}
+                    owner={project.owner.username}
+                    icon={project.codeSnippetsOwned[0]?.language}
+                    title={project.title}
+                    description={project.description}
+                    createdAt={project.createdAt}
+                    likeCount={project.likes.length}
+                    commentCount={project.comments.length}
+                    onOpenProject={() => router.push(`/editor?project=${project.id}`)}
+                    canDelete={currentUserId === project.owner.id}
+                    onDelete={() => handleDelete(project.id)}
+                    toggleLike={() => handleToggleLike(project.id)}
+                    isLiked={likedProjects.some((p) => p.id === project.id)}
+                    isCommented={ownComments.some((c) => c.project.id === project.id)}
+                  />
+                ))
+              )}
             </Box>
             <PaginationControls
               currentPage={currentPage}
