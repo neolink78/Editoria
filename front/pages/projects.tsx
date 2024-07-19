@@ -55,7 +55,7 @@ const Projects = () => {
     variables: {
       limit: projectsPerPage,
       offset: offset,
-      sortBy: sortBy
+      sortBy: sortBy,
     },
     fetchPolicy: "cache-and-network",
   });
