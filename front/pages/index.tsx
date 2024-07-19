@@ -37,7 +37,15 @@ export default function HomePage() {
 
   const { handleToggleLike, likedProjects } = useLikes();
 
-  if (loading) return <Layout><Flex justifyContent="center" alignItems="center" h="100vh"> Loading ... </Flex></Layout>;
+  if (loading)
+    return (
+      <Layout>
+        <Flex justifyContent="center" alignItems="center" h="100vh">
+          {" "}
+          Loading ...{" "}
+        </Flex>
+      </Layout>
+    );
   if (error) {
     console.log(error);
   }
