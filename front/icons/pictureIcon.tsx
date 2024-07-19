@@ -12,11 +12,6 @@ const PictureIcon = () => (
       stroke="white"
       strokeWidth="2"
     />
-    <path
-      d="M23 51C23 57.6667 23 57.3889 23 56M23 56H18M23 56H28M23 56V61"
-      stroke="white"
-      strokeWidth="2"
-    />
   </svg>
 );
 

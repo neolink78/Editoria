@@ -222,7 +222,7 @@ const Dashboard = () => {
               )}
             </Box>
             <Box mb={12}>
-              {likedProjects ? (
+              {likedProjects && likedProjects.length > 0 ? (
                 likedProjects.slice(-3).map((e, idx) => (
                   <Skeleton isLoaded={!loading} key={idx}>
                     <Tile

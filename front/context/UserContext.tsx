@@ -48,6 +48,7 @@ const GET_MY_PROFIL = gql`
       email
       id
       username
+      image
     }
   }
 `;

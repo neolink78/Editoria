@@ -30,7 +30,7 @@ interface LikeProviderProps {
 
 export const LikeProvider = ({ children }: LikeProviderProps) => {
   const { refetch: refetchProjects } = useQuery(GET_PROJECTS, {
-    variables: { limit: null, offset: null },
+    variables: { limit: null, offset: null, sortBy: null },
     nextFetchPolicy: "cache-and-network",
   });
   const {

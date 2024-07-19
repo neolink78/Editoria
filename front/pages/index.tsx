@@ -12,23 +12,24 @@ import { Error } from "@/lib/error";
 import { UUID } from "crypto";
 import { useLikes } from "../context/LikeContext";
 import { GetProjectsQuery } from "@/gql/graphql";
+import { useAuth } from "@/context/UserContext";
 
 export default function HomePage() {
   const router = useRouter();
-
+  const { user } = useAuth();
   const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
     GET_PROJECTS,
     {
-      variables: { limit: 5, offset: 0 },
+      variables: { limit: 5, offset: 0, sortBy: "likes" },
       nextFetchPolicy: "cache-and-network",
     },
   );
   const projects = data?.getProjects.projects || [];
   // console.log("projects", projects);
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -37,7 +38,6 @@ export default function HomePage() {
   const { handleToggleLike, likedProjects } = useLikes();
 
   if (loading) return <Layout>Loading...</Layout>;
-  // if (error) return <Error />;
   if (error) {
     console.log(error);
   }
@@ -89,6 +89,7 @@ export default function HomePage() {
                   description={e.description}
                   createdAt={e.createdAt}
                   commentCount={e?.comments.length}
+                  owner={e.owner.id === user?.id ? "" : e.owner.username}
                   ownerId={e.owner.id as UUID}
                   likeCount={e?.likes.length}
                   toggleLike={() => {

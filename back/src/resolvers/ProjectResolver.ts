@@ -45,8 +45,13 @@ export class ProjectResolver {
   async getProjects(
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number,
     @Arg("offset", () => Int, { defaultValue: 0 }) offset: number,
+    @Arg("sortBy", () => String, { defaultValue: "createdAt" }) sortBy: string,
   ): Promise<ProjectPaginationResponse> {
-    const [projects, totalCount] = await Project.getProjects(limit, offset);
+    const [projects, totalCount] = await Project.getProjects(
+      limit,
+      offset,
+      sortBy,
+    );
     return {
       projects,
       totalCount,

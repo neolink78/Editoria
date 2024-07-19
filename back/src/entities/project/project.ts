@@ -105,16 +105,25 @@ class Project extends BaseEntity {
   }
 
   static async getProjects(
-    limit: number = 8,
-    offset: number = 0,
+    limit: number,
+    offset: number,
+    sortBy: string,
   ): Promise<[Project[], number]> {
-    return await Project.findAndCount({
-      skip: offset,
-      take: limit,
-      order: {
-        createdAt: "DESC",
-      },
-    });
+    let projects = await Project.find();
+
+    if (sortBy === "likes") {
+      projects = projects.sort((a, b) => b.likes.length - a.likes.length);
+    } else if (sortBy === "createdAt") {
+      projects = projects.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    }
+
+    const totalCount = projects.length;
+    const paginatedProjects = projects.slice(offset, offset + limit);
+
+    return [paginatedProjects, totalCount];
   }
 
   static async getProjectsByUserId(

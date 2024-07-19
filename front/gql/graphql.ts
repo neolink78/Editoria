@@ -52,6 +52,14 @@ export type Comment = {
   updatedAt: Scalars["DateTimeISO"]["output"];
 };
 
+export type Follower = {
+  __typename?: "Follower";
+  createdAt: Scalars["DateTimeISO"]["output"];
+  follower: User;
+  following: User;
+  id: Scalars["ID"]["output"];
+};
+
 export enum Language {
   C = "C",
   Cpp = "CPP",
@@ -84,6 +92,7 @@ export type Mutation = {
   deleteComment: Comment;
   deleteProject: Project;
   deleteUser: User;
+  followUser: Scalars["Boolean"]["output"];
   signIn: User;
   signOut: Scalars["Boolean"]["output"];
   signUp: User;
@@ -137,6 +146,10 @@ export type MutationDeleteUserArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type MutationFollowUserArgs = {
+  followingId: Scalars["String"]["input"];
+};
+
 export type MutationSignInArgs = {
   email: Scalars["String"]["input"];
   password: Scalars["String"]["input"];
@@ -145,7 +158,8 @@ export type MutationSignInArgs = {
 export type MutationSignUpArgs = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
-  password: Scalars["String"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  password?: InputMaybe<Scalars["String"]["input"]>;
   username: Scalars["String"]["input"];
 };
 
@@ -178,7 +192,8 @@ export type MutationUpdateUserArgs = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   email: Scalars["String"]["input"];
   id: Scalars["ID"]["input"];
-  password: Scalars["String"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  password?: InputMaybe<Scalars["String"]["input"]>;
   username: Scalars["String"]["input"];
 };
 
@@ -209,6 +224,7 @@ export type Query = {
   getCommentById: Comment;
   getCommentsByUserId: Array<Comment>;
   getCommentsbyProjectId: Array<Comment>;
+  getFollowers: Array<Follower>;
   getOwnComments: Array<Comment>;
   getOwnProject: ProjectPaginationResponse;
   getProjectById: Project;
@@ -238,6 +254,10 @@ export type QueryGetCommentsbyProjectIdArgs = {
   projectId: Scalars["String"]["input"];
 };
 
+export type QueryGetFollowersArgs = {
+  followingId: Scalars["String"]["input"];
+};
+
 export type QueryGetOwnProjectArgs = {
   limit: Scalars["Int"]["input"];
   offset: Scalars["Int"]["input"];
@@ -248,8 +268,9 @@ export type QueryGetProjectByIdArgs = {
 };
 
 export type QueryGetProjectsArgs = {
-  limit: Scalars["Int"]["input"];
-  offset: Scalars["Int"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+  sortBy?: Scalars["String"]["input"];
 };
 
 export type QueryGetProjectsByUserIdArgs = {
@@ -279,9 +300,10 @@ export type User = {
   __typename?: "User";
   description: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
-  followers: Array<User>;
-  following: Array<User>;
+  followers: Array<Follower>;
+  followings: Array<Follower>;
   id: Scalars["ID"]["output"];
+  image?: Maybe<Scalars["String"]["output"]>;
   isPremium: Scalars["Boolean"]["output"];
   likedProjects: Array<Project>;
   likes: Array<Like>;
@@ -347,12 +369,22 @@ export type MyProfileQuery = {
     email: string;
     id: string;
     username: string;
+    image?: string | null;
   };
 };
 
 export type SignOUtMutationVariables = Exact<{ [key: string]: never }>;
 
 export type SignOUtMutation = { __typename?: "Mutation"; signOut: boolean };
+
+export type FollowUserMutationVariables = Exact<{
+  followingId: Scalars["String"]["input"];
+}>;
+
+export type FollowUserMutation = {
+  __typename?: "Mutation";
+  followUser: boolean;
+};
 
 export type ToggleLikeMutationVariables = Exact<{
   projectId: Scalars["String"]["input"];
@@ -382,6 +414,29 @@ export type GetOwnCommentsQuery = {
     content: string;
     project: { __typename?: "Project"; id: string; title: string };
     owner: { __typename?: "User"; id: string; username: string };
+  }>;
+};
+
+export type GetFollowersQueryVariables = Exact<{
+  followingId: Scalars["String"]["input"];
+}>;
+
+export type GetFollowersQuery = {
+  __typename?: "Query";
+  getFollowers: Array<{
+    __typename?: "Follower";
+    follower: {
+      __typename?: "User";
+      email: string;
+      id: string;
+      username: string;
+    };
+    following: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      username: string;
+    };
   }>;
 };
 
@@ -435,8 +490,9 @@ export type GetOwnProjectQuery = {
 };
 
 export type GetProjectsQueryVariables = Exact<{
-  offset: Scalars["Int"]["input"];
   limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
+  sortBy: Scalars["String"]["input"];
 }>;
 
 export type GetProjectsQuery = {
@@ -458,6 +514,32 @@ export type GetProjectsQuery = {
         language: Language;
       }>;
       comments: Array<{ __typename?: "Comment"; id: string }>;
+    }>;
+  };
+};
+
+export type GetUserQueryVariables = Exact<{
+  ownerId: Scalars["ID"]["input"];
+}>;
+
+export type GetUserQuery = {
+  __typename?: "Query";
+  getUser: {
+    __typename?: "User";
+    id: string;
+    description: string;
+    username: string;
+    image?: string | null;
+    projects: Array<{
+      __typename?: "Project";
+      id: string;
+      title: string;
+      description: string;
+      createdAt: any;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        language: Language;
+      }>;
     }>;
   };
 };
@@ -514,6 +596,26 @@ export type ResetPasswordMutation = {
     email: string;
     id: string;
     username: string;
+  };
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  email: Scalars["String"]["input"];
+  username: Scalars["String"]["input"];
+  description: Scalars["String"]["input"];
+  updateUserId: Scalars["ID"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type UpdateUserMutation = {
+  __typename?: "Mutation";
+  updateUser: {
+    __typename?: "User";
+    description: string;
+    email: string;
+    username: string;
+    id: string;
+    image?: string | null;
   };
 };
 
@@ -599,31 +701,6 @@ export type UpdateProjectMutationVariables = Exact<{
 export type UpdateProjectMutation = {
   __typename?: "Mutation";
   updateProject: { __typename?: "Project"; id: string };
-};
-
-export type GetUserQueryVariables = Exact<{
-  ownerId: Scalars["ID"]["input"];
-}>;
-
-export type GetUserQuery = {
-  __typename?: "Query";
-  getUser: {
-    __typename?: "User";
-    id: string;
-    description: string;
-    username: string;
-    projects: Array<{
-      __typename?: "Project";
-      id: string;
-      title: string;
-      description: string;
-      createdAt: any;
-      codeSnippetsOwned: Array<{
-        __typename?: "CodeSnippet";
-        language: Language;
-      }>;
-    }>;
-  };
 };
 
 export const AddCommentDocument = {
@@ -868,6 +945,7 @@ export const MyProfileDocument = {
                 { kind: "Field", name: { kind: "Name", value: "email" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
               ],
             },
           },
@@ -892,6 +970,51 @@ export const SignOUtDocument = {
     },
   ],
 } as unknown as DocumentNode<SignOUtMutation, SignOUtMutationVariables>;
+export const FollowUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "FollowUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "followingId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "followUser" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "followingId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "followingId" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FollowUserMutation, FollowUserMutationVariables>;
 export const ToggleLikeDocument = {
   kind: "Document",
   definitions: [
@@ -1039,6 +1162,86 @@ export const GetOwnCommentsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetOwnCommentsQuery, GetOwnCommentsQueryVariables>;
+export const GetFollowersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "getFollowers" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "followingId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "getFollowers" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "followingId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "followingId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "follower" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "following" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFollowersQuery, GetFollowersQueryVariables>;
 export const LikedProjectsDocument = {
   kind: "Document",
   definitions: [
@@ -1277,6 +1480,17 @@ export const GetProjectsDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
+            name: { kind: "Name", value: "limit" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
             name: { kind: "Name", value: "offset" },
           },
           type: {
@@ -1288,11 +1502,14 @@ export const GetProjectsDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "limit" },
+            name: { kind: "Name", value: "sortBy" },
           },
           type: {
             kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
           },
         },
       ],
@@ -1317,6 +1534,14 @@ export const GetProjectsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "limit" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "sortBy" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "sortBy" },
                 },
               },
             ],
@@ -1411,6 +1636,90 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "ownerId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "getUser" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "ownerId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "projects" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "codeSnippetsOwned" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "language" },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "title" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "description" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
 export const SignUpDocument = {
   kind: "Document",
   definitions: [
@@ -1691,6 +2000,140 @@ export const ResetPasswordDocument = {
   ResetPasswordMutation,
   ResetPasswordMutationVariables
 >;
+export const UpdateUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "email" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "username" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "updateUserId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "image" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateUser" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "username" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "username" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "description" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "description" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "updateUserId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "image" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "image" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "image" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
 export const DeleteCodeSnippetDocument = {
   kind: "Document",
   definitions: [
@@ -2299,86 +2742,3 @@ export const UpdateProjectDocument = {
   UpdateProjectMutation,
   UpdateProjectMutationVariables
 >;
-export const GetUserDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetUser" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "ownerId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "getUser" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "ownerId" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "projects" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "codeSnippetsOwned" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "language" },
-                            },
-                          ],
-                        },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "title" } },
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "description" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;

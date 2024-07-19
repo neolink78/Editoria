@@ -6,6 +6,7 @@ export const GET_USER = gql`
       id
       description
       username
+      image
       projects {
         id
         codeSnippetsOwned {
