@@ -79,29 +79,29 @@ export default function HomePage() {
       <Box ml="11.6vw">
         {projects
           ? projects
-            .map((e, idx) => (
-              <Tile
-                homePage
-                projectId={e.id}
-                key={idx}
-                icon={e.codeSnippetsOwned[0]?.language}
-                title={e.title}
-                description={e.description}
-                createdAt={e.createdAt}
-                commentCount={e?.comments.length}
-                owner={e.owner.id === user?.id ? "" : e.owner.username}
-                ownerId={e.owner.id as UUID}
-                likeCount={e?.likes.length}
-                toggleLike={() => {
-                  handleToggleLike(e.id);
-                  refetch();
-                }}
-                isLiked={likedProjects?.some((p) => p.id === e.id)}
-                // isCommented={ownComments.some((c) => c.project.id === e.id)}
-                onOpenProject={() => handleOpenProject(e.id)}
-              />
-            ))
-            .sort((a, b) => b.props.likeCount - a.props.likeCount)
+              .map((e, idx) => (
+                <Tile
+                  homePage
+                  projectId={e.id}
+                  key={idx}
+                  icon={e.codeSnippetsOwned[0]?.language}
+                  title={e.title}
+                  description={e.description}
+                  createdAt={e.createdAt}
+                  commentCount={e?.comments.length}
+                  owner={e.owner.id === user?.id ? "" : e.owner.username}
+                  ownerId={e.owner.id as UUID}
+                  likeCount={e?.likes.length}
+                  toggleLike={() => {
+                    handleToggleLike(e.id);
+                    refetch();
+                  }}
+                  isLiked={likedProjects?.some((p) => p.id === e.id)}
+                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
+                  onOpenProject={() => handleOpenProject(e.id)}
+                />
+              ))
+              .sort((a, b) => b.props.likeCount - a.props.likeCount)
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">

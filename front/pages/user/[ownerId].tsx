@@ -87,12 +87,15 @@ export default function User() {
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
-  const { data: projectsData, refetch: refetchProjects } = useQuery(GET_USER_PROJECTS, {
-    variables: {
-      offset: (+currentPage - 1) * projectsPerPage,
-      limit: projectsPerPage,
+  const { data: projectsData, refetch: refetchProjects } = useQuery(
+    GET_USER_PROJECTS,
+    {
+      variables: {
+        offset: (+currentPage - 1) * projectsPerPage,
+        limit: projectsPerPage,
+      },
     },
-  });
+  );
 
   useEffect(() => {
     setCurrentPage(+(router.query.page as string) || 1);
@@ -113,15 +116,17 @@ export default function User() {
     router.push(`/editor?project=${projectId}`);
   };
 
-  const imageUrl = userData?.image
+  const imageUrl = userData?.image;
 
   useEffect(() => {
     if (followersData && user) {
       const followerId = followersData.getFollowers.find(
-        (follower: FollowerType) => follower.follower.id === user.id
+        (follower: FollowerType) => follower.follower.id === user.id,
       )?.follower.id;
       const followingId = followersData.getFollowers[0]?.following.id;
-      followerId === user.id && followingId === ownerId ? setIsFollowed(followerId !== undefined) : setIsFollowed(false);
+      followerId === user.id && followingId === ownerId
+        ? setIsFollowed(followerId !== undefined)
+        : setIsFollowed(false);
     }
   }, [followersData, user]);
 
@@ -152,15 +157,16 @@ export default function User() {
             width="70%"
           >
             <Flex gap="2vw" justify="center" align="center">
-              {
-                imageUrl ? <Image
+              {imageUrl ? (
+                <Image
                   src={imageUrl}
                   alt="Profile Pic"
                   boxSize="50px"
                   borderRadius="full"
-                /> :
-                  <PictureIcon />
-              }
+                />
+              ) : (
+                <PictureIcon />
+              )}
               <Box fontSize="2vw">{userData.username}</Box>
               {user?.id !== ownerId && (
                 <SubmitButton
@@ -180,7 +186,8 @@ export default function User() {
             </Box>
           </Flex>
           <Box mt="3vw">
-            {projects.length > 0 && `${userData.username}'s projects (${totalCount})`}
+            {projects.length > 0 &&
+              `${userData.username}'s projects (${totalCount})`}
             <Box minHeight="25vw">
               {projects.map((project: ProjectType, idx: number) => (
                 <Tile
