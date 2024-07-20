@@ -131,7 +131,7 @@ const Projects = () => {
         <Input
           borderRadius="2vw"
           mt="2vw"
-          mb="2rem"
+          mb="3rem"
           bgColor="white"
           color="black"
           width="25vw"
@@ -161,7 +161,8 @@ const Projects = () => {
           </Flex>
         ) : (
           <>
-            <Box minHeight="52vw">
+            <Box minHeight={{ base: "52vw", lg: "auto" }}
+              maxHeight={{ lg: "42vw" }}>
               {projects.length === 0 ? (
                 <Flex
                   flexDirection="column"
