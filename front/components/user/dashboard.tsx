@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Skeleton, Text } from "@chakra-ui/react";
 // import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(5); // Nombre de commentaires à afficher initialement
 
   const {
     data: projectData,
@@ -92,6 +93,14 @@ const Dashboard = () => {
   };
 
   const newUser = !projects && !ownComments && !likedProjects;
+
+  const handleShowMore = () => {
+    setVisibleCommentsCount(prevCount => Math.min(prevCount + 5, ownComments.length)); // Afficher 5 commentaires de plus ou jusqu'au max
+  };
+
+  const handleShowLess = () => {
+    setVisibleCommentsCount(5);
+  };
 
   if (error) {
     console.log("error", error);
@@ -319,23 +328,55 @@ const Dashboard = () => {
               alignSelf="flex-start"
             >
               Mes derniers commentaires
-              {ownComments.length > 3 && (
+              {/* {ownComments.length > 3 && (
                 <Box fontSize="1vw" ml="2vw">
                   Tout voir
                 </Box>
-              )}
+              )} */}
             </Box>
-            <Box mb="12" mx="36" display="flex" flexWrap="wrap">
+            <Box mb="12" mx="36">
               {ownCommentsData && ownComments.length > 0 ? (
-                ownComments.slice(-10).map((e, idx) => (
-                  <CommentCard
-                    key={idx}
-                    title={e.project.title}
-                    date={new Date(e.createdAt).toLocaleDateString()}
-                    content={e.content}
-                    onOpenProject={() => handleOpenProject(e.project.id)}
-                  />
-                ))
+                <>
+                  <Flex flexWrap="wrap" justifyContent="center">
+                    {ownComments.slice(0, visibleCommentsCount).map((e, idx) => (
+                      <CommentCard
+                        key={e.id}
+                        title={e.project.title}
+                        date={new Date(e.createdAt).toLocaleDateString()}
+                        content={e.content}
+                        onOpenProject={() => handleOpenProject(e.project.id)}
+                      />
+                    ))}
+                  </Flex>
+                  <Flex justifyContent="center" mt="4" width="100%">
+                    {visibleCommentsCount < ownComments.length && (
+                      <Text
+                        onClick={handleShowMore}
+                        mt="4"
+                        fontSize="1rem"
+                        cursor="pointer"
+                        color="gray.500"
+                        _hover={{ color: "blue.500" }}
+                        mx="2"
+                      >
+                        Afficher plus
+                      </Text>
+                    )}
+                    {visibleCommentsCount === ownComments.length && (
+                      <Text
+                        onClick={handleShowLess}
+                        mt="4"
+                        fontSize="1rem"
+                        cursor="pointer"
+                        color="gray.500"
+                        _hover={{ color: "blue.500", textDecoration: "underline" }}
+                        mx="2"
+                      >
+                        Afficher moins
+                      </Text>
+                    )}
+                  </Flex>
+                </>
               ) : (
                 <Flex
                   flexDirection="column"
@@ -348,6 +389,7 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
+
           </>
         )}
         <ConfirmModal />
