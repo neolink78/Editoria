@@ -343,6 +343,7 @@ const Dashboard = () => {
                         key={e.id}
                         title={e.project.title}
                         date={new Date(e.createdAt).toLocaleDateString()}
+                        owner={e.owner.username}
                         content={e.content}
                         onOpenProject={() => handleOpenProject(e.project.id)}
                       />
