@@ -4,10 +4,11 @@ interface CommentCardProps {
   title: string;
   date: string;
   content: string;
+  owner: string;
   onOpenProject: () => void;
 }
 
-const CommentCard = ({ title, date, content, onOpenProject }: CommentCardProps) => {
+const CommentCard = ({ title, date, content, owner, onOpenProject }: CommentCardProps) => {
   return (
     <Box
       m="4"
@@ -20,14 +21,20 @@ const CommentCard = ({ title, date, content, onOpenProject }: CommentCardProps) 
       _hover={{ boxShadow: "lg", cursor: "pointer" }}
       onClick={onOpenProject}
     >
-      <Text fontWeight="bold" fontSize="1.2rem" mb="2" >
-        {title}
+      <Text fontSize="0.8rem" color="gray.500" mb="4">
+        Le {date}
       </Text>
       <Text fontSize="1rem">
         {content}
       </Text>
-      <Text fontSize="0.8rem" color="gray.500" mb="4">
-        {date}
+      <Text fontSize="0.8rem" color="gray.500" mt="4">
+        Project:
+      </Text>
+      <Text fontSize="0.8rem">
+        {title}
+      </Text>
+      <Text fontSize="0.8rem" color="gray.500">
+        by <Text as="span" color="blue.500">{owner}</Text>
       </Text>
     </Box>
   );
