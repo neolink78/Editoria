@@ -17,6 +17,7 @@ import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { useAuth } from "@/context/UserContext";
+import CommentCard from "@/lib/commentCard";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
@@ -102,7 +103,7 @@ const Dashboard = () => {
         justifyContent="center"
         alignItems="center"
         width="70vw"
-        mt="50px"
+        my="50px"
       >
         {Array.from({ length: 10 }).map((_, idx) => (
           <Box key={idx} width="100%" mb="10px">
@@ -313,9 +314,9 @@ const Dashboard = () => {
             <Box
               fontSize="1.4vw"
               m={"2vw 0 0 10vw"}
-              alignSelf={"flex-start"}
               display="flex"
               alignItems="baseline"
+              alignSelf="flex-start"
             >
               Mes derniers commentaires
               {ownComments.length > 3 && (
@@ -324,21 +325,17 @@ const Dashboard = () => {
                 </Box>
               )}
             </Box>
-            <Box mb={12}>
+            <Box mb="12" mx="36" display="flex" flexWrap="wrap">
               {ownCommentsData && ownComments.length > 0 ? (
-                ownComments
-                  .slice(-3)
-                  .map((e, idx) => (
-                    <Tile
-                      homePage
-                      ownerId={e.owner.id as UUID}
-                      key={idx}
-                      title={e.project.title}
-                      description={e.content}
-                      content
-                      onOpenProject={() => handleOpenProject(e.project.id)}
-                    />
-                  ))
+                ownComments.slice(-10).map((e, idx) => (
+                  <CommentCard
+                    key={idx}
+                    title={e.project.title}
+                    date={new Date(e.createdAt).toLocaleDateString()}
+                    content={e.content}
+                    onOpenProject={() => handleOpenProject(e.project.id)}
+                  />
+                ))
               ) : (
                 <Flex
                   flexDirection="column"
