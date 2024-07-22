@@ -26,7 +26,6 @@ const Settings = (user: any) => {
     const file = event.target.files?.[0];
     if (file) {
       formikSettings.setFieldValue("image", file);
-      console.log("IMGURL", URL.createObjectURL(file));
       setImageUrl(URL.createObjectURL(file));
     }
   };

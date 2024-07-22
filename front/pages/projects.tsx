@@ -162,7 +162,7 @@ const Projects = () => {
         ) : (
           <>
             <Box minHeight={{ base: "52vw", lg: "auto" }}
-              maxHeight={{ lg: "42vw" }}>
+              >
               {projects.length === 0 ? (
                 <Flex
                   flexDirection="column"
