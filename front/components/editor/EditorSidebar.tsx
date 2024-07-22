@@ -36,10 +36,6 @@ const GET_COMMENTS = gql`
       id
       createdAt
       updatedAt
-      owner {
-        id
-        username
-      }
     }
   }
 `;
