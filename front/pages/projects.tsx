@@ -37,15 +37,18 @@ const Projects = () => {
   const offset = (currentPage - 1) * projectsPerPage;
 
   const sortBy = activePage === "headLined" ? "likes" : "createdAt";
-  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(GET_PROJECTS, {
-    variables: {
-      limit: projectsPerPage,
-      offset: offset,
-      sortBy: sortBy,
-      search: debouncedValue,
+  const { data, loading, error, refetch } = useQuery<GetProjectsQuery>(
+    GET_PROJECTS,
+    {
+      variables: {
+        limit: projectsPerPage,
+        offset: offset,
+        sortBy: sortBy,
+        search: debouncedValue,
+      },
+      fetchPolicy: "cache-and-network",
     },
-    fetchPolicy: "cache-and-network",
-  });
+  );
 
   const { data: ownCommentsData } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
@@ -58,7 +61,12 @@ const Projects = () => {
     refetchQueries: [
       {
         query: GET_PROJECTS,
-        variables: { limit: projectsPerPage, offset: offset, sortBy: sortBy, search: debouncedValue },
+        variables: {
+          limit: projectsPerPage,
+          offset: offset,
+          sortBy: sortBy,
+          search: debouncedValue,
+        },
       },
     ],
   });
@@ -74,7 +82,12 @@ const Projects = () => {
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
-      refetch({ limit: projectsPerPage, offset: (pageNumber - 1) * projectsPerPage, sortBy: sortBy, search: debouncedValue });
+      refetch({
+        limit: projectsPerPage,
+        offset: (pageNumber - 1) * projectsPerPage,
+        sortBy: sortBy,
+        search: debouncedValue,
+      });
       router.push(`/projects?page=${pageNumber}`, undefined, { shallow: true });
     }
   };
@@ -82,7 +95,12 @@ const Projects = () => {
   const handleBreadcrumbChange = (value: string) => {
     setActivePage(value);
     setCurrentPage(1);
-    refetch({ limit: projectsPerPage, offset: 0, sortBy: sortBy, search: debouncedValue });
+    refetch({
+      limit: projectsPerPage,
+      offset: 0,
+      sortBy: sortBy,
+      search: debouncedValue,
+    });
     router.push(`?page=${1}`, undefined, { shallow: true });
   };
 
@@ -161,8 +179,7 @@ const Projects = () => {
           </Flex>
         ) : (
           <>
-            <Box minHeight={{ base: "52vw", lg: "auto" }}
-              >
+            <Box minHeight={{ base: "52vw", lg: "auto" }}>
               {projects.length === 0 ? (
                 <Flex
                   flexDirection="column"
@@ -173,7 +190,10 @@ const Projects = () => {
                   <Box fontSize="2vw" color="white" mt="2rem" mb="2vw">
                     No projects found
                   </Box>
-                  <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
+                  <SubmitButton
+                    bg="#1574EF"
+                    onClick={() => router.push("/editor")}
+                  >
                     Start coding
                   </SubmitButton>
                 </Flex>
@@ -190,12 +210,16 @@ const Projects = () => {
                     createdAt={project.createdAt}
                     likeCount={project.likes.length}
                     commentCount={project.comments.length}
-                    onOpenProject={() => router.push(`/editor?project=${project.id}`)}
+                    onOpenProject={() =>
+                      router.push(`/editor?project=${project.id}`)
+                    }
                     canDelete={currentUserId === project.owner.id}
                     onDelete={() => handleDelete(project.id)}
                     toggleLike={() => handleToggleLike(project.id)}
                     isLiked={likedProjects.some((p) => p.id === project.id)}
-                    isCommented={ownComments.some((c) => c.project.id === project.id)}
+                    isCommented={ownComments.some(
+                      (c) => c.project.id === project.id,
+                    )}
                   />
                 ))
               )}

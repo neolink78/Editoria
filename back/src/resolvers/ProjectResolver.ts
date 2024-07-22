@@ -46,7 +46,7 @@ export class ProjectResolver {
     @Arg("limit", () => Int, { defaultValue: 10 }) limit: number,
     @Arg("offset", () => Int, { defaultValue: 0 }) offset: number,
     @Arg("sortBy", () => String, { defaultValue: "createdAt" }) sortBy: string,
-    @Arg('search', () => String, { nullable: true }) search?: string,
+    @Arg("search", () => String, { nullable: true }) search?: string,
   ): Promise<ProjectPaginationResponse> {
     const [projects, totalCount] = await Project.getProjects(
       limit,
