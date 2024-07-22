@@ -80,24 +80,24 @@ class User extends BaseEntity {
   @Field(() => [Project])
   likedProjects!: Project[];
 
-  @OneToMany(() => Like, (like) => like.user, { eager: true })
+  @OneToMany(() => Like, (like) => like.user)
   @Field(() => [Like])
   likes!: Like[];
 
   @OneToMany(() => UserSession, (session) => session.user)
   sessions!: UserSession[];
 
-  @OneToMany(() => Comment, (comment) => comment.owner, { eager: true })
+  @OneToMany(() => Comment, (comment) => comment.owner)
   comments!: Comment[];
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
   sessionsReset!: UserResetSession[];
 
-  @OneToMany(() => Follower, (follower) => follower.follower, { eager: true })
+  @OneToMany(() => Follower, (follower) => follower.follower)
   @Field(() => [Follower])
   followers!: Follower[];
 
-  @OneToMany(() => Follower, (follower) => follower.following, { eager: true })
+  @OneToMany(() => Follower, (follower) => follower.following)
   @Field(() => [Follower])
   followings!: Follower[];
 
