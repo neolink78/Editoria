@@ -268,10 +268,9 @@ export type QueryGetProjectByIdArgs = {
 };
 
 export type QueryGetProjectsArgs = {
-  limit?: Scalars["Int"]["input"];
-  offset?: Scalars["Int"]["input"];
-  search?: InputMaybe<Scalars["String"]["input"]>;
-  sortBy?: Scalars["String"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type QueryGetProjectsByUserIdArgs = {
@@ -496,10 +495,9 @@ export type GetOwnProjectQuery = {
 };
 
 export type GetProjectsQueryVariables = Exact<{
-  limit: Scalars["Int"]["input"];
-  offset: Scalars["Int"]["input"];
-  sortBy: Scalars["String"]["input"];
-  search?: InputMaybe<Scalars["String"]["input"]>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type GetProjectsQuery = {
@@ -720,6 +718,19 @@ export type UpdateProjectMutationVariables = Exact<{
 export type UpdateProjectMutation = {
   __typename?: "Mutation";
   updateProject: { __typename?: "Project"; id: string };
+};
+
+export type SearchProjectsQueryVariables = Exact<{
+  query: Scalars["String"]["input"];
+}>;
+
+export type SearchProjectsQuery = {
+  __typename?: "Query";
+  searchProjects: Array<{
+    __typename?: "Project";
+    title: string;
+    owner: { __typename?: "User"; username: string; email: string };
+  }>;
 };
 
 export const AddCommentDocument = {
@@ -1502,10 +1513,7 @@ export const GetProjectsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "limit" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
         {
           kind: "VariableDefinition",
@@ -1513,30 +1521,13 @@ export const GetProjectsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "offset" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
             name: { kind: "Name", value: "sortBy" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "search" },
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
@@ -1570,14 +1561,6 @@ export const GetProjectsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "sortBy" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "search" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "search" },
                 },
               },
             ],
@@ -2780,3 +2763,68 @@ export const UpdateProjectDocument = {
   UpdateProjectMutation,
   UpdateProjectMutationVariables
 >;
+export const SearchProjectsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SearchProjects" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "query" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "searchProjects" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "query" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "query" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SearchProjectsQuery, SearchProjectsQueryVariables>;
