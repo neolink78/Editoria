@@ -28,7 +28,7 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [visibleCommentsCount, setVisibleCommentsCount] = useState(5); // Nombre de commentaires à afficher initialement
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(4); // Nombre de commentaires à afficher initialement
 
   const {
     data: projectData,
@@ -321,8 +321,8 @@ const Dashboard = () => {
               }
             </Box> */}
             <Box
-              fontSize="1.4vw"
-              m={"2vw 0 0 10vw"}
+              fontSize="1rem"
+              m={"2vw 0 1rem 10vw"}
               display="flex"
               alignItems="baseline"
               alignSelf="flex-start"
@@ -337,7 +337,7 @@ const Dashboard = () => {
             <Box mb="12" mx="36">
               {ownCommentsData && ownComments.length > 0 ? (
                 <>
-                  <Flex flexWrap="wrap" justifyContent="center">
+                  <Flex flexWrap="wrap"  >
                     {ownComments.slice(0, visibleCommentsCount).map((e, idx) => (
                       <CommentCard
                         key={e.id}
@@ -370,7 +370,7 @@ const Dashboard = () => {
                         fontSize="1rem"
                         cursor="pointer"
                         color="gray.500"
-                        _hover={{ color: "blue.500", textDecoration: "underline" }}
+                        _hover={{ color: "blue.500" }}
                         mx="2"
                       >
                         Afficher moins
