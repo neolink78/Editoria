@@ -71,7 +71,7 @@ export default function HomePage() {
           opacity: 0.5,
           transform: `translate(${cursorPosition.x - 500}px, ${cursorPosition.y - 600}px)`,
           transition: "transform 0.1s ease-out",
-          zIndex: 1
+          zIndex: 1,
         }}
       />
       <Flex
