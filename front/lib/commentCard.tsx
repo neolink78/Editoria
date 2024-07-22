@@ -8,7 +8,13 @@ interface CommentCardProps {
   onOpenProject: () => void;
 }
 
-const CommentCard = ({ title, date, content, owner, onOpenProject }: CommentCardProps) => {
+const CommentCard = ({
+  title,
+  date,
+  content,
+  owner,
+  onOpenProject,
+}: CommentCardProps) => {
   return (
     <Box
       m="4"
@@ -25,11 +31,12 @@ const CommentCard = ({ title, date, content, owner, onOpenProject }: CommentCard
       <Text fontSize="0.8rem" color="gray.500" mb="4">
         Le {date}
       </Text>
-      <Text fontSize="1rem" isTruncated >
+      <Text fontSize="1rem" isTruncated>
         {content}
       </Text>
       <Text fontSize="0.8rem" color="gray.500" mt="4">
-        Project: <Text as="span" color="white">
+        Project:{" "}
+        <Text as="span" color="white">
           {title}
         </Text>
       </Text>

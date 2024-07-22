@@ -95,7 +95,9 @@ const Dashboard = () => {
   const newUser = !projects && !ownComments && !likedProjects;
 
   const handleShowMore = () => {
-    setVisibleCommentsCount(prevCount => Math.min(prevCount + 5, ownComments.length)); // Afficher 5 commentaires de plus ou jusqu'au max
+    setVisibleCommentsCount((prevCount) =>
+      Math.min(prevCount + 5, ownComments.length),
+    ); // Afficher 5 commentaires de plus ou jusqu'au max
   };
 
   const handleShowLess = () => {
@@ -337,17 +339,19 @@ const Dashboard = () => {
             <Box mb="12" mx="36">
               {ownCommentsData && ownComments.length > 0 ? (
                 <>
-                  <Flex flexWrap="wrap"  >
-                    {ownComments.slice(0, visibleCommentsCount).map((e, idx) => (
-                      <CommentCard
-                        key={e.id}
-                        title={e.project.title}
-                        date={new Date(e.createdAt).toLocaleDateString()}
-                        owner={e.owner.username}
-                        content={e.content}
-                        onOpenProject={() => handleOpenProject(e.project.id)}
-                      />
-                    ))}
+                  <Flex flexWrap="wrap">
+                    {ownComments
+                      .slice(0, visibleCommentsCount)
+                      .map((e, idx) => (
+                        <CommentCard
+                          key={e.id}
+                          title={e.project.title}
+                          date={new Date(e.createdAt).toLocaleDateString()}
+                          owner={e.owner.username}
+                          content={e.content}
+                          onOpenProject={() => handleOpenProject(e.project.id)}
+                        />
+                      ))}
                   </Flex>
                   <Flex justifyContent="center" mt="4" width="100%">
                     {visibleCommentsCount < ownComments.length && (
@@ -390,7 +394,6 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
-
           </>
         )}
         <ConfirmModal />
