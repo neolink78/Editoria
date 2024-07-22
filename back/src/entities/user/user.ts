@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
 } from "typeorm";
-import { compare, hash } from "bcrypt";
+import { compare, hash } from "bcryptjs";
 import {
   CreateUser,
   UpdateUser,

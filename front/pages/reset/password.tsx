@@ -71,7 +71,7 @@ export default function ResetPassword() {
                   mt="10px"
                   className="form_control_button"
                 >
-                  <SubmitButton w="10vw" bg="#1574EF" type="submit">
+                  <SubmitButton bg="#1574EF" type="submit">
                     <Text>Reset password</Text>
                   </SubmitButton>
                 </FormControl>
