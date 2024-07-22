@@ -15,10 +15,10 @@ type LikeContextType = {
 
 const defaultValue: LikeContextType = {
   likedProjects: [],
-  handleToggleLike: async () => {},
+  handleToggleLike: async () => { },
   loading: false,
   error: null,
-  refetchProjects: () => {},
+  refetchProjects: () => { },
 };
 
 const LikeContext = createContext<LikeContextType>(defaultValue);
@@ -30,7 +30,6 @@ interface LikeProviderProps {
 
 export const LikeProvider = ({ children }: LikeProviderProps) => {
   const { refetch: refetchProjects } = useQuery(GET_PROJECTS, {
-    variables: { limit: null, offset: null, sortBy: null },
     nextFetchPolicy: "cache-and-network",
   });
   const {
