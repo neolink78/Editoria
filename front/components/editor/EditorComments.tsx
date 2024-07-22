@@ -113,12 +113,12 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
         <Flex key={index} bg="#2F3138" p={2} gap={2} direction={"column"}>
           <Flex justifyContent={"space-between"}>
             <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
-              {/* <Link
+              <Link
                 href={`/user/${comment.owner.id}`}
                 className="text-sm hover:text-[#1574EF]"
               >
                 <span>@{comment.owner.username}</span>
-              </Link> */}
+              </Link>
               <Text isTruncated className="text-xs">
                 {comment.createdAt &&
                   formatDistanceToNow(parseISO(comment.createdAt), {
@@ -126,12 +126,12 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
                   })}
               </Text>
             </Flex>
-            {/* {user?.id === comment.owner.id && (
+            {user?.id === comment.owner.id && (
               <FaRegTrashAlt
                 className="w-3 cursor-pointer opacity-40 hover:opacity-100"
                 onClick={() => deleteComment(comment.id)}
               />
-            )} */}
+            )}
           </Flex>
           <p className="text-sm">{comment.content}</p>
         </Flex>
