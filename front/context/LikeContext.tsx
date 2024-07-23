@@ -15,10 +15,10 @@ type LikeContextType = {
 
 const defaultValue: LikeContextType = {
   likedProjects: [],
-  handleToggleLike: async () => { },
+  handleToggleLike: async () => {},
   loading: false,
   error: null,
-  refetchProjects: () => { },
+  refetchProjects: () => {},
 };
 
 const LikeContext = createContext<LikeContextType>(defaultValue);
