@@ -56,3 +56,30 @@ export const GET_PROJECTS = gql`
     }
   }
 `;
+
+export const GET_PROJECT_BY_ID = gql`
+  query GetProjectById($getProjectByIdId: ID!) {
+    getProjectById(id: $getProjectByIdId) {
+      id
+      title
+      description
+      createdAt
+      owner {
+        id
+        username
+      }
+      likes {
+        id
+      }
+      comments {
+        id
+        content
+        createdAt
+      }
+      codeSnippetsOwned {
+        id
+        language
+      }
+    }
+  }
+`;
