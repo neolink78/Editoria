@@ -102,7 +102,7 @@ export default function SignUp() {
                   mt="20px"
                   className="form_control_button"
                 >
-                  <SubmitButton w="7vw" bg="#1574EF" type="submit">
+                  <SubmitButton bg="#1574EF" type="submit">
                     <Text data-testid="sign-up-button">Sign Up</Text>
                   </SubmitButton>
                 </FormControl>

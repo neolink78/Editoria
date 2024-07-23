@@ -84,7 +84,7 @@ class Comment extends BaseEntity {
   static async getCommentByProjectId(projectId: string): Promise<Comment[]> {
     return await Comment.find({
       where: { project: { id: projectId } },
-      relations: ["owner", "project"],
+      relations: ["owner"],
     });
   }
 

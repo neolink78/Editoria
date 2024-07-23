@@ -81,6 +81,8 @@ const Tile = ({
         onOpenProject(projectId);
       }}
       cursor="pointer"
+      position={"relative"}
+      zIndex={9}
     >
       <Flex alignItems="center" gap="2vw">
         {getLanguageIcon(icon as Language)}

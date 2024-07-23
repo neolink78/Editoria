@@ -5,8 +5,6 @@ type SubmitButtonProps = {
   children: ReactNode;
   onClick?: () => void;
   bg?: string;
-  w?: string;
-  h?: string;
   type?: "button" | "submit";
 };
 
@@ -14,7 +12,6 @@ const SubmitButton = ({
   children,
   onClick,
   bg = "white",
-  h = "2.5vw",
   type = "submit",
 }: SubmitButtonProps) => {
   const [color, setColor] = useState("black");
@@ -22,15 +19,13 @@ const SubmitButton = ({
     <Flex
       as="button"
       className="submit_button_container"
-      p="0.5vw 0.5vw"
-      // w={w}
-      h={h}
+      p="0.5rem 1rem"
       bg={bg}
       onClick={onClick}
       color={bg === "white" ? "black" : "white"}
       _hover={{
         background: "none",
-        border: "1px solid #1574EF",
+        outline: "1px solid #1574EF",
         color: color,
       }}
       onMouseEnter={() => setColor("white")}
@@ -39,7 +34,7 @@ const SubmitButton = ({
     >
       {children}
 
-      <ArrowDownIcon width="1.2vw" color={bg === "white" ? color : "white"} />
+      <ArrowDownIcon width="20px" color={bg === "white" ? color : "white"} />
     </Flex>
   );
 };
