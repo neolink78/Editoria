@@ -140,7 +140,7 @@ class Project extends BaseEntity {
       order: {
         createdAt: "DESC",
       },
-      relations: ["comments"],
+      relations: { comments: true },
     });
     return [projects, totalCount];
   }
@@ -148,13 +148,7 @@ class Project extends BaseEntity {
   static async getProjectById(id: string): Promise<Project> {
     const project = await Project.findOne({
       where: { id },
-      relations: [
-        "owner",
-        "comments",
-        "codeSnippetsOwned",
-        "comments.owner",
-        "comments.project",
-      ],
+      relations: { owner: true, codeSnippetsOwned: true },
     });
     if (!project) {
       throw new Error("Project not found");

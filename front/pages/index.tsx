@@ -7,7 +7,7 @@ import Tile from "../lib/tile";
 import Layout from "../components/layout";
 import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "@/graphql/queries/projectQueries";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Error } from "@/lib/error";
 import { UUID } from "crypto";
 import { useLikes } from "../context/LikeContext";
@@ -25,10 +25,19 @@ export default function HomePage() {
     },
   );
   const projects = data?.getProjects.projects || [];
-  // console.log("projects", projects);
+
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const handleMouseMove = (e: MouseEvent) => {
+    setCursorPosition({ x: e.clientX, y: e.clientY });
+  };
 
   useEffect(() => {
     refetch();
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   const handleOpenProject = (projectId: string) => {
@@ -52,34 +61,37 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <Flex className="header_main_title">
-        <Box>Welcome to Editoria</Box>
-        <Box>We want you to enjoy coding !</Box>
-      </Flex>
-      <Flex mt="5vw" justifyContent="center" gap="11.4vw" alignItems="center">
-        <Section title="What's Editoria ?" buttonText="Try it out now !">
-          Editoria an IDE allowing you to code with your mates anytime, anywhere
-          !
-        </Section>
-        <Box
-          style={{
-            filter: "drop-shadow(0 0 2em #089b0b80)",
-            borderRadius: "1vw",
-            overflow: "hidden",
-            maxWidth: "29vw",
-            maxHeight: "21.5vw",
-            width: "100%",
-            height: "auto",
-          }}
-        >
-          <Image
-            src="/editoria.webp"
-            alt="home picture"
-            width={600}
-            height={600}
-            priority
-          />
-        </Box>
+      <div
+        className="fixed z-50 pointer-events-none"
+        style={{
+          width: "1000px",
+          height: "1000px",
+          background:
+            "radial-gradient(circle, rgba(21, 116, 239, 0.5) 0%, rgba(21, 116, 239, 0) 70%)",
+          opacity: 0.5,
+          transform: `translate(${cursorPosition.x - 500}px, ${cursorPosition.y - 600}px)`,
+          transition: "transform 0.1s ease-out",
+          zIndex: 1,
+        }}
+      />
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        mt={40}
+        direction="column"
+        gap={4}
+      >
+        <h1 className="text-4xl font-bold tracking-tighter lg:text-6xl xl:text-7xl/none w-2/3 text-center">
+          Unleash Your Coding Potential with{" "}
+          <span className="text-[#1574ef]">Editoria</span>
+        </h1>
+        <p className="max-w-[600px] text-muted-foreground md:text-xl text-center">
+          Editoria is the ultimate online code editor, empowering developers to
+          create and collaborate with ease.
+        </p>
+        <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
+          Try it out now !
+        </SubmitButton>
       </Flex>
       <Box fontSize="2.5vw" m="8vw 10.8vw 0 11.2vw">
         Most popular projects
@@ -113,7 +125,7 @@ export default function HomePage() {
           : null}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
-        <SubmitButton onClick={() => router.push("/projects")} w="10vw">
+        <SubmitButton onClick={() => router.push("/projects")}>
           See all projects
         </SubmitButton>
       </Flex>

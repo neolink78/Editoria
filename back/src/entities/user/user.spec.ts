@@ -65,15 +65,11 @@ describe("User", () => {
 
           expect(actualUser).toEqual({
             ...user,
-            comments: [],
-            likes: [],
-            followers: [],
-            followings: [],
           });
 
-          // await expect(
-          //   User.getUserWithEmailAndPassword({ email, password })
-          // ).resolves.toEqual(user);
+          await expect(
+            User.getUserWithEmailAndPassword({ email, password }),
+          ).resolves.toEqual(user);
         });
       });
     });
@@ -103,13 +99,9 @@ describe("User", () => {
 
       expect(actualUser).toEqual({
         ...user,
-        comments: [],
-        likes: [],
-        followers: [],
-        followings: [],
       });
 
-      // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
+      await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
     });
 
     it("throws an error if email already exists", async () => {

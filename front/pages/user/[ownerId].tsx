@@ -170,7 +170,6 @@ export default function User() {
               <Box fontSize="2vw">{userData.username}</Box>
               {user?.id !== ownerId && (
                 <SubmitButton
-                  h="2vw"
                   onClick={user ? handleFollow : () => router.push("/sign-in")}
                 >
                   {user && !isFollowed && "Follow me"}
