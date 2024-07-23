@@ -14,7 +14,6 @@ import { TOGGLE_FOLLOW } from "@/graphql/mutations/followMutations";
 import { GET_FOLLOWERS } from "@/graphql/queries/followQueries";
 import { GET_USER } from "@/graphql/queries/userQueries";
 import PictureIcon from "@/icons/pictureIcon";
-import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
 
 //TODO: Change location of types definition
 export type ProjectType = {
@@ -84,33 +83,19 @@ export default function User() {
   );
   const [userData, setUserData] = useState<UserType | null>(null);
   const projectsPerPage = 5;
-  const [projects, setProjects] = useState<ProjectType[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
-  const { data: projectsData, refetch: refetchProjects } = useQuery(
-    GET_USER_PROJECTS,
-    {
-      variables: {
-        offset: (+currentPage - 1) * projectsPerPage,
-        limit: projectsPerPage,
-      },
-    },
-  );
 
   useEffect(() => {
     setCurrentPage(+(router.query.page as string) || 1);
   }, [router.query.page]);
 
   useEffect(() => {
-    userDatas && setUserData(userDatas.getUser);
-  }, [userDatas]);
-
-  useEffect(() => {
-    if (projectsData) {
-      setProjects(projectsData.getOwnProject.projects);
-      setTotalCount(projectsData.getOwnProject.totalCount);
+    if (userDatas) {
+      setUserData(userDatas.getUser);
+      setTotalCount(userDatas.getUser.projects.length);
     }
-  }, [projectsData]);
+  }, [userDatas]);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -145,6 +130,11 @@ export default function User() {
       query: { ...router.query, page },
     });
   };
+
+  const paginatedProjects = userData?.projects.slice(
+    (+currentPage - 1) * projectsPerPage,
+    +currentPage * projectsPerPage,
+  );
 
   return (
     <Layout>
@@ -186,10 +176,10 @@ export default function User() {
             </Box>
           </Flex>
           <Box mt="3vw">
-            {projects.length > 0 &&
-              `${userData.username}'s projects (${totalCount})`}
+            {paginatedProjects && paginatedProjects.length > 0 &&
+              `${userData.username}'s projects (${userData.projects.length})`}
             <Box minHeight="25vw">
-              {projects.map((project: ProjectType, idx: number) => (
+              {paginatedProjects?.map((project: ProjectType, idx: number) => (
                 <Tile
                   homePage
                   ownerId={ownerId as UUID}
