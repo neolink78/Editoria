@@ -15,8 +15,8 @@ export default function Account() {
   const handlePageChange = (pageName: string | undefined) => {
     if (!pageName) return setActivePage("dashboard");
     else {
-      setActivePage(pageName)
-      router.push(`/user/account?tab=${pageName}`)
+      setActivePage(pageName);
+      router.push(`/user/account?tab=${pageName}`);
     }
   };
   const navigationItems = [
@@ -27,9 +27,9 @@ export default function Account() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!router.query?.tab) return
-    setActivePage(router.query.tab as string)
-  }, [router.query])
+    if (!router.query?.tab) return;
+    setActivePage(router.query.tab as string);
+  }, [router.query]);
 
   return loading ? (
     <Layout>

@@ -15,7 +15,6 @@ const Header = () => {
   const modalRef = useRef<HTMLInputElement | null>(null);
   const userIconRef = useRef<HTMLInputElement | null>(null);
 
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -27,23 +26,28 @@ const Header = () => {
 
   const projectsPage = router.pathname === "/projects";
 
-    /**
+  /**
    * Close modal when clicking outside
    * @param event
    */
-    const clickOutsideHandler = (event: MouseEvent) => {
-      if (openModal && modalRef && isClickOutside(event, modalRef.current) && isClickOutside(event, userIconRef.current)) {
-        setOpenModal(false);
-      }
-    };
+  const clickOutsideHandler = (event: MouseEvent) => {
+    if (
+      openModal &&
+      modalRef &&
+      isClickOutside(event, modalRef.current) &&
+      isClickOutside(event, userIconRef.current)
+    ) {
+      setOpenModal(false);
+    }
+  };
 
-    useEffect(() => {
-      document.addEventListener("mousedown", clickOutsideHandler);
-  
-      return () => {
-        document.removeEventListener("mousedown", clickOutsideHandler);
-      };
-    });
+  useEffect(() => {
+    document.addEventListener("mousedown", clickOutsideHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", clickOutsideHandler);
+    };
+  });
 
   return (
     <Flex className="header_home_page">
