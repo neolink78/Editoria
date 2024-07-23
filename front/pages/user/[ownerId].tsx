@@ -85,7 +85,6 @@ export default function User() {
   const projectsPerPage = 5;
   const [totalCount, setTotalCount] = useState(0);
 
-
   useEffect(() => {
     setCurrentPage(+(router.query.page as string) || 1);
   }, [router.query.page]);
@@ -175,7 +174,8 @@ export default function User() {
             </Box>
           </Flex>
           <Box mt="3vw">
-            {paginatedProjects && paginatedProjects.length > 0 &&
+            {paginatedProjects &&
+              paginatedProjects.length > 0 &&
               `${userData.username}'s projects (${userData.projects.length})`}
             <Box minHeight="25vw">
               {paginatedProjects?.map((project: ProjectType, idx: number) => (
