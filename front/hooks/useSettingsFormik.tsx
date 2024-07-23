@@ -34,7 +34,6 @@ export const useSettingsFormik = (user: any) => {
     UpdateUserMutationVariables
   >(UPDATE_USER);
 
-  console.log("user", user);
   const toast = useToast();
   const validationSchema = Yup.object({
     username: Yup.string().required("Pseudonyme non renseigné"),

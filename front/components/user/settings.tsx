@@ -5,11 +5,34 @@ import SettingsInput from "../../lib/settingsInput";
 import { useRef, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
 import Image from "next/image";
+import { gql, useMutation } from "@apollo/client";
+import { useAuth } from "@/context/UserContext";
+import { DeleteUserMutation, DeleteUserMutationVariables } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import DeleteModal from "./deleteModal";
+
+const DELETE_USER = gql`
+  mutation deleteUser($deleteUserId: ID!) {
+    deleteUser(id: $deleteUserId) {
+      username
+      id
+      email
+    }
+  }
+`;
 
 const Settings = (user: any) => {
+  const router = useRouter();
   const [isDisabled, setIsDisabled] = useState(true);
   const [imageUrl, setImageUrl] = useState(user.user.image || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { signOut } = useAuth();
+  const [deleteUser] = useMutation<
+    DeleteUserMutation,
+    DeleteUserMutationVariables
+  >(DELETE_USER);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
@@ -34,6 +57,22 @@ const Settings = (user: any) => {
   const handleImageClick = () => {
     if (!isDisabled && fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await signOut();
+      await deleteUser({ variables: { deleteUserId: user.user.id } });
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
@@ -136,7 +175,7 @@ const Settings = (user: any) => {
         In case of deletion, all your projects and personal data will be
         deleted.
       </Box>
-      <SubmitButton onClick={() => alert("deleting account...")}>
+      <SubmitButton onClick={handleDeleteAccount}>
         Delete my account
       </SubmitButton>
       <Box
@@ -149,6 +188,11 @@ const Settings = (user: any) => {
         Billing
       </Box>
       <SubmitButton>Upgrade to premium</SubmitButton>
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </Flex>
   );
 };

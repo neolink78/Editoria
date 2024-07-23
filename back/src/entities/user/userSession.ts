@@ -8,7 +8,7 @@ class UserSession extends BaseEntity {
   @PrimaryColumn({ length: 32 })
   id!: string;
 
-  @ManyToOne(() => User, (user) => user.sessions)
+  @ManyToOne(() => User, (user) => user.sessions, { onDelete: "CASCADE" })
   user!: User;
 
   constructor(user?: User) {
