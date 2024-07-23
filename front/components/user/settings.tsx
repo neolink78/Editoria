@@ -9,7 +9,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useAuth } from "@/context/UserContext";
 import { DeleteUserMutation, DeleteUserMutationVariables } from "@/gql/graphql";
 import { useRouter } from "next/router";
-import DeleteModal from "./deleteModal";
+import { useModal } from "@/context/ModalContext";
 
 const DELETE_USER = gql`
   mutation deleteUser($deleteUserId: ID!) {
@@ -60,20 +60,23 @@ const Settings = (user: any) => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    setIsModalOpen(true);
-  };
+  const { openModal } = useModal();
 
-  const handleConfirmDelete = async () => {
-    try {
-      await signOut();
-      await deleteUser({ variables: { deleteUserId: user.user.id } });
-      router.push("/");
-    } catch (error) {
-      console.error("Failed to delete user:", error);
-    } finally {
-      setIsModalOpen(false);
-    }
+  const handleDeleteAccount = () => {
+    openModal({
+      title: "Confirm Account Deletion",
+      children:
+        "Are you sure you want to delete your account? This action cannot be undone.",
+      onConfirm: async () => {
+        try {
+          await signOut();
+          await deleteUser({ variables: { deleteUserId: user.user.id } });
+          router.push("/");
+        } catch (error) {
+          console.error("Failed to delete user:", error);
+        }
+      },
+    });
   };
 
   return (
@@ -188,11 +191,6 @@ const Settings = (user: any) => {
         Billing
       </Box>
       <SubmitButton>Upgrade to premium</SubmitButton>
-      <DeleteModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-      />
     </Flex>
   );
 };
