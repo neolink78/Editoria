@@ -21,6 +21,8 @@ const documents = {
     types.GetCommentsbyProjectIdDocument,
   "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n":
     types.GetUsersDocument,
+  "\n  mutation deleteUser($deleteUserId: ID!) {\n    deleteUser(id: $deleteUserId) {\n      username\n      id\n      email\n    }\n  }\n":
+    types.DeleteUserDocument,
   "\n  query MyProfile {\n    myProfile {\n      description\n      email\n      id\n      username\n      image\n    }\n  }\n":
     types.MyProfileDocument,
   "\n  mutation SignOUt {\n    signOut\n  }\n": types.SignOUtDocument,
@@ -106,6 +108,12 @@ export function graphql(
 export function graphql(
   source: "\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n",
 ): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      username\n      email\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n  mutation deleteUser($deleteUserId: ID!) {\n    deleteUser(id: $deleteUserId) {\n      username\n      id\n      email\n    }\n  }\n",
+): (typeof documents)["\n  mutation deleteUser($deleteUserId: ID!) {\n    deleteUser(id: $deleteUserId) {\n      username\n      id\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
