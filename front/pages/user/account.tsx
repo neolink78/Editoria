@@ -1,23 +1,35 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Layout from "../../components/layout";
 import Dashboard from "../../components/user/dashboard";
 import Fav from "../../components/user/fav";
 import Breadcrumb from "../../lib/breadCrumb";
 import Settings from "../../components/user/settings";
 import { useAuth } from "../../context/UserContext";
+import { useRouter } from "next/router";
 
 export default function Account() {
+  const router = useRouter();
+
   const [activePage, setActivePage] = useState("dashboard");
   const handlePageChange = (pageName: string | undefined) => {
-    !pageName ? setActivePage("dashboard") : setActivePage(pageName);
+    if (!pageName) return setActivePage("dashboard");
+    else {
+      setActivePage(pageName);
+      router.push(`/user/account?tab=${pageName}`);
+    }
   };
   const navigationItems = [
     { label: "Dashboard", value: "dashboard" },
     { label: "Settings", value: "settings" },
-    { label: "Your Favorite Coders", value: "yourfavcoder" },
+    { label: "Your Favorite Coders", value: "yourfavcoders" },
   ];
   const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!router.query?.tab) return;
+    setActivePage(router.query.tab as string);
+  }, [router.query]);
 
   return loading ? (
     <Layout>
@@ -41,7 +53,7 @@ export default function Account() {
         />
         {activePage === "dashboard" && <Dashboard />}
         {activePage === "settings" && <Settings user={user} />}
-        {activePage === "yourfavcoder" && <Fav />}
+        {activePage === "yourfavcoders" && <Fav />}
       </Flex>
     </Layout>
   ) : (
