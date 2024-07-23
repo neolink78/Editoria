@@ -64,11 +64,7 @@ describe("User", () => {
           });
 
           expect(actualUser).toEqual({
-            ...user,
-            comments: [],
-            likes: [],
-            followers: [],
-            followings: [],
+            ...user
           });
 
           await expect(
@@ -102,11 +98,7 @@ describe("User", () => {
       });
 
       expect(actualUser).toEqual({
-        ...user,
-        comments: [],
-        likes: [],
-        followers: [],
-        followings: [],
+        ...user
       });
 
       await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
