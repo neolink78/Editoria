@@ -16,11 +16,7 @@ const Section = ({ title, children, buttonText }: sectionTypeProps) => {
       <Box className="section_children">{children}</Box>
       {buttonText && (
         <Box mt="0.7vw">
-          <SubmitButton
-            bg="#1574EF"
-            w="10vw"
-            onClick={() => router.push("/editor")}
-          >
+          <SubmitButton bg="#1574EF" onClick={() => router.push("/editor")}>
             {buttonText}
           </SubmitButton>
         </Box>

@@ -18,9 +18,7 @@ export const NewUser = () => {
         premier projet maintenant et plongez dans le développement.
       </Box>
       <Link href="/editor" passHref>
-        <SubmitButton w="15vw" bg="#1574EF">
-          Créer un nouveau projet
-        </SubmitButton>
+        <SubmitButton bg="#1574EF">Créer un nouveau projet</SubmitButton>
       </Link>
     </Flex>
   );

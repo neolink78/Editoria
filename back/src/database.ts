@@ -29,6 +29,7 @@ export const getDataSource = async () => {
         Follower,
       ],
       synchronize: true,
+      logging: ["query", "error"],
     });
     await dataSource.initialize();
   }

@@ -102,7 +102,7 @@ function LoginModal({ closeModal }: { closeModal: () => void }) {
             mt="20px"
             className="form_control_button"
           >
-            <SubmitButton w="7vw" bg="#1574EF" type="submit">
+            <SubmitButton bg="#1574EF" type="submit">
               <Text data-testid="sign-in">Sign In</Text>
             </SubmitButton>
           </FormControl>

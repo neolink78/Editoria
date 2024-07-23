@@ -18,6 +18,7 @@ const Layout = ({ children }: Props) => {
         mt="5vw"
         position="absolute"
         bottom="0"
+        zIndex={9}
       >
         © 2024 Editoria. All rights reserved.
       </Flex>

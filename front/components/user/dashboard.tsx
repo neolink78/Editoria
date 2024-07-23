@@ -197,7 +197,6 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore de projet.
                   </Box>
                   <SubmitButton
-                    w="13vw"
                     bg="#1574EF"
                     onClick={() => router.push("/editor")}
                   >
@@ -261,7 +260,6 @@ const Dashboard = () => {
                     Vous n&apos;avez pas encore liké de projet.
                   </Box>
                   <SubmitButton
-                    w="11vw"
                     bg="#1574EF"
                     onClick={() => router.push("/projects")}
                   >

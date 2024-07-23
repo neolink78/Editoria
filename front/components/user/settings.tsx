@@ -81,7 +81,7 @@ const Settings = (user: any) => {
           style={{ display: "none" }}
         />
         Your informations
-        <SubmitButton onClick={() => editSettings()} w="5.5vw">
+        <SubmitButton onClick={() => editSettings()}>
           {isDisabled ? "Edit" : "save"}
         </SubmitButton>
       </Flex>
@@ -135,7 +135,7 @@ const Settings = (user: any) => {
         In case of deletion, all your projects and personal data will be
         deleted.
       </Box>
-      <SubmitButton w="16.2vw" onClick={() => alert("deleting account...")}>
+      <SubmitButton onClick={() => alert("deleting account...")}>
         Delete my account
       </SubmitButton>
       <Box
@@ -147,7 +147,7 @@ const Settings = (user: any) => {
       >
         Billing
       </Box>
-      <SubmitButton w="16.2vw">Upgrade to premium</SubmitButton>
+      <SubmitButton>Upgrade to premium</SubmitButton>
     </Flex>
   );
 };
