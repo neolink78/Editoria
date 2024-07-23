@@ -28,7 +28,7 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [visibleCommentsCount, setVisibleCommentsCount] = useState(4); // Nombre de commentaires à afficher initialement
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(4);
 
   const {
     data: projectData,
@@ -45,7 +45,6 @@ const Dashboard = () => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
-  // console.log("projects", projects);
   const totalItems = projectData?.getOwnProject.totalCount || 0;
 
   const handlePageChange = (pageNumber: number) => {
