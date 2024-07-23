@@ -64,11 +64,11 @@ describe("User", () => {
           });
 
           expect(actualUser).toEqual({
-            ...user
+            ...user,
           });
 
           await expect(
-            User.getUserWithEmailAndPassword({ email, password })
+            User.getUserWithEmailAndPassword({ email, password }),
           ).resolves.toEqual(user);
         });
       });
@@ -98,7 +98,7 @@ describe("User", () => {
       });
 
       expect(actualUser).toEqual({
-        ...user
+        ...user,
       });
 
       await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
