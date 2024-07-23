@@ -126,11 +126,8 @@ class Project extends BaseEntity {
     console.log(`Cache miss for query: ${cacheKey}`);
 
     const options: FindManyOptions<Project> = {
-      skip: offset,
-      take: limit,
-      order: {
-        [sortBy === "likes" ? "createdAt" : sortBy]: "DESC",
-      },
+      relations: ["likes"],
+      order: sortBy === "createdAt" ? { createdAt: "DESC" } : undefined,
     };
 
     if (search) {
@@ -140,12 +137,20 @@ class Project extends BaseEntity {
       ];
     }
 
-    const [projects, totalCount] = await this.findAndCount(options);
+    let projects: Project[];
+    let totalCount: number;
 
     if (sortBy === "likes") {
-      projects.sort((a, b) => b.likes.length - a.likes.length);
-    }
+      const allProjects = await this.find(options);
+      totalCount = allProjects.length;
+      allProjects.sort((a, b) => b.likes.length - a.likes.length);
 
+      projects = allProjects.slice(offset, offset + limit);
+    } else {
+      options.skip = offset;
+      options.take = limit;
+      [projects, totalCount] = await this.findAndCount(options);
+    }
     cache.set(cacheKey, JSON.stringify([projects, totalCount]), { EX: 600 });
 
     return [projects, totalCount];
