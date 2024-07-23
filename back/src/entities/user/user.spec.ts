@@ -71,9 +71,9 @@ describe("User", () => {
             followings: [],
           });
 
-          // await expect(
-          //   User.getUserWithEmailAndPassword({ email, password })
-          // ).resolves.toEqual(user);
+          await expect(
+            User.getUserWithEmailAndPassword({ email, password })
+          ).resolves.toEqual(user);
         });
       });
     });
@@ -109,7 +109,7 @@ describe("User", () => {
         followings: [],
       });
 
-      // await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
+      await expect(User.findOne({ where: { email } })).resolves.toEqual(user);
     });
 
     it("throws an error if email already exists", async () => {
