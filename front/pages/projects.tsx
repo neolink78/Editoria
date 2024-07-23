@@ -238,7 +238,10 @@ const Projects = () => {
                     handleDelete(project.id);
                   }}
                   toggleLike={() => handleToggleLike(project.id)}
-                  isLiked={likedProjects && likedProjects.some((p) => p.id === project.id)}
+                  isLiked={
+                    likedProjects &&
+                    likedProjects.some((p) => p.id === project.id)
+                  }
                   isCommented={ownComments.some(
                     (c) => c.project.id === project.id,
                   )}
