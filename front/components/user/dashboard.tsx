@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, SimpleGrid, Skeleton, Text } from "@chakra-ui/react";
 // import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
@@ -28,7 +28,7 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [visibleCommentsCount, setVisibleCommentsCount] = useState(4);
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(5);
 
   const {
     data: projectData,
@@ -53,7 +53,11 @@ const Dashboard = () => {
 
   const { data: ownCommentsData, loading: commentLoading } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
-  const ownComments = ownCommentsData?.getOwnComments || [];
+
+  const ownComments = ownCommentsData?.getOwnComments
+    .slice()
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) || [];
+
 
   const { handleToggleLike, likedProjects, refetchProjects } = useLikes();
   // console.log("likedProjects", likedProjects);
@@ -288,23 +292,21 @@ const Dashboard = () => {
             >
               Mes derniers commentaires
             </Box>
-            <Box mb="12" mx="36">
+            <Box mb="12" mx="20">
               {ownCommentsData && ownComments.length > 0 ? (
                 <>
-                  <Flex flexWrap="wrap">
-                    {ownComments
-                      .slice(0, visibleCommentsCount)
-                      .map((e, idx) => (
-                        <CommentCard
-                          key={e.id}
-                          title={e.project.title}
-                          date={new Date(e.createdAt).toLocaleDateString()}
-                          owner={e.owner.username}
-                          content={e.content}
-                          onOpenProject={() => handleOpenProject(e.project.id)}
-                        />
-                      ))}
-                  </Flex>
+                  <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} spacing={8} justifyContent="center" >
+                    {ownComments.slice(0, visibleCommentsCount).map((e, idx) => (
+                      <CommentCard
+                        key={e.id}
+                        title={e.project.title}
+                        date={new Date(e.createdAt).toLocaleDateString()}
+                        owner={e.owner.username}
+                        content={e.content}
+                        onOpenProject={() => handleOpenProject(e.project.id)}
+                      />
+                    ))}
+                  </SimpleGrid>
                   <Flex justifyContent="center" mt="4" width="100%">
                     {visibleCommentsCount < ownComments.length && (
                       <Text

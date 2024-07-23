@@ -17,10 +17,8 @@ const CommentCard = ({
 }: CommentCardProps) => {
   return (
     <Box
-      m="4"
       p="4"
-      mb="4"
-      width="16rem"
+      width="100%"
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
@@ -40,9 +38,6 @@ const CommentCard = ({
           {title}
         </Text>
       </Text>
-      {/* <Text fontSize="0.8rem" color="gray.500">
-        by <Text as="span" color="blue.500">{owner}</Text>
-      </Text> */}
     </Box>
   );
 };
