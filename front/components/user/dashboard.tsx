@@ -97,7 +97,7 @@ const Dashboard = () => {
   const handleShowMore = () => {
     setVisibleCommentsCount((prevCount) =>
       Math.min(prevCount + 5, ownComments.length),
-    ); // Afficher 5 commentaires de plus ou jusqu'au max
+    );
   };
 
   const handleShowLess = () => {
@@ -280,46 +280,6 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
-            {/* 
-            <Box
-              fontSize="1.4vw"
-              m={"2vw 0 0 10vw"}
-              alignSelf={"flex-start"}
-              display="flex"
-              alignItems="baseline"
-            >
-              Mes projets en collaboration
-              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
-                Tout voir
-              </Box>}
-            </Box>
-            <Box mb={12}>
-              {indexMock ? indexMock.slice(-2).map((e, idx) => (
-                <Skeleton isLoaded={!loading} key={idx}>
-                  <Tile
-                    homePage
-                    key={idx}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                    ownerId={e.owner.id as UUID}
-
-                  />
-                </Skeleton>
-              )) :
-                <Flex
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Box fontSize="0.9vw" m="4vw">
-                    {" "}
-                    Vous n&apos;avez pas encore de projet en collaboration.{" "}
-                  </Box>
-                </Flex>
-              }
-            </Box> */}
             <Box
               fontSize="1rem"
               m={"2vw 0 1rem 10vw"}
@@ -328,11 +288,6 @@ const Dashboard = () => {
               alignSelf="flex-start"
             >
               Mes derniers commentaires
-              {/* {ownComments.length > 3 && (
-                <Box fontSize="1vw" ml="2vw">
-                  Tout voir
-                </Box>
-              )} */}
             </Box>
             <Box mb="12" mx="36">
               {ownCommentsData && ownComments.length > 0 ? (
