@@ -30,8 +30,18 @@ export const GET_USER_PROJECTS = gql`
 `;
 
 export const GET_PROJECTS = gql`
-  query GetProjects($limit: Int!, $offset: Int!, $sortBy: String!, $search: String) {
-    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy, search: $search) {
+  query GetProjects(
+    $limit: Int!
+    $offset: Int!
+    $sortBy: String!
+    $search: String
+  ) {
+    getProjects(
+      offset: $offset
+      limit: $limit
+      sortBy: $sortBy
+      search: $search
+    ) {
       projects {
         id
         title

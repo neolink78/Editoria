@@ -30,7 +30,12 @@ export const PaginationControls = ({
   };
 
   return (
-    <Flex my="8" justifyContent="center" alignItems="center" className="lg:my-4 lg:h-16" >
+    <Flex
+      my="8"
+      justifyContent="center"
+      alignItems="center"
+      className="lg:my-4 lg:h-16"
+    >
       <IconButton
         icon={<ArrowLeftIcon />}
         onClick={() => goToPage(Math.max(currentPage - 1, 1))}
