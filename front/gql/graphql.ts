@@ -363,6 +363,20 @@ export type GetUsersQuery = {
   }>;
 };
 
+export type DeleteUserMutationVariables = Exact<{
+  deleteUserId: Scalars["ID"]["input"];
+}>;
+
+export type DeleteUserMutation = {
+  __typename?: "Mutation";
+  deleteUser: {
+    __typename?: "User";
+    username: string;
+    id: string;
+    email: string;
+  };
+};
+
 export type MyProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyProfileQuery = {
@@ -954,6 +968,56 @@ export const GetUsersDocument = {
     },
   ],
 } as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
+export const DeleteUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "deleteUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "deleteUserId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteUser" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "deleteUserId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteUserMutation, DeleteUserMutationVariables>;
 export const MyProfileDocument = {
   kind: "Document",
   definitions: [
