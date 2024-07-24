@@ -125,7 +125,7 @@ const Settings = (user: any) => {
         />
         Your informations
         <SubmitButton onClick={() => editSettings()}>
-          {isDisabled ? "Edit" : "save"}
+          {isDisabled ? "Edit" : "Save"}
         </SubmitButton>
       </Flex>
       <SettingsInput
