@@ -57,19 +57,7 @@ const Projects = () => {
   const { currentUserData } = useAuth();
   const currentUserId = currentUserData?.myProfile.id;
 
-  const [deleteProject] = useMutation(DELETE_PROJECT, {
-    refetchQueries: [
-      {
-        query: GET_PROJECTS,
-        variables: {
-          limit: projectsPerPage,
-          offset: offset,
-          sortBy: sortBy,
-          search: debouncedValue,
-        },
-      },
-    ],
-  });
+  const [deleteProject] = useMutation(DELETE_PROJECT);
 
   const projects = data?.getProjects.projects || [];
   const totalCount = data?.getProjects.totalCount || 0;
@@ -113,7 +101,16 @@ const Projects = () => {
   };
 
   const confirmDelete = async (projectId: string) => {
-    await deleteProject({ variables: { deleteProjectId: projectId } });
+    await deleteProject({
+      variables: { deleteProjectId: projectId }, refetchQueries: [{
+        query: GET_PROJECTS, variables: {
+          limit: projectsPerPage,
+          offset: (currentPage - 1) * projectsPerPage,
+          sortBy: sortBy,
+          search: debouncedValue,
+        }
+      }]
+    });
   };
 
   useEffect(() => {
