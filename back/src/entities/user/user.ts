@@ -84,7 +84,9 @@ class User extends BaseEntity {
   @Field(() => [Like])
   likes!: Like[];
 
-  @OneToMany(() => UserSession, (session) => session.user)
+  @OneToMany(() => UserSession, (session) => session.user, {
+    onDelete: "CASCADE",
+  })
   sessions!: UserSession[];
 
   @OneToMany(() => Comment, (comment) => comment.owner)
