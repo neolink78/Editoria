@@ -316,10 +316,7 @@ const Dashboard = () => {
             <Box mb="12" w="100%" px="10rem">
               {ownCommentsData && ownComments.length > 0 ? (
                 <>
-                  <Flex
-                    gap="16px"
-                    flexWrap="wrap"
-                  >
+                  <Flex gap="16px" flexWrap="wrap">
                     {ownComments
                       .slice(0, visibleCommentsCount)
                       .map((e, idx) => (
