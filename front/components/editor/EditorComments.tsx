@@ -62,7 +62,9 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const [deleteCommentMutation] = useMutation<
     DeleteCommentMutation,
     DeleteCommentMutationVariables
-  >(DELETE_COMMENT);
+  >(DELETE_COMMENT, {
+    refetchQueries: [{ query: GET_OWN_COMMENTS }],
+  });
 
   const addComment = async () => {
     if (!projectId || !newComment) return;
