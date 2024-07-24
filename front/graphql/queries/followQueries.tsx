@@ -18,49 +18,49 @@ export const GET_FOLLOWERS = gql`
 `;
 
 export const GET_FAVORITE_CODERS = gql`
-query getFollowings {
-  getFollowings {
-    following {
-      username
-      likes {
-        createdAt
-        project {
-          title
-          description
-          id
-          codeSnippetsOwned {
-            language
-          }
-            comments {
+  query getFollowings {
+    getFollowings {
+      following {
+        username
+        likes {
+          createdAt
+          project {
+            title
+            description
             id
+            codeSnippetsOwned {
+              language
+            }
+            comments {
+              id
             }
             likes {
-            id
+              id
             }
-          owner {
-           id
-           username
+            owner {
+              id
+              username
+            }
+            createdAt
           }
-          createdAt
         }
-      }
-      comments {
-        content
-        createdAt
-        project {
-        createdAt
-          id
-          likes {
-          id
-          }
-          title
-          owner {
+        comments {
+          content
+          createdAt
+          project {
+            createdAt
             id
-            username
+            likes {
+              id
+            }
+            title
+            owner {
+              id
+              username
+            }
           }
         }
       }
     }
   }
-}
 `;

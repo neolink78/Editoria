@@ -51,9 +51,9 @@ export default function Account() {
           value={activePage}
           onChange={handlePageChange}
         />
-        {activePage === "dashboard" && <Dashboard/>}
+        {activePage === "dashboard" && <Dashboard />}
         {activePage === "settings" && <Settings user={user} />}
-        {activePage === "yourfavcoders" && <Fav user={user}/>}
+        {activePage === "yourfavcoders" && <Fav user={user} />}
       </Flex>
     </Layout>
   ) : (

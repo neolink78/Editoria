@@ -1,4 +1,12 @@
-import { Arg, Authorized, Int, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Int,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import User from "../entities/user/user";
 import Follower from "../entities/follower/follower";
 import { Context } from "..";
@@ -25,15 +33,10 @@ class FollowerResolver {
   }
 
   @Query(() => [Follower])
-  async getFollowings(
-    @Ctx() { user }: Context,
-  ) {
+  async getFollowings(@Ctx() { user }: Context) {
     if (!user) throw new Error("Authentication required");
-     return await Follower.getFollowings(user);
+    return await Follower.getFollowings(user);
   }
 }
 
 export default FollowerResolver;
-
-
-
