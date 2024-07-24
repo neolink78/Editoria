@@ -300,7 +300,12 @@ const Dashboard = () => {
               )}
             </Box>
             <Box
-              fontSize={{ base: "1rem", sm: "0.8rem", md: "1.2rem", lg: "1.4rem" }}
+              fontSize={{
+                base: "1rem",
+                sm: "0.8rem",
+                md: "1.2rem",
+                lg: "1.4rem",
+              }}
               m={"2vw 0 1rem 10vw"}
               display="flex"
               alignItems="baseline"
