@@ -56,9 +56,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
     AddCommentMutation,
     AddCommentMutationVariables
   >(ADD_COMMENT, {
-    refetchQueries: [
-      { query: GET_OWN_COMMENTS }
-    ],
+    refetchQueries: [{ query: GET_OWN_COMMENTS }],
   });
 
   const [deleteCommentMutation] = useMutation<
