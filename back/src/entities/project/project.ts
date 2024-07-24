@@ -192,6 +192,7 @@ class Project extends BaseEntity {
   static async deleteProject(id: string): Promise<Project> {
     const project = await Project.getProjectById(id);
     await Project.delete(id);
+    await Project.deleteCache();
     return project;
   }
 
