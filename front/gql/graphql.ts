@@ -268,9 +268,9 @@ export type QueryGetProjectByIdArgs = {
 };
 
 export type QueryGetProjectsArgs = {
-  limit?: Scalars["Int"]["input"];
-  offset?: Scalars["Int"]["input"];
-  sortBy?: Scalars["String"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type QueryGetProjectsByUserIdArgs = {
@@ -430,6 +430,7 @@ export type GetOwnCommentsQuery = {
     __typename?: "Comment";
     id: string;
     content: string;
+    createdAt: any;
     project: { __typename?: "Project"; id: string; title: string };
     owner: { __typename?: "User"; id: string; username: string };
   }>;
@@ -508,9 +509,9 @@ export type GetOwnProjectQuery = {
 };
 
 export type GetProjectsQueryVariables = Exact<{
-  limit: Scalars["Int"]["input"];
-  offset: Scalars["Int"]["input"];
-  sortBy: Scalars["String"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type GetProjectsQuery = {
@@ -1222,6 +1223,7 @@ export const GetOwnCommentsDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "content" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "project" },
@@ -1575,10 +1577,7 @@ export const GetProjectsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "limit" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
         {
           kind: "VariableDefinition",
@@ -1586,10 +1585,7 @@ export const GetProjectsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "offset" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
         {
           kind: "VariableDefinition",
@@ -1597,13 +1593,7 @@ export const GetProjectsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "sortBy" },
           },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
       ],
       selectionSet: {

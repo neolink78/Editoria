@@ -5,6 +5,7 @@ export const GET_OWN_COMMENTS = gql`
     getOwnComments {
       id
       content
+      createdAt
       project {
         id
         title
