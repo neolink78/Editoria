@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
-      signOutMutation();
+      await signOutMutation();
       setUser(null);
     } catch (error) {
       console.error("Error signing out:", error);

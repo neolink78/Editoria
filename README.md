@@ -19,7 +19,7 @@ docker compose logs -f
 Generate query-specific types for web-app development:
 
 ```
-cd web-app
+cd front
 npm run graphql-codegen
 ```
 

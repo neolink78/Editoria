@@ -5,11 +5,34 @@ import SettingsInput from "../../lib/settingsInput";
 import { useRef, useState } from "react";
 import { useSettingsFormik } from "../../hooks/useSettingsFormik";
 import Image from "next/image";
+import { gql, useMutation } from "@apollo/client";
+import { useAuth } from "@/context/UserContext";
+import { DeleteUserMutation, DeleteUserMutationVariables } from "@/gql/graphql";
+import { useRouter } from "next/router";
+import { useModal } from "@/context/ModalContext";
+
+const DELETE_USER = gql`
+  mutation deleteUser($deleteUserId: ID!) {
+    deleteUser(id: $deleteUserId) {
+      username
+      id
+      email
+    }
+  }
+`;
 
 const Settings = (user: any) => {
+  const router = useRouter();
   const [isDisabled, setIsDisabled] = useState(true);
   const [imageUrl, setImageUrl] = useState(user.user.image || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { signOut } = useAuth();
+  const [deleteUser] = useMutation<
+    DeleteUserMutation,
+    DeleteUserMutationVariables
+  >(DELETE_USER);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const formikSettings = useSettingsFormik(user);
   const editSettings = () => {
@@ -35,6 +58,25 @@ const Settings = (user: any) => {
     if (!isDisabled && fileInputRef.current) {
       fileInputRef.current.click();
     }
+  };
+
+  const { openModal } = useModal();
+
+  const handleDeleteAccount = () => {
+    openModal({
+      title: "Confirm Account Deletion",
+      children:
+        "Are you sure you want to delete your account? This action cannot be undone.",
+      onConfirm: async () => {
+        try {
+          await signOut();
+          await deleteUser({ variables: { deleteUserId: user.user.id } });
+          router.push("/");
+        } catch (error) {
+          console.error("Failed to delete user:", error);
+        }
+      },
+    });
   };
 
   return (
@@ -136,7 +178,7 @@ const Settings = (user: any) => {
         In case of deletion, all your projects and personal data will be
         deleted.
       </Box>
-      <SubmitButton onClick={() => alert("deleting account...")}>
+      <SubmitButton onClick={handleDeleteAccount}>
         Delete my account
       </SubmitButton>
       <Box
