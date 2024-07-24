@@ -43,11 +43,11 @@ export class ProjectResolver {
 
   @Query(() => ProjectPaginationResponse)
   async getProjects(
-    @Arg("limit", () => Int, { defaultValue: 10, nullable: true })
+    @Arg("limit", () => Int, { nullable: true })
     limit: number,
-    @Arg("offset", () => Int, { defaultValue: 0, nullable: true })
+    @Arg("offset", () => Int, { nullable: true })
     offset: number,
-    @Arg("sortBy", () => String, { defaultValue: "createdAt", nullable: true })
+    @Arg("sortBy", () => String, { nullable: true })
     sortBy: string,
     @Arg("search", () => String, { nullable: true }) search?: string,
   ): Promise<ProjectPaginationResponse> {
