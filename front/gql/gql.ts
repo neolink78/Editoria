@@ -32,7 +32,7 @@ const documents = {
     types.ToggleLikeDocument,
   "\n  mutation DeleteProject($deleteProjectId: ID!) {\n    deleteProject(id: $deleteProjectId) {\n      id\n    }\n  }\n":
     types.DeleteProjectDocument,
-  "\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n":
+  "\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      createdAt\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n":
     types.GetOwnCommentsDocument,
   "\n  query getFollowers($followingId: String!) {\n    getFollowers(followingId: $followingId) {\n      follower {\n        email\n        id\n        username\n      }\n      following {\n        id\n        email\n        username\n      }\n    }\n  }\n":
     types.GetFollowersDocument,
@@ -40,7 +40,7 @@ const documents = {
     types.LikedProjectsDocument,
   "\n  query GetOwnProject($offset: Int!, $limit: Int!) {\n    getOwnProject(offset: $offset, limit: $limit) {\n      projects {\n        id\n        title\n        description\n        createdAt\n        codeSnippetsOwned {\n          id\n          language\n        }\n        comments {\n          id\n          content\n        }\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n":
     types.GetOwnProjectDocument,
-  "\n  query GetProjects($limit: Int!, $offset: Int!, $sortBy: String!) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n":
+  "\n  query GetProjects($limit: Int, $offset: Int, $sortBy: String) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n":
     types.GetProjectsDocument,
   "\n  query GetUser($ownerId: ID!) {\n    getUser(id: $ownerId) {\n      id\n      description\n      username\n      image\n      projects {\n        id\n        codeSnippetsOwned {\n          language\n        }\n        title\n        id\n        description\n        createdAt\n      }\n    }\n  }\n":
     types.GetUserDocument,
@@ -148,8 +148,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n",
-): (typeof documents)["\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n"];
+  source: "\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      createdAt\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query GetOwnComments {\n    getOwnComments {\n      id\n      content\n      createdAt\n      project {\n        id\n        title\n      }\n      owner {\n        id\n        username\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -172,8 +172,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n  query GetProjects($limit: Int!, $offset: Int!, $sortBy: String!) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n",
-): (typeof documents)["\n  query GetProjects($limit: Int!, $offset: Int!, $sortBy: String!) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n"];
+  source: "\n  query GetProjects($limit: Int, $offset: Int, $sortBy: String) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n",
+): (typeof documents)["\n  query GetProjects($limit: Int, $offset: Int, $sortBy: String) {\n    getProjects(offset: $offset, limit: $limit, sortBy: $sortBy) {\n      projects {\n        id\n        title\n        description\n        owner {\n          id\n          username\n        }\n        likes {\n          id\n        }\n        codeSnippetsOwned {\n          id\n          language\n        }\n        createdAt\n        comments {\n          id\n        }\n      }\n      totalCount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

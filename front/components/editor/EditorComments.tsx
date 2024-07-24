@@ -5,6 +5,7 @@ import {
   DeleteCommentMutation,
   DeleteCommentMutationVariables,
 } from "@/gql/graphql";
+import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import SubmitButton from "@/lib/submitButton";
 import { ApolloQueryResult, gql, useMutation } from "@apollo/client";
 import { Flex, Textarea, Text } from "@chakra-ui/react";
@@ -54,7 +55,9 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const [addCommentMutation] = useMutation<
     AddCommentMutation,
     AddCommentMutationVariables
-  >(ADD_COMMENT);
+  >(ADD_COMMENT, {
+    refetchQueries: [{ query: GET_OWN_COMMENTS }],
+  });
 
   const [deleteCommentMutation] = useMutation<
     DeleteCommentMutation,
