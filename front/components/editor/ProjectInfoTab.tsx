@@ -40,16 +40,16 @@ const ProjectInfoTab = ({
   return (
     <Flex direction={"column"} className="px-5 py-3">
       <Flex gap={4} alignItems="center">
-        <Box>
-          {info.owner?.image && (
-            <Image
-              src={info.owner.image}
-              alt="profile picture"
-              width={30}
-              height={30}
-            />
-          )}
-        </Box>
+        {info.owner?.image && (
+          <Flex
+            borderRadius={"50%"}
+            height={"30px"}
+            width={"30px"}
+            overflow={"hidden"}
+          >
+            <img src={info.owner.image} alt="profile picture" className="object-cover" />
+          </Flex>
+        )}
         {info.owner?.username && (
           <Link href={`/user/${info.owner.id}`}>{info.owner.username}</Link>
         )}
