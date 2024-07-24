@@ -12,22 +12,22 @@ import { Flex, Textarea, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 type EditorCommentsProps = {
   refetch: () => Promise<ApolloQueryResult<any>>;
   comments:
-    | {
-        id: string;
-        content: string;
-        createdAt: string;
-        owner: {
-          id: string;
-          username: string;
-        };
-      }[]
-    | undefined;
+  | {
+    id: string;
+    content: string;
+    createdAt: string;
+    owner: {
+      id: string;
+      username: string;
+    };
+  }[]
+  | undefined;
 };
 
 const ADD_COMMENT = gql`
@@ -48,7 +48,7 @@ const DELETE_COMMENT = gql`
 
 const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const router = useRouter();
-  const { project: projectId } = router.query;
+  const { project: projectId, comment: highlightedCommentId } = router.query;
   const [newComment, setNewComment] = useState<string>("");
   const { user } = useAuth();
 
@@ -90,6 +90,15 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
     refetch();
   };
 
+  useEffect(() => {
+    if (highlightedCommentId) {
+      const element = document.getElementById(highlightedCommentId as string);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [highlightedCommentId]);
+
   return (
     <Flex
       direction={"column"}
@@ -115,7 +124,14 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
         </Flex>
       )}
       {comments?.map((comment, index) => (
-        <Flex key={index} bg="#2F3138" p={2} gap={2} direction={"column"}>
+        <Flex key={index}
+          id={comment.id}
+          p={2}
+          gap={2}
+          direction={"column"}
+          bg={highlightedCommentId === comment.id ? "#d9d9d9" : "#2F3138"}
+          color={highlightedCommentId === comment.id ? "black" : "white"}
+        >
           <Flex justifyContent={"space-between"}>
             <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
               <Link

@@ -1,12 +1,9 @@
 import {
   Box,
-  Button,
   Flex,
-  SimpleGrid,
   Skeleton,
   Text,
 } from "@chakra-ui/react";
-// import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
@@ -25,10 +22,6 @@ import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { useAuth } from "@/context/UserContext";
 import CommentCard from "@/lib/commentCard";
-
-// TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
-// TODO : Creer page pour likedprojects (sur clic de Toutvoir)
-// TODO : Creer context pour comments et projects
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -83,8 +76,9 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-  const handleOpenProject = (projectId: string) => {
-    router.push(`/editor?project=${projectId}`);
+  const handleOpenProject = (projectId: string, commentId?: string) => {
+    const url = commentId ? `/editor?project=${projectId}&comment=${commentId}` : `/editor?project=${projectId}`;
+    router.push(url);
   };
 
   const handleDelete = (projectId: string) => {
@@ -326,7 +320,7 @@ const Dashboard = () => {
                           date={new Date(e.createdAt).toLocaleDateString()}
                           owner={e.owner.username}
                           content={e.content}
-                          onOpenProject={() => handleOpenProject(e.project.id)}
+                          onOpenProject={() => handleOpenProject(e.project.id, e.id)}
                         />
                       ))}
                   </Flex>
