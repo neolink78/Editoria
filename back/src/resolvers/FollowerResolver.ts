@@ -1,4 +1,4 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Int, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import User from "../entities/user/user";
 import Follower from "../entities/follower/follower";
 import { Context } from "..";

@@ -31,9 +31,15 @@ query getFollowings {
           codeSnippetsOwned {
             language
           }
+            comments {
+            id
+            }
+            likes {
+            id
+            }
           owner {
-          id
-          username
+           id
+           username
           }
           createdAt
         }
@@ -42,9 +48,14 @@ query getFollowings {
         content
         createdAt
         project {
+        createdAt
           id
+          likes {
+          id
+          }
           title
           owner {
+            id
             username
           }
         }
