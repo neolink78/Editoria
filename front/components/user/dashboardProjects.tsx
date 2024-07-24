@@ -90,8 +90,8 @@ const DashboardProjects = ({
               onOpenProject={() => {
                 handleOpenProject(project.id);
               }}
-              isLiked={likedProjects.some((p) => p.id === project.id)}
-              isCommented={ownComments.some(
+              isLiked={likedProjects && likedProjects.some((p) => p.id === project.id)}
+              isCommented={ownComments && ownComments.some(
                 (c) => c.id === project.comments[0]?.id,
               )}
             />

@@ -239,7 +239,7 @@ const Projects = () => {
                   }}
                   toggleLike={() => handleToggleLike(project.id)}
                   isLiked={likedProjects && likedProjects.some((p) => p.id === project.id)}
-                  isCommented={ownComments.some(
+                  isCommented={ownComments && ownComments.some(
                     (c) => c.project.id === project.id,
                   )}
                 />
