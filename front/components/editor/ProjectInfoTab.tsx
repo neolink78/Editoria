@@ -39,7 +39,7 @@ const ProjectInfoTab = ({
 
   return (
     <Flex direction={"column"} className="px-5 py-3">
-      <Flex gap={4}>
+      <Flex gap={4} alignItems="center">
         <Box>
           {info.owner?.image && (
             <Image
@@ -51,12 +51,12 @@ const ProjectInfoTab = ({
           )}
         </Box>
         {info.owner?.username && (
-          <Link href={`/user/${info.owner.id}`} className="pb-4">
-            {info.owner.username}
-          </Link>
+          <Link href={`/user/${info.owner.id}`}>{info.owner.username}</Link>
         )}
       </Flex>
-      <Box fontSize="sm">{info.title}</Box>
+      <Box fontSize="sm" className="mt-4">
+        {info.title}
+      </Box>
       <Text fontSize="xs" className="opacity-60">
         {info.description}
       </Text>
