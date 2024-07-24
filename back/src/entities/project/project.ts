@@ -98,19 +98,31 @@ class Project extends BaseEntity {
     }
   }
 
+  static async deleteCache(): Promise<void> {
+    const cache = await getCache();
+    const keys = await cache.keys("projects_*");
+    for (const key of keys) {
+      await cache.del(key);
+    }
+  }
+
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
     if (project.title === "") {
       throw new Error("Title is required");
     }
 
-    return await Project.save(newProject);
+    // return await Project.save(newProject);
+    const savedProject = await newProject.save();
+    await Project.deleteCache();
+
+    return savedProject;
   }
 
   static async getProjects(
-    limit: number = 8,
-    offset: number = 0,
-    sortBy: string = "createdAt",
+    limit: number,
+    offset: number,
+    sortBy: string,
     search?: string,
   ): Promise<[Project[], number]> {
     const cache = await getCache();
@@ -125,35 +137,28 @@ class Project extends BaseEntity {
 
     console.log(`Cache miss for query: ${cacheKey}`);
 
-    const options: FindManyOptions<Project> = {
+    const [allProjects, totalCount] = await Project.findAndCount({
       relations: ["likes"],
-      order: sortBy === "createdAt" ? { createdAt: "DESC" } : undefined,
-    };
-
-    if (search) {
-      options.where = [
-        { title: ILike(`%${search}%`) },
-        { description: ILike(`%${search}%`) },
-      ];
-    }
-
-    let projects: Project[];
-    let totalCount: number;
+      where: search
+        ? [
+            { title: ILike(`%${search}%`) },
+            { description: ILike(`%${search}%`) },
+          ]
+        : {},
+      order: sortBy === "likes" ? {} : { createdAt: "DESC" },
+    });
 
     if (sortBy === "likes") {
-      const allProjects = await this.find(options);
-      totalCount = allProjects.length;
       allProjects.sort((a, b) => b.likes.length - a.likes.length);
-
-      projects = allProjects.slice(offset, offset + limit);
-    } else {
-      options.skip = offset;
-      options.take = limit;
-      [projects, totalCount] = await this.findAndCount(options);
     }
-    cache.set(cacheKey, JSON.stringify([projects, totalCount]), { EX: 600 });
 
-    return [projects, totalCount];
+    const paginatedProjects = allProjects.slice(offset, offset + limit);
+
+    cache.set(cacheKey, JSON.stringify([paginatedProjects, totalCount]), {
+      EX: 600,
+    });
+
+    return [paginatedProjects, totalCount];
   }
 
   static async getProjectsByUserId(
