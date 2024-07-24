@@ -205,8 +205,13 @@ const Dashboard = () => {
                     toggleLike={() => {
                       handleToggleLike(e.id);
                     }}
-                    isLiked={likedProjects && likedProjects.some((p) => p.id === e.id)}
-                    isCommented={ownComments && ownComments.some((c) => c.project.id === e.id)}
+                    isLiked={
+                      likedProjects && likedProjects.some((p) => p.id === e.id)
+                    }
+                    isCommented={
+                      ownComments &&
+                      ownComments.some((c) => c.project.id === e.id)
+                    }
                     onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
@@ -267,9 +272,10 @@ const Dashboard = () => {
                       onDelete={() => handleDelete(e.id)}
                       canDelete={currentUserId === e.owner.id}
                       isLiked
-                      isCommented={ownComments && ownComments.some(
-                        (c) => c.project.id === e.id,
-                      )}
+                      isCommented={
+                        ownComments &&
+                        ownComments.some((c) => c.project.id === e.id)
+                      }
                       onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>
