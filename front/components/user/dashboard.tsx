@@ -308,13 +308,12 @@ const Dashboard = () => {
             >
               Mes derniers commentaires
             </Box>
-            <Box mb="12" mx="20">
+            <Box mb="12" w="100%" px="10rem">
               {ownCommentsData && ownComments.length > 0 ? (
                 <>
-                  <SimpleGrid
-                    columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
-                    spacing={8}
-                    justifyContent="center"
+                  <Flex
+                    gap="16px"
+                    flexWrap="wrap"
                   >
                     {ownComments
                       .slice(0, visibleCommentsCount)
@@ -328,7 +327,7 @@ const Dashboard = () => {
                           onOpenProject={() => handleOpenProject(e.project.id)}
                         />
                       ))}
-                  </SimpleGrid>
+                  </Flex>
                   <Flex justifyContent="center" mt="4" width="100%">
                     {visibleCommentsCount < ownComments.length && (
                       <Text

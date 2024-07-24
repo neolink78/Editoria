@@ -18,7 +18,7 @@ const CommentCard = ({
   return (
     <Box
       p="4"
-      width="100%"
+      width="calc(20% - (4*16px)/5)"
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
