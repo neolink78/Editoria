@@ -1,3 +1,4 @@
+import { useModal } from "@/context/ModalContext";
 import { useAuth } from "@/context/UserContext";
 import {
   AddCommentMutation,
@@ -50,6 +51,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const { project: projectId } = router.query;
   const [newComment, setNewComment] = useState<string>("");
   const { user } = useAuth();
+  const { openModal } = useModal();
 
   const [addCommentMutation] = useMutation<
     AddCommentMutation,
@@ -83,6 +85,14 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
     });
 
     refetch();
+  };
+
+  const handleDelete = (commentId: string) => {
+    openModal({
+      title: "Confirmer la suppression",
+      children: "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
+      onConfirm: () => deleteComment(commentId),
+    });
   };
 
   return (
@@ -129,7 +139,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
             {user?.id === comment.owner.id && (
               <FaRegTrashAlt
                 className="w-3 cursor-pointer opacity-40 hover:opacity-100"
-                onClick={() => deleteComment(comment.id)}
+                onClick={() => handleDelete(comment.id)}
               />
             )}
           </Flex>
