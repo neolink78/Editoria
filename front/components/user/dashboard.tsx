@@ -1,4 +1,11 @@
-import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  SimpleGrid,
+  Skeleton,
+  Text,
+} from "@chakra-ui/react";
 // import indexMock from "../../mocks/indexMock";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
@@ -17,6 +24,7 @@ import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { useAuth } from "@/context/UserContext";
+import CommentCard from "@/lib/commentCard";
 
 // TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
 // TODO : Creer page pour likedprojects (sur clic de Toutvoir)
@@ -27,6 +35,7 @@ const Dashboard = () => {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(5);
 
   const {
     data: projectData,
@@ -43,7 +52,6 @@ const Dashboard = () => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
-  // console.log("projects", projects);
   const totalItems = projectData?.getOwnProject.totalCount || 0;
 
   const handlePageChange = (pageNumber: number) => {
@@ -52,7 +60,14 @@ const Dashboard = () => {
 
   const { data: ownCommentsData, loading: commentLoading } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
-  const ownComments = ownCommentsData?.getOwnComments || [];
+
+  const ownComments =
+    ownCommentsData?.getOwnComments
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ) || [];
 
   const { handleToggleLike, likedProjects, refetchProjects } = useLikes();
   // console.log("likedProjects", likedProjects);
@@ -92,6 +107,16 @@ const Dashboard = () => {
 
   const newUser = !projects && !ownComments && !likedProjects;
 
+  const handleShowMore = () => {
+    setVisibleCommentsCount((prevCount) =>
+      Math.min(prevCount + 5, ownComments.length),
+    );
+  };
+
+  const handleShowLess = () => {
+    setVisibleCommentsCount(5);
+  };
+
   if (error) {
     console.log("error", error);
   }
@@ -102,7 +127,7 @@ const Dashboard = () => {
         justifyContent="center"
         alignItems="center"
         width="70vw"
-        mt="50px"
+        my="50px"
       >
         {Array.from({ length: 10 }).map((_, idx) => (
           <Box key={idx} width="100%" mb="10px">
@@ -180,8 +205,13 @@ const Dashboard = () => {
                     toggleLike={() => {
                       handleToggleLike(e.id);
                     }}
-                    isLiked={likedProjects.some((p) => p.id === e.id)}
-                    isCommented={ownComments.some((c) => c.project.id === e.id)}
+                    isLiked={
+                      likedProjects && likedProjects.some((p) => p.id === e.id)
+                    }
+                    isCommented={
+                      ownComments &&
+                      ownComments.some((c) => c.project.id === e.id)
+                    }
                     onOpenProject={() => handleOpenProject(e.id)}
                   />
                 ))
@@ -242,9 +272,10 @@ const Dashboard = () => {
                       onDelete={() => handleDelete(e.id)}
                       canDelete={currentUserId === e.owner.id}
                       isLiked
-                      isCommented={ownComments.some(
-                        (c) => c.project.id === e.id,
-                      )}
+                      isCommented={
+                        ownComments &&
+                        ownComments.some((c) => c.project.id === e.id)
+                      }
                       onOpenProject={() => handleOpenProject(e.id)}
                     />
                   </Skeleton>
@@ -268,75 +299,66 @@ const Dashboard = () => {
                 </Flex>
               )}
             </Box>
-            {/* 
             <Box
-              fontSize="1.4vw"
-              m={"2vw 0 0 10vw"}
-              alignSelf={"flex-start"}
+              fontSize={{
+                base: "1rem",
+                sm: "0.8rem",
+                md: "1.2rem",
+                lg: "1.4rem",
+              }}
+              m={"2vw 0 1rem 10vw"}
               display="flex"
               alignItems="baseline"
-            >
-              Mes projets en collaboration
-              {indexMock && indexMock.length > 3 && <Box fontSize="1vw" ml="2vw">
-                Tout voir
-              </Box>}
-            </Box>
-            <Box mb={12}>
-              {indexMock ? indexMock.slice(-2).map((e, idx) => (
-                <Skeleton isLoaded={!loading} key={idx}>
-                  <Tile
-                    homePage
-                    key={idx}
-                    icon={e.icon}
-                    label={e.label}
-                    description={e.description}
-                    date={e.date}
-                    ownerId={e.owner.id as UUID}
-
-                  />
-                </Skeleton>
-              )) :
-                <Flex
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Box fontSize="0.9vw" m="4vw">
-                    {" "}
-                    Vous n&apos;avez pas encore de projet en collaboration.{" "}
-                  </Box>
-                </Flex>
-              }
-            </Box> */}
-            <Box
-              fontSize="1.4vw"
-              m={"2vw 0 0 10vw"}
-              alignSelf={"flex-start"}
-              display="flex"
-              alignItems="baseline"
+              alignSelf="flex-start"
             >
               Mes derniers commentaires
-              {ownComments.length > 3 && (
-                <Box fontSize="1vw" ml="2vw">
-                  Tout voir
-                </Box>
-              )}
             </Box>
-            <Box mb={12}>
+            <Box mb="12" w="100%" px="10rem">
               {ownCommentsData && ownComments.length > 0 ? (
-                ownComments
-                  .slice(-3)
-                  .map((e, idx) => (
-                    <Tile
-                      homePage
-                      ownerId={e.owner.id as UUID}
-                      key={idx}
-                      title={e.project.title}
-                      description={e.content}
-                      content
-                      onOpenProject={() => handleOpenProject(e.project.id)}
-                    />
-                  ))
+                <>
+                  <Flex gap="16px" flexWrap="wrap">
+                    {ownComments
+                      .slice(0, visibleCommentsCount)
+                      .map((e, idx) => (
+                        <CommentCard
+                          key={e.id}
+                          title={e.project.title}
+                          date={new Date(e.createdAt).toLocaleDateString()}
+                          owner={e.owner.username}
+                          content={e.content}
+                          onOpenProject={() => handleOpenProject(e.project.id)}
+                        />
+                      ))}
+                  </Flex>
+                  <Flex justifyContent="center" mt="4" width="100%">
+                    {visibleCommentsCount < ownComments.length && (
+                      <Text
+                        onClick={handleShowMore}
+                        mt="4"
+                        fontSize="1rem"
+                        cursor="pointer"
+                        color="gray.500"
+                        _hover={{ color: "blue.500" }}
+                        mx="2"
+                      >
+                        Afficher plus
+                      </Text>
+                    )}
+                    {visibleCommentsCount === ownComments.length && (
+                      <Text
+                        onClick={handleShowLess}
+                        mt="4"
+                        fontSize="1rem"
+                        cursor="pointer"
+                        color="gray.500"
+                        _hover={{ color: "blue.500" }}
+                        mx="2"
+                      >
+                        Afficher moins
+                      </Text>
+                    )}
+                  </Flex>
+                </>
               ) : (
                 <Flex
                   flexDirection="column"
