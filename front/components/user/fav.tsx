@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { Box } from "@chakra-ui/react";
-import { GetUsersQuery } from "../../gql/graphql";
+import { GetFollowingsQuery, GetUsersQuery } from "../../gql/graphql";
 import Tile from "../../lib/tile";
 import indexMock from "../../mocks/indexMock";
 import { GET_FAVORITE_CODERS } from "@/graphql/queries/followQueries";
@@ -20,45 +20,19 @@ const GETUSERS = gql`
   }
 `;
 
-interface Comment {
-  createdAt: string;
-  // other properties of Comment
-}
-
-interface Like {
-  createdAt: string;
-  // other properties of Like
-}
-
-interface FollowingDetails {
-  comments: Comment[];
-  likes: Like[];
-  username: string;
-}
-
-interface Following {
-  following: FollowingDetails;
-}
-
-interface Followings extends Comment, Like {
-  type: 'comment' | 'like';
-  username: string;
-}
-
-
 const Fav = () => {
-  const { data, refetch: refetchFollowers } = useQuery(GET_FAVORITE_CODERS);
-  const [followedUsers, setFollowedUsers] = useState([])
+  const { data, refetch: refetchFollowers } = useQuery<GetFollowingsQuery>(GET_FAVORITE_CODERS);
+  const [followedUsers, setFollowedUsers] = useState<GetFollowingsQuery>([])
   const router = useRouter();
 
  const getfollowedActivities = async () => {
   let allEntries = [];
-    await data.getFollowings.forEach((following: Following) => {
+    data && await data.getFollowings.forEach((following) => {
       const comments = following.following.comments || [];
       const likes = following.following.likes || [];
       const username = following.following.username;
 
-      comments.forEach((comment: Comment) => {
+      comments.forEach((comment) => {
         allEntries.push({
           ...comment,
           type: 'comment',
@@ -66,7 +40,7 @@ const Fav = () => {
         });
       });
 
-      likes.forEach((like: Like) => {
+      likes.forEach((like) => {
         allEntries.push({
           ...like,
           type: 'like',
@@ -107,7 +81,7 @@ useEffect(() => {
          <Tile
          key={idx}
          projectId={followedUser.project.id}
-         ownerId={followedUser.project.owner.id as UUID}
+         ownerId={followedUser.project.owner.id}
          owner={followedUser.project.owner.username}
          icon={followedUser.project.codeSnippetsOwned[0]?.language}
          title={followedUser.project.title}
