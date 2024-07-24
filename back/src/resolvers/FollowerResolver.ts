@@ -23,6 +23,17 @@ class FollowerResolver {
     if (!user) throw new Error("Authentication required");
     return await Follower.getFollowers(followingId);
   }
+
+  @Query(() => [Follower])
+  async getFollowings(
+    @Ctx() { user }: Context,
+  ) {
+    if (!user) throw new Error("Authentication required");
+     return await Follower.getFollowings(user);
+  }
 }
 
 export default FollowerResolver;
+
+
+

@@ -3,6 +3,12 @@ import { Box } from "@chakra-ui/react";
 import { GetUsersQuery } from "../../gql/graphql";
 import Tile from "../../lib/tile";
 import indexMock from "../../mocks/indexMock";
+import { GET_FAVORITE_CODERS } from "@/graphql/queries/followQueries";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { fr } from "date-fns/locale";
+
 
 const GETUSERS = gql`
   query GetUsers {
@@ -14,33 +20,109 @@ const GETUSERS = gql`
   }
 `;
 
-const Fav = () => {
-  const { data, loading, error } = useQuery<GetUsersQuery>(GETUSERS);
+interface Comment {
+  createdAt: string;
+  // other properties of Comment
+}
 
+interface Like {
+  createdAt: string;
+  // other properties of Like
+}
+
+interface FollowingDetails {
+  comments: Comment[];
+  likes: Like[];
+  username: string;
+}
+
+interface Following {
+  following: FollowingDetails;
+}
+
+interface Followings extends Comment, Like {
+  type: 'comment' | 'like';
+  username: string;
+}
+
+
+const Fav = () => {
+  const { data, refetch: refetchFollowers } = useQuery(GET_FAVORITE_CODERS);
+  const [followedUsers, setFollowedUsers] = useState([])
+  const router = useRouter();
+
+ const getfollowedActivities = async () => {
+  let allEntries = [];
+    await data.getFollowings.forEach((following: Following) => {
+      const comments = following.following.comments || [];
+      const likes = following.following.likes || [];
+      const username = following.following.username;
+
+      comments.forEach((comment: Comment) => {
+        allEntries.push({
+          ...comment,
+          type: 'comment',
+          username: username,
+        });
+      });
+
+      likes.forEach((like: Like) => {
+        allEntries.push({
+          ...like,
+          type: 'like',
+          username: username,
+        });
+      });
+    });
+
+    // Sort entries by createdAt in descending order
+    allEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+   setFollowedUsers(allEntries)
+}
+
+useEffect(() => {
+    data && getfollowedActivities()
+  console.log("Merged and Sorted Entries:", followedUsers);
+},[data])
+
+
+  
   return (
     <>
-      {/* <Box
+    {followedUsers && followedUsers.map((followedUser, idx )=> {
+      console.log(followedUser)
+      return (
+    <Box key={idx}>
+    <Box
         fontSize="1.4vw"
-        m={"4vw 0 0 10vw"}
-        alignSelf={"flex-start"}
+        m="4vw 0 0 10vw"
+        alignSelf="flex-start"
         display="flex"
         alignItems="baseline"
       >
-        <Box>John a liké ...</Box>
+       {followedUser.username} a {followedUser.type === 'like' ? "liké " : "commenté "} {formatDistanceToNow(parseISO(followedUser.createdAt), { addSuffix: true, locale: fr })}
       </Box>
-      <Box>
-        {indexMock.slice(-2).map((e, idx) => (
-          <Tile
-            homePage
-            key={idx}
-            marginTop={e.marginTop}
-            icon={e.icon}
-            label={e.label}
-            description={e.description}
-            date={e.date}
-          />
-        ))}
+  {followedUser.type === 'like' ? 
+         <Tile
+         key={idx}
+         projectId={followedUser.project.id}
+         ownerId={followedUser.project.owner.id as UUID}
+         owner={followedUser.project.owner.username}
+         icon={followedUser.project.codeSnippetsOwned[0]?.language}
+         title={followedUser.project.title}
+         description={followedUser.project.description}
+         createdAt={followedUser.project.createdAt}
+         onOpenProject={() =>
+           router.push(`/editor?project=${followedUser.project.id}`)
+         }
+         
+     
+       /> : <Box>yo</Box>
+          }
+    
       </Box>
+    )})}
 
       <Box
         fontSize="1.4vw"
@@ -86,7 +168,7 @@ const Fav = () => {
             date={e.date}
           />
         ))}
-      </Box> */}
+      </Box> 
     </>
   );
 };

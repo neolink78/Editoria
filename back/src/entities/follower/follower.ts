@@ -55,9 +55,21 @@ class Follower extends BaseEntity {
   static async getFollowers(followingId: string) {
     const followers = await Follower.find({
       where: { following: { id: followingId } },
-      relations: ["follower", "following"],
+      relations: ["following", "follower"],
     });
     return followers;
+  }
+
+  static async getFollowings(follower: User) {
+    const followings = await Follower.find({
+      where: { 
+        follower: {id: follower.id}
+     },
+      relations: ["following", "follower", 
+        "following.likes", "following.likes.project","following.comments", "following.comments.project"
+      ],
+    });
+    return followings;
   }
 }
 
