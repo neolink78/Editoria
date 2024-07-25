@@ -102,14 +102,18 @@ const Projects = () => {
 
   const confirmDelete = async (projectId: string) => {
     await deleteProject({
-      variables: { deleteProjectId: projectId }, refetchQueries: [{
-        query: GET_PROJECTS, variables: {
-          limit: projectsPerPage,
-          offset: (currentPage - 1) * projectsPerPage,
-          sortBy: sortBy,
-          search: debouncedValue,
-        }
-      }]
+      variables: { deleteProjectId: projectId },
+      refetchQueries: [
+        {
+          query: GET_PROJECTS,
+          variables: {
+            limit: projectsPerPage,
+            offset: (currentPage - 1) * projectsPerPage,
+            sortBy: sortBy,
+            search: debouncedValue,
+          },
+        },
+      ],
     });
   };
 

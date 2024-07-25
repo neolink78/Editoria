@@ -1,9 +1,4 @@
-import {
-  Box,
-  Flex,
-  Skeleton,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
@@ -76,7 +71,9 @@ const Dashboard = () => {
   const router = useRouter();
 
   const handleOpenProject = (projectId: string, commentId?: string) => {
-    const url = commentId ? `/editor?project=${projectId}&comment=${commentId}` : `/editor?project=${projectId}`;
+    const url = commentId
+      ? `/editor?project=${projectId}&comment=${commentId}`
+      : `/editor?project=${projectId}`;
     router.push(url);
   };
 
@@ -319,7 +316,9 @@ const Dashboard = () => {
                           date={new Date(e.createdAt).toLocaleDateString()}
                           owner={e.owner.username}
                           content={e.content}
-                          onOpenProject={() => handleOpenProject(e.project.id, e.id)}
+                          onOpenProject={() =>
+                            handleOpenProject(e.project.id, e.id)
+                          }
                         />
                       ))}
                   </Flex>
