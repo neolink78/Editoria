@@ -18,16 +18,16 @@ import { FaRegTrashAlt } from "react-icons/fa";
 type EditorCommentsProps = {
   refetch: () => Promise<ApolloQueryResult<any>>;
   comments:
-  | {
-    id: string;
-    content: string;
-    createdAt: string;
-    owner: {
-      id: string;
-      username: string;
-    };
-  }[]
-  | undefined;
+    | {
+        id: string;
+        content: string;
+        createdAt: string;
+        owner: {
+          id: string;
+          username: string;
+        };
+      }[]
+    | undefined;
 };
 
 const ADD_COMMENT = gql`
@@ -124,7 +124,8 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
         </Flex>
       )}
       {comments?.map((comment, index) => (
-        <Flex key={index}
+        <Flex
+          key={index}
           id={comment.id}
           p={2}
           gap={2}
