@@ -29,22 +29,29 @@ type EditorCommentProps = {
 
 function EditorComment({ comment, user, handleDelete, highlightedCommentId }: EditorCommentProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   useEffect(() => {
     if (highlightedCommentId === comment.id) {
+      setIsHighlighted(true);
       const element = document.getElementById(comment.id);
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "center" });
         element.focus();
       }
     }
+    setTimeout(() => {
+      setIsHighlighted(false);
+    }, 2000);
   }, [highlightedCommentId, comment.id]);
 
 
   return (
     <Flex p={2} gap={2} direction={"column"}
-      bg={highlightedCommentId === comment.id ? "#d9d9d9" : "#2F3138"}
-      color={highlightedCommentId === comment.id ? "black" : "white"}
+      bg={isHighlighted ? "#d9d9d9" : "#2F3138"}
+      color={isHighlighted ? "black" : "white"}
+      boxShadow={isHighlighted ? "0 0 0 2px #1574EF" : "none"}
+      transition="background-color 0.5s ease, color 0.5s ease"
       id={comment.id}
     >
       <Flex justifyContent={"space-between"}>
