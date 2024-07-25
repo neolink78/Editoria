@@ -141,7 +141,7 @@ const Tile = ({
             {owner ? (
               <span>
                 {" "}
-                by {" "}
+                by{" "}
                 <span
                   style={{ color: "#1574EF", cursor: "pointer" }}
                   onClick={(e) => {
