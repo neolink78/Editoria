@@ -35,7 +35,11 @@ function EditorComment({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Flex id={comment.id} p={2} gap={2} direction={"column"}
+    <Flex
+      id={comment.id}
+      p={2}
+      gap={2}
+      direction={"column"}
       bg="#2F3138"
       boxShadow={isHighlighted ? "0 0 0 2px #1574EF" : "none"}
       transition="background-color 0.5s ease, color 0.5s ease"

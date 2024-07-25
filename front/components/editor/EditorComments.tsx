@@ -20,16 +20,16 @@ import EditorComment from "./EditorComment";
 type EditorCommentsProps = {
   refetch: () => Promise<ApolloQueryResult<any>>;
   comments:
-  | {
-    id: string;
-    content: string;
-    createdAt: string;
-    owner: {
-      id: string;
-      username: string;
-    };
-  }[]
-  | undefined;
+    | {
+        id: string;
+        content: string;
+        createdAt: string;
+        owner: {
+          id: string;
+          username: string;
+        };
+      }[]
+    | undefined;
 };
 
 const ADD_COMMENT = gql`
@@ -55,7 +55,6 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const { user } = useAuth();
   const { openModal } = useModal();
   const [isHighlighted, setIsHighlighted] = useState(false);
-
 
   const [addCommentMutation] = useMutation<
     AddCommentMutation,
