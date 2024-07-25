@@ -18,7 +18,7 @@ const SubmitButton = ({
   return (
     <Flex
       as="button"
-      className="submit_button_container"
+      className="submit_button_container transition-all"
       p="0.5rem 1rem"
       bg={bg}
       onClick={onClick}
