@@ -52,13 +52,19 @@ function EditorComment({ comment, user, handleDelete }: EditorCommentProps) {
           />
         )}
       </Flex>
-      <p className={isExpanded ? 'text-sm' : 'text-sm line-clamp-3'}>{comment.content}</p>
-      <p
-        className="text-sm text-[#1574EF] cursor-pointer"
-        onClick={() => setIsExpanded((v) => !v)}
-      >
-        {isExpanded ? "voir moins" : "voir plus"}
+      <p className="text-sm">
+        {comment.content.length > 75 && !isExpanded
+          ? comment.content.substring(0, 75) + "..."
+          : comment.content}
       </p>
+      {comment.content.length > 75 && (
+        <p
+          className="text-sm text-[#1574EF] cursor-pointer"
+          onClick={() => setIsExpanded((v) => !v)}
+        >
+          {isExpanded ? "voir moins" : "voir plus"}
+        </p>
+      )}
     </Flex>
   );
 }
