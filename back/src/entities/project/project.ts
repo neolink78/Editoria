@@ -117,11 +117,11 @@ class Project extends BaseEntity {
       throw new Error("Title is required");
     }
 
-    // return await Project.save(newProject);
-    const savedProject = await newProject.save();
+    return await Project.save(newProject);
+    // const savedProject = await newProject.save();
     // await Project.deleteCache();
 
-    return savedProject;
+    // return savedProject;
   }
 
   static async getProjects(
@@ -130,17 +130,17 @@ class Project extends BaseEntity {
     sortBy: string,
     search?: string,
   ): Promise<[Project[], number]> {
-    const cache = await getCache();
+    // const cache = await getCache();
 
-    const cacheKey = `projects_${search || "all"}_${limit}_${offset}_${sortBy}`;
+    // const cacheKey = `projects_${search || "all"}_${limit}_${offset}_${sortBy}`;
 
-    const cachedResult = await cache.get(cacheKey);
-    if (cachedResult) {
-      console.log(`Cache hit for query: ${cacheKey}`);
-      return JSON.parse(cachedResult);
-    }
+    // const cachedResult = await cache.get(cacheKey);
+    // if (cachedResult) {
+    //   console.log(`Cache hit for query: ${cacheKey}`);
+    //   return JSON.parse(cachedResult);
+    // }
 
-    console.log(`Cache miss for query: ${cacheKey}`);
+    // console.log(`Cache miss for query: ${cacheKey}`);
 
     const [allProjects, totalCount] = await Project.findAndCount({
       relations: ["likes"],
@@ -159,9 +159,9 @@ class Project extends BaseEntity {
 
     const paginatedProjects = allProjects.slice(offset, offset + limit);
 
-    cache.set(cacheKey, JSON.stringify([paginatedProjects, totalCount]), {
-      EX: 600,
-    });
+    // cache.set(cacheKey, JSON.stringify([paginatedProjects, totalCount]), {
+    //   EX: 600,
+    // });
 
     return [paginatedProjects, totalCount];
   }
