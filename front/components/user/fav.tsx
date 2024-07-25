@@ -102,7 +102,7 @@ useEffect(() => {
        {followedUser.username} a {followedUser.type === 'like' ? "liké " : "commenté "} {formatDistanceToNow(parseISO(followedUser.createdAt), { addSuffix: true, locale: fr })}
       </Flex>
   {followedUser.type === 'like' ? 
-         <Tile
+         <Tile 
          key={idx}
          projectId={followedUser.project.id}
          ownerId={followedUser.project.owner.id}
