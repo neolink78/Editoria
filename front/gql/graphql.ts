@@ -1,75 +1,88 @@
 /* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
+    };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format. */
-  DateTimeISO: { input: any; output: any; }
+  DateTimeISO: { input: any; output: any };
 };
 
 export type CodeSnippet = {
-  __typename?: 'CodeSnippet';
-  code: Scalars['String']['output'];
-  createdAt: Scalars['DateTimeISO']['output'];
-  id: Scalars['ID']['output'];
+  __typename?: "CodeSnippet";
+  code: Scalars["String"]["output"];
+  createdAt: Scalars["DateTimeISO"]["output"];
+  id: Scalars["ID"]["output"];
   language: Language;
   project: Project;
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['DateTimeISO']['output'];
+  title: Scalars["String"]["output"];
+  updatedAt: Scalars["DateTimeISO"]["output"];
 };
 
 export type Comment = {
-  __typename?: 'Comment';
-  content: Scalars['String']['output'];
-  createdAt: Scalars['DateTimeISO']['output'];
-  id: Scalars['ID']['output'];
+  __typename?: "Comment";
+  content: Scalars["String"]["output"];
+  createdAt: Scalars["DateTimeISO"]["output"];
+  id: Scalars["ID"]["output"];
   owner: User;
   project: Project;
-  updatedAt: Scalars['DateTimeISO']['output'];
+  updatedAt: Scalars["DateTimeISO"]["output"];
 };
 
 export type Follower = {
-  __typename?: 'Follower';
-  createdAt: Scalars['DateTimeISO']['output'];
+  __typename?: "Follower";
+  createdAt: Scalars["DateTimeISO"]["output"];
   follower: User;
   following: User;
-  id: Scalars['ID']['output'];
+  id: Scalars["ID"]["output"];
 };
 
 export enum Language {
-  C = 'C',
-  Cpp = 'CPP',
-  Csharp = 'CSHARP',
-  Css = 'CSS',
-  Html = 'HTML',
-  Java = 'JAVA',
-  Javascript = 'JAVASCRIPT',
-  Python = 'PYTHON',
-  Typescript = 'TYPESCRIPT',
-  Unknown = 'UNKNOWN'
+  C = "C",
+  Cpp = "CPP",
+  Csharp = "CSHARP",
+  Css = "CSS",
+  Html = "HTML",
+  Java = "JAVA",
+  Javascript = "JAVASCRIPT",
+  Python = "PYTHON",
+  Typescript = "TYPESCRIPT",
+  Unknown = "UNKNOWN",
 }
 
 export type Like = {
-  __typename?: 'Like';
-  createdAt: Scalars['DateTimeISO']['output'];
-  id: Scalars['ID']['output'];
+  __typename?: "Like";
+  createdAt: Scalars["DateTimeISO"]["output"];
+  id: Scalars["ID"]["output"];
   project: Project;
   user: User;
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   ResetPassword: User;
   ResetUser: User;
   createCodeSnippet: CodeSnippet;
@@ -79,149 +92,132 @@ export type Mutation = {
   deleteComment: Comment;
   deleteProject: Project;
   deleteUser: User;
-  followUser: Scalars['Boolean']['output'];
+  followUser: Scalars["Boolean"]["output"];
   signIn: User;
-  signOut: Scalars['Boolean']['output'];
+  signOut: Scalars["Boolean"]["output"];
   signUp: User;
-  toggleLike: Scalars['Boolean']['output'];
+  toggleLike: Scalars["Boolean"]["output"];
   updateCodeSnippet: CodeSnippet;
   updateComment: Comment;
   updateProject: Project;
   updateUser: User;
 };
 
-
 export type MutationResetPasswordArgs = {
-  newPassword: Scalars['String']['input'];
+  newPassword: Scalars["String"]["input"];
 };
-
 
 export type MutationResetUserArgs = {
-  email: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
 };
-
 
 export type MutationCreateCodeSnippetArgs = {
-  code: Scalars['String']['input'];
+  code: Scalars["String"]["input"];
   language: Language;
-  projectId: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
+  title: Scalars["String"]["input"];
 };
-
 
 export type MutationCreateCommentArgs = {
-  content: Scalars['String']['input'];
-  projectId: Scalars['String']['input'];
+  content: Scalars["String"]["input"];
+  projectId: Scalars["String"]["input"];
 };
-
 
 export type MutationCreateProjectArgs = {
-  collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  is_public: Scalars['Boolean']['input'];
-  title: Scalars['String']['input'];
+  collaboratorIds?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  is_public: Scalars["Boolean"]["input"];
+  title: Scalars["String"]["input"];
 };
-
 
 export type MutationDeleteCodeSnippetArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type MutationDeleteCommentArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type MutationDeleteProjectArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type MutationDeleteUserArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type MutationFollowUserArgs = {
-  followingId: Scalars['String']['input'];
+  followingId: Scalars["String"]["input"];
 };
-
 
 export type MutationSignInArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
 };
-
 
 export type MutationSignUpArgs = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  image?: InputMaybe<Scalars['String']['input']>;
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  email: Scalars["String"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  password: Scalars["String"]["input"];
+  username: Scalars["String"]["input"];
 };
-
 
 export type MutationToggleLikeArgs = {
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 };
-
 
 export type MutationUpdateCodeSnippetArgs = {
-  code: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
+  code: Scalars["String"]["input"];
+  id: Scalars["ID"]["input"];
   language: Language;
-  projectId: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
+  title: Scalars["String"]["input"];
 };
-
 
 export type MutationUpdateCommentArgs = {
-  content: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
+  content: Scalars["String"]["input"];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type MutationUpdateProjectArgs = {
-  collaboratorIds?: InputMaybe<Array<Scalars['String']['input']>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['ID']['input'];
-  is_public: Scalars['Boolean']['input'];
-  title: Scalars['String']['input'];
+  collaboratorIds?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id: Scalars["ID"]["input"];
+  is_public: Scalars["Boolean"]["input"];
+  title: Scalars["String"]["input"];
 };
 
-
 export type MutationUpdateUserArgs = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
-  image?: InputMaybe<Scalars['String']['input']>;
-  username: Scalars['String']['input'];
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  email: Scalars["String"]["input"];
+  id: Scalars["ID"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  username: Scalars["String"]["input"];
 };
 
 export type Project = {
-  __typename?: 'Project';
+  __typename?: "Project";
   codeSnippetsOwned: Array<CodeSnippet>;
   comments: Array<Comment>;
-  createdAt: Scalars['DateTimeISO']['output'];
-  description: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  is_public: Scalars['Boolean']['output'];
+  createdAt: Scalars["DateTimeISO"]["output"];
+  description: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
+  is_public: Scalars["Boolean"]["output"];
   likes: Array<Like>;
   owner: User;
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['DateTimeISO']['output'];
+  title: Scalars["String"]["output"];
+  updatedAt: Scalars["DateTimeISO"]["output"];
 };
 
 export type ProjectPaginationResponse = {
-  __typename?: 'ProjectPaginationResponse';
+  __typename?: "ProjectPaginationResponse";
   projects: Array<Project>;
-  totalCount: Scalars['Float']['output'];
+  totalCount: Scalars["Float"]["output"];
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   codeSnippet: CodeSnippet;
   codeSnippets: Array<CodeSnippet>;
   getCommentById: Comment;
@@ -243,42 +239,34 @@ export type Query = {
   searchProjects: Array<Project>;
 };
 
-
 export type QueryCodeSnippetArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetCommentByIdArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetCommentsByUserIdArgs = {
-  userId: Scalars['ID']['input'];
+  userId: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetCommentsbyProjectIdArgs = {
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 };
-
 
 export type QueryGetFollowersArgs = {
-  followingId: Scalars['String']['input'];
+  followingId: Scalars["String"]["input"];
 };
-
 
 export type QueryGetOwnProjectArgs = {
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
+  limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
 };
-
 
 export type QueryGetProjectByIdArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetProjectsArgs = {
   limit?: InputMaybe<Scalars["Int"]["input"]>;
@@ -286,119 +274,155 @@ export type QueryGetProjectsArgs = {
   sortBy?: InputMaybe<Scalars["String"]["input"]>;
 };
 
-
 export type QueryGetProjectsByUserIdArgs = {
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  userId: Scalars['ID']['input'];
+  limit: Scalars["Int"]["input"];
+  offset: Scalars["Int"]["input"];
+  userId: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetUserArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryGetUserByEmailArgs = {
-  email: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
 };
-
 
 export type QueryProjectLikesArgs = {
-  projectId: Scalars['ID']['input'];
+  projectId: Scalars["ID"]["input"];
 };
 
-
 export type QuerySearchProjectsArgs = {
-  query: Scalars['String']['input'];
+  query: Scalars["String"]["input"];
 };
 
 export enum Role {
-  Admin = 'ADMIN',
-  User = 'USER'
+  Admin = "ADMIN",
+  User = "USER",
 }
 
 export type User = {
-  __typename?: 'User';
+  __typename?: "User";
   comments: Array<Comment>;
-  description: Scalars['String']['output'];
-  email: Scalars['String']['output'];
+  description: Scalars["String"]["output"];
+  email: Scalars["String"]["output"];
   followers: Array<Follower>;
   followings: Array<Follower>;
-  id: Scalars['ID']['output'];
-  image: Scalars['String']['output'];
-  isPremium: Scalars['Boolean']['output'];
+  id: Scalars["ID"]["output"];
+  image: Scalars["String"]["output"];
+  isPremium: Scalars["Boolean"]["output"];
   likedProjects: Array<Project>;
   likes: Array<Like>;
   projects: Array<Project>;
   role: Role;
-  username: Scalars['String']['output'];
+  username: Scalars["String"]["output"];
 };
 
 export type AddCommentMutationVariables = Exact<{
-  content: Scalars['String']['input'];
-  projectId: Scalars['String']['input'];
+  content: Scalars["String"]["input"];
+  projectId: Scalars["String"]["input"];
 }>;
 
-
-export type AddCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', content: string } };
+export type AddCommentMutation = {
+  __typename?: "Mutation";
+  createComment: { __typename?: "Comment"; content: string };
+};
 
 export type DeleteCommentMutationVariables = Exact<{
-  deleteCommentId: Scalars['ID']['input'];
+  deleteCommentId: Scalars["ID"]["input"];
 }>;
 
-
-export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment: { __typename?: 'Comment', id: string } };
+export type DeleteCommentMutation = {
+  __typename?: "Mutation";
+  deleteComment: { __typename?: "Comment"; id: string };
+};
 
 export type GetCommentsbyProjectIdQueryVariables = Exact<{
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 }>;
 
+export type GetCommentsbyProjectIdQuery = {
+  __typename?: "Query";
+  getCommentsbyProjectId: Array<{
+    __typename?: "Comment";
+    content: string;
+    id: string;
+    createdAt: any;
+    updatedAt: any;
+    owner: { __typename?: "User"; id: string; username: string };
+  }>;
+};
 
-export type GetCommentsbyProjectIdQuery = { __typename?: 'Query', getCommentsbyProjectId: Array<{ __typename?: 'Comment', content: string, id: string, createdAt: any, updatedAt: any, owner: { __typename?: 'User', id: string, username: string } }> };
+export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, username: string, email: string }> };
+export type GetUsersQuery = {
+  __typename?: "Query";
+  getUsers: Array<{
+    __typename?: "User";
+    id: string;
+    username: string;
+    email: string;
+  }>;
+};
 
 export type DeleteUserMutationVariables = Exact<{
-  deleteUserId: Scalars['ID']['input'];
+  deleteUserId: Scalars["ID"]["input"];
 }>;
 
+export type DeleteUserMutation = {
+  __typename?: "Mutation";
+  deleteUser: {
+    __typename?: "User";
+    username: string;
+    id: string;
+    email: string;
+  };
+};
 
-export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: { __typename?: 'User', username: string, id: string, email: string } };
+export type MyProfileQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
+export type MyProfileQuery = {
+  __typename?: "Query";
+  myProfile: {
+    __typename?: "User";
+    description: string;
+    email: string;
+    id: string;
+    username: string;
+    image: string;
+  };
+};
 
+export type SignOUtMutationVariables = Exact<{ [key: string]: never }>;
 
-export type MyProfileQuery = { __typename?: 'Query', myProfile: { __typename?: 'User', description: string, email: string, id: string, username: string, image: string } };
-
-export type SignOUtMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SignOUtMutation = { __typename?: 'Mutation', signOut: boolean };
+export type SignOUtMutation = { __typename?: "Mutation"; signOut: boolean };
 
 export type FollowUserMutationVariables = Exact<{
-  followingId: Scalars['String']['input'];
+  followingId: Scalars["String"]["input"];
 }>;
 
-
-export type FollowUserMutation = { __typename?: 'Mutation', followUser: boolean };
+export type FollowUserMutation = {
+  __typename?: "Mutation";
+  followUser: boolean;
+};
 
 export type ToggleLikeMutationVariables = Exact<{
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 }>;
 
-
-export type ToggleLikeMutation = { __typename?: 'Mutation', toggleLike: boolean };
+export type ToggleLikeMutation = {
+  __typename?: "Mutation";
+  toggleLike: boolean;
+};
 
 export type DeleteProjectMutationVariables = Exact<{
-  deleteProjectId: Scalars['ID']['input'];
+  deleteProjectId: Scalars["ID"]["input"];
 }>;
 
-
-export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'Project', id: string } };
+export type DeleteProjectMutation = {
+  __typename?: "Mutation";
+  deleteProject: { __typename?: "Project"; id: string };
+};
 
 export type GetOwnCommentsQuery = {
   __typename?: "Query";
@@ -413,29 +437,116 @@ export type GetOwnCommentsQuery = {
 };
 
 export type GetFollowersQueryVariables = Exact<{
-  followingId: Scalars['String']['input'];
+  followingId: Scalars["String"]["input"];
 }>;
 
+export type GetFollowersQuery = {
+  __typename?: "Query";
+  getFollowers: Array<{
+    __typename?: "Follower";
+    follower: {
+      __typename?: "User";
+      email: string;
+      id: string;
+      username: string;
+    };
+    following: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      username: string;
+    };
+  }>;
+};
 
-export type GetFollowersQuery = { __typename?: 'Query', getFollowers: Array<{ __typename?: 'Follower', follower: { __typename?: 'User', email: string, id: string, username: string }, following: { __typename?: 'User', id: string, email: string, username: string } }> };
+export type GetFollowingsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetFollowingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetFollowingsQuery = {
+  __typename?: "Query";
+  getFollowings: Array<{
+    __typename?: "Follower";
+    following: {
+      __typename?: "User";
+      username: string;
+      likes: Array<{
+        __typename?: "Like";
+        createdAt: any;
+        project: {
+          __typename?: "Project";
+          title: string;
+          description: string;
+          id: string;
+          createdAt: any;
+          codeSnippetsOwned: Array<{
+            __typename?: "CodeSnippet";
+            language: Language;
+          }>;
+          owner: { __typename?: "User"; id: string; username: string };
+        };
+      }>;
+      comments: Array<{
+        __typename?: "Comment";
+        content: string;
+        createdAt: any;
+        project: {
+          __typename?: "Project";
+          id: string;
+          title: string;
+          owner: { __typename?: "User"; username: string };
+        };
+      }>;
+    };
+  }>;
+};
 
+export type LikedProjectsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetFollowingsQuery = { __typename?: 'Query', getFollowings: Array<{ __typename?: 'Follower', following: { __typename?: 'User', username: string, likes: Array<{ __typename?: 'Like', createdAt: any, project: { __typename?: 'Project', title: string, description: string, id: string, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', language: Language }>, owner: { __typename?: 'User', id: string, username: string } } }>, comments: Array<{ __typename?: 'Comment', content: string, createdAt: any, project: { __typename?: 'Project', id: string, title: string, owner: { __typename?: 'User', username: string } } }> } }> };
-
-export type LikedProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LikedProjectsQuery = { __typename?: 'Query', likedProjects: Array<{ __typename?: 'Project', id: string, title: string, description: string, createdAt: any, owner: { __typename?: 'User', id: string, username: string }, likes: Array<{ __typename?: 'Like', id: string }>, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', id: string, language: Language }>, comments: Array<{ __typename?: 'Comment', id: string }> }> };
+export type LikedProjectsQuery = {
+  __typename?: "Query";
+  likedProjects: Array<{
+    __typename?: "Project";
+    id: string;
+    title: string;
+    description: string;
+    createdAt: any;
+    owner: { __typename?: "User"; id: string; username: string };
+    likes: Array<{ __typename?: "Like"; id: string }>;
+    codeSnippetsOwned: Array<{
+      __typename?: "CodeSnippet";
+      id: string;
+      language: Language;
+    }>;
+    comments: Array<{ __typename?: "Comment"; id: string }>;
+  }>;
+};
 
 export type GetOwnProjectQueryVariables = Exact<{
-  offset: Scalars['Int']['input'];
-  limit: Scalars['Int']['input'];
+  offset: Scalars["Int"]["input"];
+  limit: Scalars["Int"]["input"];
 }>;
 
-
-export type GetOwnProjectQuery = { __typename?: 'Query', getOwnProject: { __typename?: 'ProjectPaginationResponse', totalCount: number, projects: Array<{ __typename?: 'Project', id: string, title: string, description: string, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', id: string, language: Language }>, comments: Array<{ __typename?: 'Comment', id: string, content: string }>, owner: { __typename?: 'User', id: string, username: string }, likes: Array<{ __typename?: 'Like', id: string }> }> } };
+export type GetOwnProjectQuery = {
+  __typename?: "Query";
+  getOwnProject: {
+    __typename?: "ProjectPaginationResponse";
+    totalCount: number;
+    projects: Array<{
+      __typename?: "Project";
+      id: string;
+      title: string;
+      description: string;
+      createdAt: any;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        id: string;
+        language: Language;
+      }>;
+      comments: Array<{ __typename?: "Comment"; id: string; content: string }>;
+      owner: { __typename?: "User"; id: string; username: string };
+      likes: Array<{ __typename?: "Like"; id: string }>;
+    }>;
+  };
+};
 
 export type GetProjectsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars["Int"]["input"]>;
@@ -443,116 +554,229 @@ export type GetProjectsQueryVariables = Exact<{
   sortBy?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
-
-export type GetProjectsQuery = { __typename?: 'Query', getProjects: { __typename?: 'ProjectPaginationResponse', totalCount: number, projects: Array<{ __typename?: 'Project', id: string, title: string, description: string, createdAt: any, owner: { __typename?: 'User', id: string, username: string }, likes: Array<{ __typename?: 'Like', id: string }>, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', id: string, language: Language }>, comments: Array<{ __typename?: 'Comment', id: string }> }> } };
+export type GetProjectsQuery = {
+  __typename?: "Query";
+  getProjects: {
+    __typename?: "ProjectPaginationResponse";
+    totalCount: number;
+    projects: Array<{
+      __typename?: "Project";
+      id: string;
+      title: string;
+      description: string;
+      createdAt: any;
+      owner: { __typename?: "User"; id: string; username: string };
+      likes: Array<{ __typename?: "Like"; id: string }>;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        id: string;
+        language: Language;
+      }>;
+      comments: Array<{ __typename?: "Comment"; id: string }>;
+    }>;
+  };
+};
 
 export type GetUserQueryVariables = Exact<{
-  ownerId: Scalars['ID']['input'];
+  ownerId: Scalars["ID"]["input"];
 }>;
 
-
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, description: string, username: string, image: string, projects: Array<{ __typename?: 'Project', id: string, title: string, description: string, createdAt: any, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', language: Language }> }> } };
+export type GetUserQuery = {
+  __typename?: "Query";
+  getUser: {
+    __typename?: "User";
+    id: string;
+    description: string;
+    username: string;
+    image: string;
+    projects: Array<{
+      __typename?: "Project";
+      id: string;
+      title: string;
+      description: string;
+      createdAt: any;
+      codeSnippetsOwned: Array<{
+        __typename?: "CodeSnippet";
+        language: Language;
+      }>;
+    }>;
+  };
+};
 
 export type SignUpMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
+  username: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
 }>;
 
-
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'User', email: string } };
+export type SignUpMutation = {
+  __typename?: "Mutation";
+  signUp: { __typename?: "User"; email: string };
+};
 
 export type SignInMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
 }>;
 
-
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'User', description: string, email: string, id: string, username: string } };
+export type SignInMutation = {
+  __typename?: "Mutation";
+  signIn: {
+    __typename?: "User";
+    description: string;
+    email: string;
+    id: string;
+    username: string;
+  };
+};
 
 export type ResetUserMutationVariables = Exact<{
-  email: Scalars['String']['input'];
+  email: Scalars["String"]["input"];
 }>;
 
-
-export type ResetUserMutation = { __typename?: 'Mutation', ResetUser: { __typename?: 'User', email: string, username: string, id: string } };
+export type ResetUserMutation = {
+  __typename?: "Mutation";
+  ResetUser: {
+    __typename?: "User";
+    email: string;
+    username: string;
+    id: string;
+  };
+};
 
 export type ResetPasswordMutationVariables = Exact<{
-  newPassword: Scalars['String']['input'];
+  newPassword: Scalars["String"]["input"];
 }>;
 
-
-export type ResetPasswordMutation = { __typename?: 'Mutation', ResetPassword: { __typename?: 'User', email: string, id: string, username: string } };
+export type ResetPasswordMutation = {
+  __typename?: "Mutation";
+  ResetPassword: {
+    __typename?: "User";
+    email: string;
+    id: string;
+    username: string;
+  };
+};
 
 export type UpdateUserMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-  description: Scalars['String']['input'];
-  updateUserId: Scalars['ID']['input'];
-  image?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars["String"]["input"];
+  username: Scalars["String"]["input"];
+  description: Scalars["String"]["input"];
+  updateUserId: Scalars["ID"]["input"];
+  image?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
-
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', description: string, email: string, username: string, id: string, image: string } };
+export type UpdateUserMutation = {
+  __typename?: "Mutation";
+  updateUser: {
+    __typename?: "User";
+    description: string;
+    email: string;
+    username: string;
+    id: string;
+    image: string;
+  };
+};
 
 export type DeleteCodeSnippetMutationVariables = Exact<{
-  deleteCodeSnippetId: Scalars['ID']['input'];
+  deleteCodeSnippetId: Scalars["ID"]["input"];
 }>;
 
-
-export type DeleteCodeSnippetMutation = { __typename?: 'Mutation', deleteCodeSnippet: { __typename?: 'CodeSnippet', id: string } };
+export type DeleteCodeSnippetMutation = {
+  __typename?: "Mutation";
+  deleteCodeSnippet: { __typename?: "CodeSnippet"; id: string };
+};
 
 export type CreateProjectMutationVariables = Exact<{
-  title: Scalars['String']['input'];
-  isPublic: Scalars['Boolean']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars["String"]["input"];
+  isPublic: Scalars["Boolean"]["input"];
+  description?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
-
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, owner: { __typename?: 'User', email: string, id: string, username: string, image: string } } };
+export type CreateProjectMutation = {
+  __typename?: "Mutation";
+  createProject: {
+    __typename?: "Project";
+    id: string;
+    owner: {
+      __typename?: "User";
+      email: string;
+      id: string;
+      username: string;
+      image: string;
+    };
+  };
+};
 
 export type AddFileMutationVariables = Exact<{
-  title: Scalars['String']['input'];
-  code: Scalars['String']['input'];
+  title: Scalars["String"]["input"];
+  code: Scalars["String"]["input"];
   language: Language;
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 }>;
 
-
-export type AddFileMutation = { __typename?: 'Mutation', createCodeSnippet: { __typename?: 'CodeSnippet', id: string } };
+export type AddFileMutation = {
+  __typename?: "Mutation";
+  createCodeSnippet: { __typename?: "CodeSnippet"; id: string };
+};
 
 export type UpdateFileMutationVariables = Exact<{
-  updateCodeSnippetId: Scalars['ID']['input'];
-  code: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  updateCodeSnippetId: Scalars["ID"]["input"];
+  code: Scalars["String"]["input"];
+  title: Scalars["String"]["input"];
   language: Language;
-  projectId: Scalars['String']['input'];
+  projectId: Scalars["String"]["input"];
 }>;
 
-
-export type UpdateFileMutation = { __typename?: 'Mutation', updateCodeSnippet: { __typename?: 'CodeSnippet', code: string, id: string } };
+export type UpdateFileMutation = {
+  __typename?: "Mutation";
+  updateCodeSnippet: { __typename?: "CodeSnippet"; code: string; id: string };
+};
 
 export type GetProjectQueryVariables = Exact<{
-  getProjectByIdId: Scalars['ID']['input'];
+  getProjectByIdId: Scalars["ID"]["input"];
 }>;
 
-
-export type GetProjectQuery = { __typename?: 'Query', getProjectById: { __typename?: 'Project', description: string, is_public: boolean, title: string, codeSnippetsOwned: Array<{ __typename?: 'CodeSnippet', code: string, id: string, language: Language, title: string }>, likes: Array<{ __typename?: 'Like', id: string }>, owner: { __typename?: 'User', username: string, id: string, email: string, image: string } } };
+export type GetProjectQuery = {
+  __typename?: "Query";
+  getProjectById: {
+    __typename?: "Project";
+    description: string;
+    is_public: boolean;
+    title: string;
+    codeSnippetsOwned: Array<{
+      __typename?: "CodeSnippet";
+      code: string;
+      id: string;
+      language: Language;
+      title: string;
+    }>;
+    likes: Array<{ __typename?: "Like"; id: string }>;
+    owner: {
+      __typename?: "User";
+      username: string;
+      id: string;
+      email: string;
+      image: string;
+    };
+  };
+};
 
 export type UpdateProjectMutationVariables = Exact<{
-  title: Scalars['String']['input'];
-  isPublic: Scalars['Boolean']['input'];
-  updateProjectId: Scalars['ID']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars["String"]["input"];
+  isPublic: Scalars["Boolean"]["input"];
+  updateProjectId: Scalars["ID"]["input"];
+  description?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
-
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', id: string } };
+export type UpdateProjectMutation = {
+  __typename?: "Mutation";
+  updateProject: { __typename?: "Project"; id: string };
+};
 
 export type SearchProjectsQueryVariables = Exact<{
-  query: Scalars['String']['input'];
+  query: Scalars["String"]["input"];
 }>;
-
 
 export const AddCommentDocument = {
   kind: "Document",

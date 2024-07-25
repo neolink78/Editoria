@@ -30,7 +30,7 @@ type TileProps = {
   likeCount?: number;
   isLiked?: boolean;
   isCommented?: boolean;
-  isFav?: boolean
+  isFav?: boolean;
   onOpenProject: (e: any) => void;
 };
 
@@ -53,7 +53,7 @@ const Tile = ({
   isLiked,
   isCommented,
   onOpenProject,
-  isFav =false
+  isFav = false,
 }: TileProps) => {
   const router = useRouter();
   const relativeDate = createdAt
@@ -86,10 +86,10 @@ const Tile = ({
       position={"relative"}
       zIndex={9}
     >
-      <Flex alignItems="center" gap="2vw" padding={!isFav ? '' : '0.1vw'}>
+      <Flex alignItems="center" gap="2vw" padding={!isFav ? "" : "0.1vw"}>
         {!isFav && getLanguageIcon(icon as Language)}
         <Text isTruncated w={!isFav ? "10vw" : "15vw"} fontWeight="bold">
-         {isFav && 'Projet: '} {title}
+          {isFav && "Projet: "} {title}
         </Text>
       </Flex>
       <Flex gap="1vw">
@@ -104,36 +104,40 @@ const Tile = ({
         )}
       </Flex>
       <Flex gap="1vw">
-       {!isFav && <Flex alignItems="center" mr="2">
-          {isLiked ? (
-            <AiFillLike
-              size="1.5vw"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggle();
-              }}
-              cursor="pointer"
-            />
-          ) : (
-            <AiOutlineLike
-              size="1.5vw"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggle();
-              }}
-              cursor="pointer"
-            />
-          )}
-          <Text ml="0.5vw">{likeCount !== undefined ? likeCount : 0}</Text>
-        </Flex>}
-        {!isFav && <Flex alignItems="center" mr="3vw">
-          {isCommented ? (
-            <BsChatSquareFill size="1.3vw" />
-          ) : (
-            <BsChatSquare size="1.3vw" />
-          )}
-          <Text ml="0.5vw">{commentCount}</Text>
-        </Flex>}
+        {!isFav && (
+          <Flex alignItems="center" mr="2">
+            {isLiked ? (
+              <AiFillLike
+                size="1.5vw"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggle();
+                }}
+                cursor="pointer"
+              />
+            ) : (
+              <AiOutlineLike
+                size="1.5vw"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggle();
+                }}
+                cursor="pointer"
+              />
+            )}
+            <Text ml="0.5vw">{likeCount !== undefined ? likeCount : 0}</Text>
+          </Flex>
+        )}
+        {!isFav && (
+          <Flex alignItems="center" mr="3vw">
+            {isCommented ? (
+              <BsChatSquareFill size="1.3vw" />
+            ) : (
+              <BsChatSquare size="1.3vw" />
+            )}
+            <Text ml="0.5vw">{commentCount}</Text>
+          </Flex>
+        )}
         {!isFav && content ? (
           ""
         ) : (
