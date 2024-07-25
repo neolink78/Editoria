@@ -87,9 +87,10 @@ const Settings = (user: any) => {
               src={imageUrl}
               alt="Profile Pic"
               style={{
-                width: "50px",
-                height: "50px",
+                width: "80px",
+                height: "80px",
                 borderRadius: "50%",
+                objectFit: "cover",
               }}
             />
           ) : (

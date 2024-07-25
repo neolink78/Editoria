@@ -85,6 +85,7 @@ class Comment extends BaseEntity {
     return await Comment.find({
       where: { project: { id: projectId } },
       relations: ["owner"],
+      order: { createdAt: "DESC" },
     });
   }
 
