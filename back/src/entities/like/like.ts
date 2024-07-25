@@ -48,12 +48,12 @@ class Like extends BaseEntity {
 
     if (like) {
       await Like.remove(like);
-      await Project.deleteCache();
+      // await Project.deleteCache();
       return false;
     } else {
       const newLike = Like.create({ user: user, project: projectEntity });
       await newLike.save();
-      await Project.deleteCache();
+      // await Project.deleteCache();
       return true;
     }
   }

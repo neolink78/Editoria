@@ -98,13 +98,18 @@ class Project extends BaseEntity {
     }
   }
 
-  static async deleteCache(): Promise<void> {
-    const cache = await getCache();
-    const keys = await cache.keys("projects_*");
-    for (const key of keys) {
-      await cache.del(key);
-    }
-  }
+  // static async deleteCache(): Promise<void> {
+  //   try {
+  //     const cache = await getCache();
+  //     const keys = await cache.keys("projects_*");
+  //     for (const key of keys) {
+  //       await cache.del(key);
+  //     }
+  //     console.log("Cache cleared successfully.");
+  //   } catch (error) {
+  //     console.error("Error clearing cache:", error);
+  //   }
+  // }
 
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
@@ -114,7 +119,7 @@ class Project extends BaseEntity {
 
     // return await Project.save(newProject);
     const savedProject = await newProject.save();
-    await Project.deleteCache();
+    // await Project.deleteCache();
 
     return savedProject;
   }
@@ -192,7 +197,7 @@ class Project extends BaseEntity {
   static async deleteProject(id: string): Promise<Project> {
     const project = await Project.getProjectById(id);
     await Project.delete(id);
-    await Project.deleteCache();
+    // await Project.deleteCache();
     return project;
   }
 
