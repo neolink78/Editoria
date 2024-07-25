@@ -47,7 +47,11 @@ const ProjectInfoTab = ({
             width={"30px"}
             overflow={"hidden"}
           >
-            <img src={info.owner.image} alt="profile picture" className="object-cover" />
+            <img
+              src={info.owner.image}
+              alt="profile picture"
+              className="object-cover"
+            />
           </Flex>
         )}
         {info.owner?.username && (
