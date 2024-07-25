@@ -97,8 +97,8 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
 
   const handleDelete = (commentId: string) => {
     openModal({
-      title: "Confirmer la suppression",
-      children: "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
+      title: "Delete Comment",
+      children: "Are you sure you want to delete this comment?",
       onConfirm: () => deleteComment(commentId),
     });
   };

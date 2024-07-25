@@ -174,7 +174,7 @@ function CodeEditor() {
   const [fileName, setFileName] = useState<string | null>("index.html");
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     id: "",
-    title: "Nouveau projet",
+    title: "New Project",
     description: "",
     isPublic: false,
     owner: {

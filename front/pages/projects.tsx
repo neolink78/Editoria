@@ -94,8 +94,8 @@ const Projects = () => {
 
   const handleDelete = (projectId: string) => {
     openModal({
-      title: "Confirmer la suppression",
-      children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
+      title: "Delete project",
+      children: "Are you sure you want to delete this project?",
       onConfirm: () => confirmDelete(projectId),
     });
   };
