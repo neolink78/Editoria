@@ -12,7 +12,6 @@ import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
-import { Error } from "../../lib/error";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
