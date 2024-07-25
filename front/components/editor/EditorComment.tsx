@@ -26,8 +26,12 @@ type EditorCommentProps = {
   highlightedCommentId: string | undefined;
 };
 
-
-function EditorComment({ comment, user, handleDelete, highlightedCommentId }: EditorCommentProps) {
+function EditorComment({
+  comment,
+  user,
+  handleDelete,
+  highlightedCommentId,
+}: EditorCommentProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
 
@@ -44,7 +48,6 @@ function EditorComment({ comment, user, handleDelete, highlightedCommentId }: Ed
       setIsHighlighted(false);
     }, 2000);
   }, [highlightedCommentId, comment.id]);
-
 
   return (
     <Flex p={2} gap={2} direction={"column"}
