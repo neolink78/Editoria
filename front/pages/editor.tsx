@@ -198,6 +198,7 @@ function CodeEditor() {
   const [openModal, setOpenModal] = useState(false);
   const userIconRef = useRef<HTMLInputElement | null>(null);
   const modalRef = useRef<HTMLInputElement | null>(null);
+  const editRef = useRef<HTMLInputElement | null>(null);
 
   const isNewProject = !router.query.project;
 
@@ -506,6 +507,12 @@ function CodeEditor() {
       isClickOutside(event, userIconRef.current)
     ) {
       setOpenModal(false);
+    } else if (
+      isEditOpen &&
+      editRef &&
+      isClickOutside(event, editRef.current)
+    ) {
+      setIsEditOpen(false);
     }
   };
 
@@ -556,7 +563,7 @@ function CodeEditor() {
             <>
               <Flex align={"center"} gap={4} position={"relative"}>
                 <Text>{projectInfo.title}</Text>
-                {isOwnProject && (
+                {displaySaveButton && (
                   <MdOutlineEdit
                     className="cursor-pointer"
                     onClick={() => setIsEditOpen(true)}
@@ -565,7 +572,7 @@ function CodeEditor() {
               </Flex>
               {isEditOpen && (
                 <div
-                  ref={modalRef}
+                  ref={editRef}
                   className="absolute left-1/2 translate-x-[-50%]"
                 >
                   <EditModal
