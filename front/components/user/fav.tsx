@@ -88,62 +88,70 @@ const Fav = (user: any) => {
   }, [data]);
 
   return (
-    <Box mb='5vw'>
-    {followedUsers && followedUsers.map((followedUser: any, idx: number )=> {
-      return (
-    <Box key={idx} py='1vw'>
-    <Flex
-        fontSize="1.4vw"
-        m="4vw 0 0 10vw"
-        alignSelf="flex-start"
-      
-        alignItems="baseline"
-      >
-       {followedUser.username} a {followedUser.type === 'like' ? "liké " : "commenté "} {formatDistanceToNow(parseISO(followedUser.createdAt), { addSuffix: true, locale: fr })}
-      </Flex>
-  {followedUser.type === 'like' ? 
-         <Tile 
-         key={idx}
-         projectId={followedUser.project.id}
-         ownerId={followedUser.project.owner.id}
-         owner={followedUser.project.owner.username}
-         icon={followedUser.project.codeSnippetsOwned[0]?.language}
-         title={followedUser.project.title}
-         description={followedUser.project.description}
-         createdAt={followedUser.project.createdAt}
-         likeCount={followedUser.project?.likes?.length}
-         commentCount={followedUser.project?.comments?.length}
-
-         toggleLike={() => {
-          handleToggleLike(followedUser.project.id);
-        }}
-        isLiked={
-          likedProjects && likedProjects.some((p) => p.id === user.id)
-        }
-        isCommented={
-          ownComments &&
-          ownComments.some((c) => c.project.id === user.id)
-        }
-         onOpenProject={() =>
-           router.push(`/editor?project=${followedUser.project.id}`)
-         }
-       /> : 
-       <Tile
-       isFav
-       key={idx}
-       projectId={followedUser.project.id}
-       title={followedUser.project.title}
-       date={new Date(followedUser.createdAt).toLocaleDateString()}
-       owner={followedUser.username}
-       content ={true}
-       ownerId={followedUser.project.owner.id}
-       description={followedUser.content}
-       onOpenProject={() => router.push(`/editor?project=${followedUser.project.id}`)}
-       createdAt={followedUser.project.createdAt}
-     />
-      }
-      </Box>
-    )})}
+    <Box mb="5vw">
+      {followedUsers &&
+        followedUsers.map((followedUser: any, idx: number) => {
+          return (
+            <Box key={idx} py="1vw">
+              <Flex
+                fontSize="1.4vw"
+                m="4vw 0 0 10vw"
+                alignSelf="flex-start"
+                alignItems="baseline"
+              >
+                {followedUser.username} a{" "}
+                {followedUser.type === "like" ? "liké " : "commenté "}{" "}
+                {formatDistanceToNow(parseISO(followedUser.createdAt), {
+                  addSuffix: true,
+                  locale: fr,
+                })}
+              </Flex>
+              {followedUser.type === "like" ? (
+                <Tile
+                  key={idx}
+                  projectId={followedUser.project.id}
+                  ownerId={followedUser.project.owner.id}
+                  owner={followedUser.project.owner.username}
+                  icon={followedUser.project.codeSnippetsOwned[0]?.language}
+                  title={followedUser.project.title}
+                  description={followedUser.project.description}
+                  createdAt={followedUser.project.createdAt}
+                  likeCount={followedUser.project?.likes?.length}
+                  commentCount={followedUser.project?.comments?.length}
+                  toggleLike={() => {
+                    handleToggleLike(followedUser.project.id);
+                  }}
+                  isLiked={
+                    likedProjects && likedProjects.some((p) => p.id === user.id)
+                  }
+                  isCommented={
+                    ownComments &&
+                    ownComments.some((c) => c.project.id === user.id)
+                  }
+                  onOpenProject={() =>
+                    router.push(`/editor?project=${followedUser.project.id}`)
+                  }
+                />
+              ) : (
+                <Tile
+                  isFav
+                  key={idx}
+                  projectId={followedUser.project.id}
+                  title={followedUser.project.title}
+                  date={new Date(followedUser.createdAt).toLocaleDateString()}
+                  owner={followedUser.username}
+                  content={true}
+                  ownerId={followedUser.project.owner.id}
+                  description={followedUser.content}
+                  onOpenProject={() =>
+                    router.push(`/editor?project=${followedUser.project.id}`)
+                  }
+                  createdAt={followedUser.project.createdAt}
+                />
+              )}
+            </Box>
+          );
+        })}
     </Box>
   );
 };
