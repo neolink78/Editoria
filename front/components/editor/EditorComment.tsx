@@ -50,7 +50,10 @@ function EditorComment({
   }, [highlightedCommentId, comment.id]);
 
   return (
-    <Flex p={2} gap={2} direction={"column"}
+    <Flex
+      p={2}
+      gap={2}
+      direction={"column"}
       bg={isHighlighted ? "#d9d9d9" : "#2F3138"}
       color={isHighlighted ? "black" : "white"}
       boxShadow={isHighlighted ? "0 0 0 2px #1574EF" : "none"}
