@@ -23,39 +23,22 @@ type EditorCommentProps = {
   };
   user: User | null;
   handleDelete: (id: string) => void;
-  highlightedCommentId: string | undefined;
+  isHighlighted: boolean;
 };
 
 function EditorComment({
   comment,
   user,
   handleDelete,
-  highlightedCommentId,
+  isHighlighted,
 }: EditorCommentProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHighlighted, setIsHighlighted] = useState(false);
-
-  useEffect(() => {
-    if (highlightedCommentId === comment.id) {
-      setIsHighlighted(true);
-      const element = document.getElementById(comment.id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-        element.focus();
-      }
-    }
-    setTimeout(() => {
-      setIsHighlighted(false);
-    }, 2000);
-  }, [highlightedCommentId, comment.id]);
 
   return (
-    <Flex p={2} gap={2} direction={"column"}
-      bg={isHighlighted ? "#d9d9d9" : "#2F3138"}
-      color={isHighlighted ? "black" : "white"}
+    <Flex id={comment.id} p={2} gap={2} direction={"column"}
+      bg="#2F3138"
       boxShadow={isHighlighted ? "0 0 0 2px #1574EF" : "none"}
       transition="background-color 0.5s ease, color 0.5s ease"
-      id={comment.id}
     >
       <Flex justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
@@ -89,7 +72,7 @@ function EditorComment({
           className="text-sm text-[#1574EF] cursor-pointer"
           onClick={() => setIsExpanded((v) => !v)}
         >
-          {isExpanded ? "voir moins" : "voir plus"}
+          {isExpanded ? "show less" : "show more"}
         </p>
       )}
     </Flex>

@@ -13,23 +13,23 @@ import { Flex, Textarea, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import EditorComment from "./EditorComment";
 
 type EditorCommentsProps = {
   refetch: () => Promise<ApolloQueryResult<any>>;
   comments:
-    | {
-        id: string;
-        content: string;
-        createdAt: string;
-        owner: {
-          id: string;
-          username: string;
-        };
-      }[]
-    | undefined;
+  | {
+    id: string;
+    content: string;
+    createdAt: string;
+    owner: {
+      id: string;
+      username: string;
+    };
+  }[]
+  | undefined;
 };
 
 const ADD_COMMENT = gql`
@@ -54,6 +54,8 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const [newComment, setNewComment] = useState<string>("");
   const { user } = useAuth();
   const { openModal } = useModal();
+  const [isHighlighted, setIsHighlighted] = useState(false);
+
 
   const [addCommentMutation] = useMutation<
     AddCommentMutation,
@@ -101,6 +103,25 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
     });
   };
 
+  useEffect(() => {
+    if (highlightedCommentId) {
+      setTimeout(() => {
+        const element = document.getElementById(highlightedCommentId as string);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+          setIsHighlighted(true);
+          setTimeout(() => {
+            setIsHighlighted(false);
+            router.replace({
+              query: { project: projectId },
+            });
+          }, 2000);
+        }
+      }, 300);
+    }
+  }, [highlightedCommentId]);
+
   return (
     <Flex
       direction={"column"}
@@ -131,7 +152,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
           comment={comment}
           user={user}
           handleDelete={handleDelete}
-          highlightedCommentId={highlightedCommentId as string}
+          isHighlighted={highlightedCommentId === comment.id && isHighlighted}
         />
       ))}
     </Flex>
