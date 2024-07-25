@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import EditorComment from "./EditorComment";
 
 type EditorCommentsProps = {
   refetch: () => Promise<ApolloQueryResult<any>>;
@@ -123,31 +124,12 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
         </Flex>
       )}
       {comments?.map((comment, index) => (
-        <Flex key={index} bg="#2F3138" p={2} gap={2} direction={"column"}>
-          <Flex justifyContent={"space-between"}>
-            <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
-              <Link
-                href={`/user/${comment.owner.id}`}
-                className="text-sm hover:text-[#1574EF]"
-              >
-                <span>@{comment.owner.username}</span>
-              </Link>
-              <Text isTruncated className="text-xs">
-                {comment.createdAt &&
-                  formatDistanceToNow(parseISO(comment.createdAt), {
-                    addSuffix: true,
-                  })}
-              </Text>
-            </Flex>
-            {user?.id === comment.owner.id && (
-              <FaRegTrashAlt
-                className="w-3 cursor-pointer opacity-40 hover:opacity-100"
-                onClick={() => handleDelete(comment.id)}
-              />
-            )}
-          </Flex>
-          <p className="text-sm">{comment.content}</p>
-        </Flex>
+        <EditorComment
+          key={index}
+          comment={comment}
+          user={user}
+          handleDelete={handleDelete}
+        />
       ))}
     </Flex>
   );
