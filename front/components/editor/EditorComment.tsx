@@ -26,8 +26,12 @@ type EditorCommentProps = {
   highlightedCommentId: string | undefined;
 };
 
-
-function EditorComment({ comment, user, handleDelete, highlightedCommentId }: EditorCommentProps) {
+function EditorComment({
+  comment,
+  user,
+  handleDelete,
+  highlightedCommentId,
+}: EditorCommentProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
@@ -40,9 +44,11 @@ function EditorComment({ comment, user, handleDelete, highlightedCommentId }: Ed
     }
   }, [highlightedCommentId, comment.id]);
 
-
   return (
-    <Flex p={2} gap={2} direction={"column"}
+    <Flex
+      p={2}
+      gap={2}
+      direction={"column"}
       bg={highlightedCommentId === comment.id ? "#d9d9d9" : "#2F3138"}
       color={highlightedCommentId === comment.id ? "black" : "white"}
       id={comment.id}
