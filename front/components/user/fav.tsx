@@ -134,7 +134,7 @@ console.log(followedUsers)
        projectId={followedUser.project.id}
        title={followedUser.project.title}
        date={new Date(followedUser.createdAt).toLocaleDateString()}
-       owner={followedUser.username}
+       owner={followedUser.project.owner.username}
        content ={true}
        ownerId={followedUser.project.owner.id}
        description={followedUser.content}
