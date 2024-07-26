@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  FindManyOptions,
   ILike,
   ManyToMany,
   ManyToOne,
@@ -97,6 +98,19 @@ class Project extends BaseEntity {
     }
   }
 
+  // static async deleteCache(): Promise<void> {
+  //   try {
+  //     const cache = await getCache();
+  //     const keys = await cache.keys("projects_*");
+  //     for (const key of keys) {
+  //       await cache.del(key);
+  //     }
+  //     console.log("Cache cleared successfully.");
+  //   } catch (error) {
+  //     console.error("Error clearing cache:", error);
+  //   }
+  // }
+
   static async createProject(project: ProjectArgs): Promise<Project> {
     const newProject = new Project(project);
     if (project.title === "") {
@@ -104,26 +118,50 @@ class Project extends BaseEntity {
     }
 
     return await Project.save(newProject);
+    // const savedProject = await newProject.save();
+    // await Project.deleteCache();
+
+    // return savedProject;
   }
 
   static async getProjects(
     limit: number,
     offset: number,
     sortBy: string,
+    search?: string,
   ): Promise<[Project[], number]> {
-    let projects = await Project.find();
+    // const cache = await getCache();
+
+    // const cacheKey = `projects_${search || "all"}_${limit}_${offset}_${sortBy}`;
+
+    // const cachedResult = await cache.get(cacheKey);
+    // if (cachedResult) {
+    //   console.log(`Cache hit for query: ${cacheKey}`);
+    //   return JSON.parse(cachedResult);
+    // }
+
+    // console.log(`Cache miss for query: ${cacheKey}`);
+
+    const [allProjects, totalCount] = await Project.findAndCount({
+      relations: ["likes"],
+      where: search
+        ? [
+            { title: ILike(`%${search}%`) },
+            { description: ILike(`%${search}%`) },
+          ]
+        : {},
+      order: sortBy === "likes" ? {} : { createdAt: "DESC" },
+    });
 
     if (sortBy === "likes") {
-      projects = projects.sort((a, b) => b.likes.length - a.likes.length);
-    } else if (sortBy === "createdAt") {
-      projects = projects.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+      allProjects.sort((a, b) => b.likes.length - a.likes.length);
     }
 
-    const totalCount = projects.length;
-    const paginatedProjects = projects.slice(offset, offset + limit);
+    const paginatedProjects = allProjects.slice(offset, offset + limit);
+
+    // cache.set(cacheKey, JSON.stringify([paginatedProjects, totalCount]), {
+    //   EX: 600,
+    // });
 
     return [paginatedProjects, totalCount];
   }
@@ -159,6 +197,7 @@ class Project extends BaseEntity {
   static async deleteProject(id: string): Promise<Project> {
     const project = await Project.getProjectById(id);
     await Project.delete(id);
+    // await Project.deleteCache();
     return project;
   }
 

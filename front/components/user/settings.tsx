@@ -49,7 +49,6 @@ const Settings = (user: any) => {
     const file = event.target.files?.[0];
     if (file) {
       formikSettings.setFieldValue("image", file);
-      console.log("IMGURL", URL.createObjectURL(file));
       setImageUrl(URL.createObjectURL(file));
     }
   };
@@ -88,9 +87,10 @@ const Settings = (user: any) => {
               src={imageUrl}
               alt="Profile Pic"
               style={{
-                width: "50px",
-                height: "50px",
+                width: "80px",
+                height: "80px",
                 borderRadius: "50%",
+                objectFit: "cover",
               }}
             />
           ) : (

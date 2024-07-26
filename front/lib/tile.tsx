@@ -57,7 +57,7 @@ const Tile = ({
 }: TileProps) => {
   const router = useRouter();
   const relativeDate = createdAt
-    ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true, locale: fr })
+    ? formatDistanceToNow(parseISO(createdAt), { addSuffix: true })
     : "";
 
   const { handleToggleLike } = useLikes();
@@ -146,7 +146,7 @@ const Tile = ({
             {owner ? (
               <span>
                 {" "}
-                par{" "}
+                by{" "}
                 <span
                   style={{ color: "#1574EF", cursor: "pointer" }}
                   onClick={(e) => {

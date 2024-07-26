@@ -30,6 +30,8 @@ import EditModal from "@/components/editor/EditModal";
 import { isClickOutside } from "../utils/event";
 import { useAuth } from "@/context/UserContext";
 import LoginModal from "@/components/loginModal";
+import UserIcon from "@/icons/userIcon";
+import UserDropdown from "@/components/user/userDropdown";
 
 export type File = {
   id: string;
@@ -168,12 +170,11 @@ function CodeEditor() {
   const { user } = useAuth();
   const toast = useToast();
   const { project: projectId } = router.query;
-  const modalRef = useRef<HTMLInputElement | null>(null);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>("index.html");
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
     id: "",
-    title: "Nouveau projet",
+    title: "New Project",
     description: "",
     isPublic: false,
     owner: {
@@ -194,6 +195,12 @@ function CodeEditor() {
 
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState(false);
+  const userIconRef = useRef<HTMLInputElement | null>(null);
+  const modalRef = useRef<HTMLInputElement | null>(null);
+  const editRef = useRef<HTMLInputElement | null>(null);
+
+  const isNewProject = !router.query.project;
 
   const selectedFile = project.find((file) => file.name === fileName);
 
@@ -480,16 +487,6 @@ function CodeEditor() {
     });
   };
 
-  /**
-   * Handler for document click event that is outside $root element
-   * @param event
-   */
-  const clickOutsideHandler = (event: MouseEvent) => {
-    if (isEditOpen && modalRef && isClickOutside(event, modalRef.current)) {
-      setIsEditOpen(false);
-    }
-  };
-
   useEffect(() => {
     document.addEventListener("mousedown", clickOutsideHandler);
 
@@ -497,6 +494,27 @@ function CodeEditor() {
       document.removeEventListener("mousedown", clickOutsideHandler);
     };
   });
+
+  /**
+   * Close modal when clicking outside
+   * @param event
+   */
+  const clickOutsideHandler = (event: MouseEvent) => {
+    if (
+      openModal &&
+      modalRef &&
+      isClickOutside(event, modalRef.current) &&
+      isClickOutside(event, userIconRef.current)
+    ) {
+      setOpenModal(false);
+    } else if (
+      isEditOpen &&
+      editRef &&
+      isClickOutside(event, editRef.current)
+    ) {
+      setIsEditOpen(false);
+    }
+  };
 
   return (
     <>
@@ -506,39 +524,55 @@ function CodeEditor() {
         bg="#2F3138"
         p={4}
         color="white"
-        gap={"16px"}
         align={"center"}
+        justify={"space-between"}
         className="relative"
       >
-        <Link href="/" className="leading-8">
-          EDITORIA
-        </Link>
-        {displaySaveButton && (
-          <Flex
-            align={"center"}
-            gap={2}
-            borderRadius={4}
-            py={1}
-            px={2}
-            className="hover:outline hover:outline-1 hover:outline-gray-400 hover:bg-gray-600 cursor-pointer transition-colors ease-out"
-            onClick={handleSave}
+        <Flex gap={"16px"} align={"center"}>
+          <Link href="/" className="leading-8">
+            EDITORIA
+          </Link>
+          {displaySaveButton && (
+            <Flex
+              align={"center"}
+              gap={2}
+              borderRadius={4}
+              py={1}
+              px={2}
+              className="hover:outline hover:outline-1 hover:outline-gray-400 hover:bg-gray-600 cursor-pointer transition-colors ease-out"
+              onClick={handleSave}
+            >
+              <LuSave color="white" /> <Text>Save</Text>
+            </Flex>
+          )}
+        </Flex>
+        {user && (
+          <Box
+            cursor="pointer"
+            onClick={() => setOpenModal((modal) => !modal)}
+            ref={userIconRef}
           >
-            <LuSave color="white" /> <Text>Save</Text>
-          </Flex>
+            <UserIcon />
+          </Box>
         )}
+        <Box ref={modalRef} className="absolute right-4 top-16 z-10">
+          <UserDropdown isVisible={openModal} />
+        </Box>
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          {user ? (
+          {!isNewProject || user ? (
             <>
               <Flex align={"center"} gap={4} position={"relative"}>
                 <Text>{projectInfo.title}</Text>
-                <MdOutlineEdit
-                  className="cursor-pointer"
-                  onClick={() => setIsEditOpen(true)}
-                />
+                {displaySaveButton && (
+                  <MdOutlineEdit
+                    className="cursor-pointer"
+                    onClick={() => setIsEditOpen(true)}
+                  />
+                )}
               </Flex>
               {isEditOpen && (
                 <div
-                  ref={modalRef}
+                  ref={editRef}
                   className="absolute left-1/2 translate-x-[-50%]"
                 >
                   <EditModal
@@ -576,7 +610,7 @@ function CodeEditor() {
             <Flex
               backgroundColor={project.length > 0 ? "#212227" : "#14181F"}
               color="white"
-              width={"60%"}
+              width={"100%"}
             >
               {filesInTabs.map((file) => (
                 <Center
@@ -601,9 +635,6 @@ function CodeEditor() {
                 </Center>
               ))}
             </Flex>
-            <Box width={"40%"} bg={"#212227"} color={"white"}>
-              blablabla
-            </Box>
           </Flex>
           <Flex>
             {filesInTabs.length !== 0 ? (
