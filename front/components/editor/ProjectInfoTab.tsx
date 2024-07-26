@@ -24,7 +24,7 @@ const ProjectInfoTab = ({
   const { handleToggleLike, likedProjects } = useLikes();
   const router = useRouter();
 
-  const isLiked = likedProjects?.some(
+  const isLiked = likedProjects && likedProjects?.some(
     (project) => project.id === router.query.project,
   );
 

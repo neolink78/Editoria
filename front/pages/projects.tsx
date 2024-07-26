@@ -217,20 +217,20 @@ const Projects = () => {
                     canDelete={currentUserId === project.owner.id}
                     onDelete={() => handleDelete(project.id)}
                     toggleLike={() => handleToggleLike(project.id)}
-                    isLiked={likedProjects.some((p) => p.id === project.id)}
-                    isCommented={ownComments.some(
+                    isLiked={likedProjects && likedProjects.some((p) => p.id === project.id)}
+                    isCommented={ownComments && ownComments.some(
                       (c) => c.project.id === project.id,
                     )}
                   />
                 ))
               )}
             </Box>
-            <PaginationControls
+            {projects && projects.length < 10 && <PaginationControls
               currentPage={currentPage}
               totalItems={totalCount}
               itemsPerPage={projectsPerPage}
               onPageChange={handlePageChange}
-            />
+            />}
           </>
         )}
       </Flex>
