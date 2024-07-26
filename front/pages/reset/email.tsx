@@ -10,9 +10,20 @@ import Layout from "../../components/layout";
 import InputForm from "../../components/input";
 import SubmitButton from "../../lib/submitButton";
 import { useResetFormik } from "../../hooks/formReset";
+import { useAuth } from "@/context/UserContext";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function GetEmail() {
   const { formik, showMessage } = useResetFormik(true);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   return (
     <Layout>
