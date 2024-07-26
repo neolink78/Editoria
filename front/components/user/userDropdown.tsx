@@ -2,9 +2,15 @@ import { useAuth } from "@/context/UserContext";
 import LogOutIcon from "@/icons/logOutIcon";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
-function UserDropdown({ isVisible }: { isVisible: boolean }) {
+type Options = "dashboard" | "settings" | "yourfavcoders" | "signout";
+type UserDropdownProps = {
+  isVisible: boolean;
+  setOpenDropdown: Dispatch<SetStateAction<boolean>>;
+};
+
+function UserDropdown({ isVisible, setOpenDropdown }: UserDropdownProps) {
   const router = useRouter();
   const { user, signOut } = useAuth();
 
@@ -17,6 +23,25 @@ function UserDropdown({ isVisible }: { isVisible: boolean }) {
     }
   };
 
+  const handleClick = (option: Options) => {
+    switch (option) {
+      case "dashboard":
+        router.push("/user/account?tab=dashboard");
+        break;
+      case "settings":
+        router.push("/user/account?tab=settings");
+        break;
+      case "yourfavcoders":
+        router.push("/user/account?tab=yourfavcoders");
+        break;
+      case "signout":
+        handleSignOut();
+        break;
+      default:
+    }
+    setOpenDropdown(false);
+  };
+
   return (
     <Flex
       direction="column"
@@ -24,7 +49,7 @@ function UserDropdown({ isVisible }: { isVisible: boolean }) {
     >
       <Text
         fontSize="md"
-        onClick={() => router.push("/user/account?tab=dashboard")}
+        onClick={() => handleClick("dashboard")}
         cursor={"pointer"}
         className="mb-1 p-1 font-semibold hover:bg-[#575d64] rounded transition-all"
       >
@@ -32,7 +57,7 @@ function UserDropdown({ isVisible }: { isVisible: boolean }) {
       </Text>
       <Text
         fontSize="md"
-        onClick={() => router.push("/user/account?tab=settings")}
+        onClick={() => handleClick("settings")}
         cursor={"pointer"}
         className="mb-1 p-1 font-semibold hover:bg-[#575d64] rounded transition-all"
       >
@@ -40,7 +65,7 @@ function UserDropdown({ isVisible }: { isVisible: boolean }) {
       </Text>
       <Text
         fontSize="md"
-        onClick={() => router.push("/user/account?tab=yourfavcoders")}
+        onClick={() => handleClick("yourfavcoders")}
         cursor={"pointer"}
         className="mb-2 p-1 font-semibold hover:bg-[#575d64] rounded transition-all"
       >
@@ -48,7 +73,7 @@ function UserDropdown({ isVisible }: { isVisible: boolean }) {
       </Text>
       <Box className="border-b border-[#575d64] w-full" />
       <Flex
-        onClick={handleSignOut}
+        onClick={() => handleClick("signout")}
         cursor="pointer"
         gap={3}
         className="mt-2 p-1 hover:bg-[#575d64] rounded transition-all"
