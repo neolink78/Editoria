@@ -218,7 +218,7 @@ const Dashboard = () => {
                   alignItems={"center"}
                 >
                   <Box fontSize="0.9vw" m="2vw">
-                    You don't have any projects yet
+                    You don`&apos;`t have any projects yet
                   </Box>
                   <SubmitButton
                     bg="#1574EF"
@@ -282,7 +282,7 @@ const Dashboard = () => {
                   my="10"
                 >
                   <Box fontSize="0.9vw" m="2vw">
-                    You haven't liked any projects yet
+                    You haven`&apos;`t liked any projects yet
                   </Box>
                   <SubmitButton
                     bg="#1574EF"
@@ -362,7 +362,7 @@ const Dashboard = () => {
                   alignItems="center"
                 >
                   <Box fontSize="0.9vw" m="4vw">
-                    You haven't commented on any projects yet
+                    You haven`&apos;`t commented on any projects yet
                   </Box>
                 </Flex>
               )}
