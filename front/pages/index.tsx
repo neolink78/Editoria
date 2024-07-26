@@ -11,8 +11,9 @@ import { useEffect, useState } from "react";
 import { Error } from "@/lib/error";
 import { UUID } from "crypto";
 import { useLikes } from "../context/LikeContext";
-import { GetProjectsQuery } from "@/gql/graphql";
+import { GetOwnCommentsQuery, GetProjectsQuery } from "@/gql/graphql";
 import { useAuth } from "@/context/UserContext";
+import { GET_OWN_COMMENTS } from "@/graphql/queries/commentQueries";
 
 export default function HomePage() {
   const router = useRouter();
@@ -24,7 +25,13 @@ export default function HomePage() {
       nextFetchPolicy: "cache-and-network",
     },
   );
+
   const projects = data?.getProjects.projects || [];
+
+  const { data: ownCommentsData } =
+    useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
+
+  const ownComments = ownCommentsData?.getOwnComments || [];
 
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const handleMouseMove = (e: MouseEvent) => {
@@ -38,7 +45,7 @@ export default function HomePage() {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, []);
+  }, [router.query.page]);
 
   const handleOpenProject = (projectId: string) => {
     router.push(`/editor?project=${projectId}`);
@@ -97,34 +104,33 @@ export default function HomePage() {
         Most popular projects
       </Box>
       <Box ml="11.6vw">
-        {projects
-          ? projects
-              .map((e, idx) => (
-                <Tile
-                  homePage
-                  projectId={e.id}
-                  key={idx}
-                  icon={e.codeSnippetsOwned[0]?.language}
-                  title={e.title}
-                  description={e.description}
-                  createdAt={e.createdAt}
-                  commentCount={e?.comments.length}
-                  owner={e.owner.id === user?.id ? "" : e.owner.username}
-                  ownerId={e.owner.id as UUID}
-                  likeCount={e?.likes.length}
-                  toggleLike={() => {
-                    handleToggleLike(e.id);
-                    refetch();
-                  }}
-                  isLiked={
-                    likedProjects && likedProjects?.some((p) => p.id === e.id)
-                  }
-                  // isCommented={ownComments.some((c) => c.project.id === e.id)}
-                  onOpenProject={() => handleOpenProject(e.id)}
-                />
-              ))
-              .sort((a, b) => b.props.likeCount - a.props.likeCount)
-          : null}
+        {projects &&
+          projects.map((e, idx) => (
+            <Tile
+              homePage
+              projectId={e.id}
+              key={idx}
+              icon={e.codeSnippetsOwned[0]?.language}
+              title={e.title}
+              description={e.description}
+              createdAt={e.createdAt}
+              commentCount={e?.comments.length}
+              owner={e.owner.id === user?.id ? "" : e.owner.username}
+              ownerId={e.owner.id as UUID}
+              likeCount={e?.likes.length}
+              toggleLike={() => {
+                handleToggleLike(e.id);
+                refetch();
+              }}
+              isLiked={
+                likedProjects && likedProjects?.some((p) => p.id === e.id)
+              }
+              isCommented={
+                ownComments && ownComments.some((c) => c.project.id === e.id)
+              }
+              onOpenProject={() => handleOpenProject(e.id)}
+            />
+          ))}
       </Box>
       <Flex justifyContent="center" mt="3vw" mb="4vw">
         <SubmitButton onClick={() => router.push("/projects")}>

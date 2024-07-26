@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  SimpleGrid,
-  Skeleton,
-  Text,
-} from "@chakra-ui/react";
-// import indexMock from "../../mocks/indexMock";
+import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 import Tile from "../../lib/tile";
 import SubmitButton from "../../lib/submitButton";
 import { useMutation, useQuery } from "@apollo/client";
@@ -15,7 +7,6 @@ import ConfirmModal from "../../lib/modal";
 import DashboardProjects from "./dashboardProjects";
 import { useModal } from "../../context/ModalContext";
 import { NewUser } from "./newUser";
-import { Error } from "../../lib/error";
 import { useRouter } from "next/router";
 import { UUID } from "crypto";
 import { GET_USER_PROJECTS } from "@/graphql/queries/projectQueries";
@@ -25,10 +16,6 @@ import { GetOwnCommentsQuery, GetOwnProjectQuery } from "@/gql/graphql";
 import { useLikes } from "@/context/LikeContext";
 import { useAuth } from "@/context/UserContext";
 import CommentCard from "@/lib/commentCard";
-
-// TODO : Unicité des like (j'ai réussi a like un projet deux fois...)
-// TODO : Creer page pour likedprojects (sur clic de Toutvoir)
-// TODO : Creer context pour comments et projects
 
 const Dashboard = () => {
   const { openModal } = useModal();
@@ -83,15 +70,18 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-  const handleOpenProject = (projectId: string) => {
-    router.push(`/editor?project=${projectId}`);
+  const handleOpenProject = (projectId: string, commentId?: string) => {
+    const url = commentId
+      ? `/editor?project=${projectId}&comment=${commentId}`
+      : `/editor?project=${projectId}`;
+    router.push(url);
   };
 
   const handleDelete = (projectId: string) => {
     setSelectedProjectId(projectId);
     openModal({
-      title: "Confirmer la suppression",
-      children: "Êtes-vous sûr de vouloir supprimer ce projet ?",
+      title: "Delete project",
+      children: "Are you sure you want to delete this project",
       onConfirm: () => confirmDelete(projectId),
     });
   };
@@ -105,7 +95,10 @@ const Dashboard = () => {
     return project?.likes.length;
   };
 
-  const newUser = !projects && !ownComments && !likedProjects;
+  const newUser =
+    projects.length === 0 &&
+    ownComments.length === 0 &&
+    likedProjects.length === 0;
 
   const handleShowMore = () => {
     setVisibleCommentsCount((prevCount) =>
@@ -162,14 +155,14 @@ const Dashboard = () => {
               alignSelf="flex-start"
               alignItems="baseline"
             >
-              <Box>Mes projets récents</Box>
+              <Box>My recent projects</Box>
               {projectData && projects.length > 3 && (
                 <Box
                   fontSize="1vw"
                   ml="2vw"
                   onClick={() => setShowAllProjects(true)}
                 >
-                  <Text cursor="pointer">Tout voir</Text>
+                  <Text cursor="pointer">Show more</Text>
                 </Box>
               )}
             </Flex>
@@ -224,13 +217,13 @@ const Dashboard = () => {
                   alignItems={"center"}
                 >
                   <Box fontSize="0.9vw" m="2vw">
-                    Vous n&apos;avez pas encore de projet.
+                    You don't have any projects yet
                   </Box>
                   <SubmitButton
                     bg="#1574EF"
                     onClick={() => router.push("/editor")}
                   >
-                    Commencez à coder
+                    Get started
                   </SubmitButton>
                 </Box>
               )}
@@ -243,10 +236,10 @@ const Dashboard = () => {
               display="flex"
               alignItems="baseline"
             >
-              Mes projets likés
+              My recent likes
               {likedProjects && likedProjects.length > 3 && (
                 <Box fontSize="1vw" ml="2vw">
-                  Tout voir
+                  Show more
                 </Box>
               )}
             </Box>
@@ -288,13 +281,13 @@ const Dashboard = () => {
                   my="10"
                 >
                   <Box fontSize="0.9vw" m="2vw">
-                    Vous n&apos;avez pas encore liké de projet.
+                    You haven't liked any projects yet
                   </Box>
                   <SubmitButton
                     bg="#1574EF"
                     onClick={() => router.push("/projects")}
                   >
-                    Tous les projets
+                    Explore projects
                   </SubmitButton>
                 </Flex>
               )}
@@ -311,7 +304,7 @@ const Dashboard = () => {
               alignItems="baseline"
               alignSelf="flex-start"
             >
-              Mes derniers commentaires
+              My recent comments
             </Box>
             <Box mb="12" w="100%" px="10rem">
               {ownCommentsData && ownComments.length > 0 ? (
@@ -326,7 +319,9 @@ const Dashboard = () => {
                           date={new Date(e.createdAt).toLocaleDateString()}
                           owner={e.owner.username}
                           content={e.content}
-                          onOpenProject={() => handleOpenProject(e.project.id)}
+                          onOpenProject={() =>
+                            handleOpenProject(e.project.id, e.id)
+                          }
                         />
                       ))}
                   </Flex>
@@ -341,7 +336,7 @@ const Dashboard = () => {
                         _hover={{ color: "blue.500" }}
                         mx="2"
                       >
-                        Afficher plus
+                        Show more
                       </Text>
                     )}
                     {visibleCommentsCount === ownComments.length && (
@@ -354,7 +349,7 @@ const Dashboard = () => {
                         _hover={{ color: "blue.500" }}
                         mx="2"
                       >
-                        Afficher moins
+                        Show less
                       </Text>
                     )}
                   </Flex>
@@ -366,7 +361,7 @@ const Dashboard = () => {
                   alignItems="center"
                 >
                   <Box fontSize="0.9vw" m="4vw">
-                    Vous n&apos;avez pas encore de commentaire.
+                    You haven't commented on any projects yet
                   </Box>
                 </Flex>
               )}

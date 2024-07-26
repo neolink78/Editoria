@@ -27,7 +27,7 @@ const CommentCard = ({
       onClick={onOpenProject}
     >
       <Text fontSize="0.8rem" color="gray.500" mb="4">
-        Le {date}
+        {date}
       </Text>
       <Text fontSize="1rem" isTruncated>
         {content}

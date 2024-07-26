@@ -13,7 +13,7 @@ import { Flex, Textarea, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import EditorComment from "./EditorComment";
 
@@ -50,10 +50,11 @@ const DELETE_COMMENT = gql`
 
 const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const router = useRouter();
-  const { project: projectId } = router.query;
+  const { project: projectId, comment: highlightedCommentId } = router.query;
   const [newComment, setNewComment] = useState<string>("");
   const { user } = useAuth();
   const { openModal } = useModal();
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   const [addCommentMutation] = useMutation<
     AddCommentMutation,
@@ -65,7 +66,9 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   const [deleteCommentMutation] = useMutation<
     DeleteCommentMutation,
     DeleteCommentMutationVariables
-  >(DELETE_COMMENT);
+  >(DELETE_COMMENT, {
+    refetchQueries: [{ query: GET_OWN_COMMENTS }],
+  });
 
   const addComment = async () => {
     if (!projectId || !newComment) return;
@@ -93,11 +96,30 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
 
   const handleDelete = (commentId: string) => {
     openModal({
-      title: "Confirmer la suppression",
-      children: "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
+      title: "Delete Comment",
+      children: "Are you sure you want to delete this comment?",
       onConfirm: () => deleteComment(commentId),
     });
   };
+
+  useEffect(() => {
+    if (highlightedCommentId) {
+      setTimeout(() => {
+        const element = document.getElementById(highlightedCommentId as string);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+          setIsHighlighted(true);
+          setTimeout(() => {
+            setIsHighlighted(false);
+            router.replace({
+              query: { project: projectId },
+            });
+          }, 2000);
+        }
+      }, 300);
+    }
+  }, [highlightedCommentId]);
 
   return (
     <Flex
@@ -129,6 +151,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
           comment={comment}
           user={user}
           handleDelete={handleDelete}
+          isHighlighted={highlightedCommentId === comment.id && isHighlighted}
         />
       ))}
     </Flex>

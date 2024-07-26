@@ -1,6 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Link from "next/link";
 
@@ -23,13 +23,27 @@ type EditorCommentProps = {
   };
   user: User | null;
   handleDelete: (id: string) => void;
+  isHighlighted: boolean;
 };
 
-function EditorComment({ comment, user, handleDelete }: EditorCommentProps) {
+function EditorComment({
+  comment,
+  user,
+  handleDelete,
+  isHighlighted,
+}: EditorCommentProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Flex bg="#2F3138" p={2} gap={2} direction={"column"}>
+    <Flex
+      id={comment.id}
+      p={2}
+      gap={2}
+      direction={"column"}
+      bg="#2F3138"
+      boxShadow={isHighlighted ? "0 0 0 2px #1574EF" : "none"}
+      transition="background-color 0.5s ease, color 0.5s ease"
+    >
       <Flex justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"} w={"calc(100% - 30px)"}>
           <Link
@@ -62,7 +76,7 @@ function EditorComment({ comment, user, handleDelete }: EditorCommentProps) {
           className="text-sm text-[#1574EF] cursor-pointer"
           onClick={() => setIsExpanded((v) => !v)}
         >
-          {isExpanded ? "voir moins" : "voir plus"}
+          {isExpanded ? "show less" : "show more"}
         </p>
       )}
     </Flex>
