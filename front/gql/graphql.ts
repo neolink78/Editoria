@@ -224,6 +224,7 @@ export type Query = {
   getCommentsByUserId: Array<Comment>;
   getCommentsbyProjectId: Array<Comment>;
   getFollowers: Array<Follower>;
+  getFollowings: Array<Follower>;
   getOwnComments: Array<Comment>;
   getOwnProject: ProjectPaginationResponse;
   getProjectById: Project;
@@ -302,6 +303,7 @@ export enum Role {
 
 export type User = {
   __typename?: "User";
+  comments: Array<Comment>;
   description: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
   followers: Array<Follower>;
@@ -422,8 +424,6 @@ export type DeleteProjectMutation = {
   deleteProject: { __typename?: "Project"; id: string };
 };
 
-export type GetOwnCommentsQueryVariables = Exact<{ [key: string]: never }>;
-
 export type GetOwnCommentsQuery = {
   __typename?: "Query";
   getOwnComments: Array<{
@@ -455,6 +455,46 @@ export type GetFollowersQuery = {
       id: string;
       email: string;
       username: string;
+    };
+  }>;
+};
+
+export type GetFollowingsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetFollowingsQuery = {
+  __typename?: "Query";
+  getFollowings: Array<{
+    __typename?: "Follower";
+    following: {
+      __typename?: "User";
+      username: string;
+      likes: Array<{
+        __typename?: "Like";
+        createdAt: any;
+        project: {
+          __typename?: "Project";
+          title: string;
+          description: string;
+          id: string;
+          createdAt: any;
+          codeSnippetsOwned: Array<{
+            __typename?: "CodeSnippet";
+            language: Language;
+          }>;
+          owner: { __typename?: "User"; id: string; username: string };
+        };
+      }>;
+      comments: Array<{
+        __typename?: "Comment";
+        content: string;
+        createdAt: any;
+        project: {
+          __typename?: "Project";
+          id: string;
+          title: string;
+          owner: { __typename?: "User"; username: string };
+        };
+      }>;
     };
   }>;
 };
@@ -737,15 +777,6 @@ export type UpdateProjectMutation = {
 export type SearchProjectsQueryVariables = Exact<{
   query: Scalars["String"]["input"];
 }>;
-
-export type SearchProjectsQuery = {
-  __typename?: "Query";
-  searchProjects: Array<{
-    __typename?: "Project";
-    title: string;
-    owner: { __typename?: "User"; username: string; email: string };
-  }>;
-};
 
 export const AddCommentDocument = {
   kind: "Document",

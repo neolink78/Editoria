@@ -53,7 +53,7 @@ export default function Account() {
         />
         {activePage === "dashboard" && <Dashboard />}
         {activePage === "settings" && <Settings user={user} />}
-        {activePage === "yourfavcoders" && <Fav />}
+        {activePage === "yourfavcoders" && <Fav user={user} />}
       </Flex>
     </Layout>
   ) : (

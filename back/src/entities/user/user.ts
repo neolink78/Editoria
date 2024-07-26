@@ -90,6 +90,7 @@ class User extends BaseEntity {
   sessions!: UserSession[];
 
   @OneToMany(() => Comment, (comment) => comment.owner)
+  @Field(() => [Comment])
   comments!: Comment[];
 
   @OneToMany(() => UserResetSession, (sessionReset) => sessionReset.user)
