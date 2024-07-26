@@ -26,11 +26,6 @@ class Comment extends BaseEntity {
   @Field()
   content!: string;
 
-  //TODO: Add createdAt field
-  // @Column()
-  // @Field()
-  // createdAt!: Date;
-
   @ManyToOne(() => Project, (project) => project.comments)
   @Field(() => Project)
   project!: Project;
@@ -88,10 +83,15 @@ class Comment extends BaseEntity {
     });
   }
 
-  static async getCommentByUserId(userId: string): Promise<Comment[]> {
+  static async getCommentByUserId(userId: string, take?: number, skip?: number): Promise<Comment[]> {
     return await Comment.find({
       where: { owner: { id: userId } },
       relations: ["owner", "project"],
+      take,
+      skip,
+      order: {
+        createdAt: "DESC",
+      },
     });
   }
 

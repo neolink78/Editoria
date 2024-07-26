@@ -41,8 +41,8 @@ const Fav = (user: any) => {
   const { data } = useQuery<GetFollowingsQuery>(GET_FAVORITE_CODERS);
   const [followedUsers, setFollowedUsers] = useState<any>([]);
   const router = useRouter();
-  const { handleToggleLike, likedProjects, refetchProjects } = useLikes();
-  const { data: ownCommentsData, loading: commentLoading } =
+  const { handleToggleLike, likedProjects } = useLikes();
+  const { data: ownCommentsData } =
     useQuery<GetOwnCommentsQuery>(GET_OWN_COMMENTS);
   const ownComments =
     ownCommentsData?.getOwnComments
@@ -86,7 +86,7 @@ const Fav = (user: any) => {
   useEffect(() => {
     data && getfollowedActivities();
   }, [data]);
-
+console.log(followedUsers)
   return (
     <Box mb='5vw'>
     {followedUsers && followedUsers.map((followedUser: any, idx: number )=> {

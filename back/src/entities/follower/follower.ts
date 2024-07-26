@@ -74,6 +74,7 @@ class Follower extends BaseEntity {
         "following.comments.project",
       ],
     });
+    console.log(followings)
     return followings;
   }
 }

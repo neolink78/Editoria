@@ -10,6 +10,8 @@ import {
 import User from "../entities/user/user";
 import Follower from "../entities/follower/follower";
 import { Context } from "..";
+import Comment from "../entities/comment/comment";
+import Like from "../entities/like/like";
 
 @Resolver()
 class FollowerResolver {
@@ -33,9 +35,28 @@ class FollowerResolver {
   }
 
   @Query(() => [Follower])
-  async getFollowings(@Ctx() { user }: Context) {
+  async getFollowings(
+    @Ctx() { user }: Context,
+    @Arg("limit", () => Int, {nullable: true}) limit?: number,
+    @Arg("offset", () => Int, {nullable: true}) offset?: number,
+  ) {
     if (!user) throw new Error("Authentication required");
-    return await Follower.getFollowings(user);
+    const followingsUserId: string[] = []
+    const filteredData: any = []
+    const followings = await Follower.getFollowings(user);
+   followings.map( following => followingsUserId.push(following.following.id))
+    //console.log(followingsUserId)
+    await Promise.all(followingsUserId.map(async userId => {
+      const comments = await Comment.getCommentByUserId(userId, limit, offset)
+      return filteredData.push(comments)
+    }))
+    await Promise.all(followingsUserId.map(async userId => {
+      const likes = await Like.likedProjects(userId, limit, offset)
+      return filteredData.push(likes)
+    }))
+
+    console.log(filteredData.flat())
+    return followings
   }
 }
 
