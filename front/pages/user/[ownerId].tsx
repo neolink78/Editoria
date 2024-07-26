@@ -191,13 +191,15 @@ export default function User() {
                 />
               ))}
             </Box>
-            {paginatedProjects && paginatedProjects?.length < 5 && <PaginationControls
-              onPageChange={() => handlePageChange}
-              currentPage={+currentPage}
-              totalItems={totalCount}
-              itemsPerPage={projectsPerPage}
-              user={ownerId as string}
-            />}
+            {paginatedProjects && paginatedProjects?.length < 5 && (
+              <PaginationControls
+                onPageChange={() => handlePageChange}
+                currentPage={+currentPage}
+                totalItems={totalCount}
+                itemsPerPage={projectsPerPage}
+                user={ownerId as string}
+              />
+            )}
           </Box>
         </Flex>
       )}
