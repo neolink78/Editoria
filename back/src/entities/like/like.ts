@@ -58,7 +58,11 @@ class Like extends BaseEntity {
     }
   }
 
-  static async likedProjects(userId: string, take?: number, skip?: number): Promise<Project[]> {
+  static async likedProjects(
+    userId: string,
+    take?: number,
+    skip?: number,
+  ): Promise<Project[]> {
     const likes = await Like.find({
       where: { user: { id: userId } },
       take,

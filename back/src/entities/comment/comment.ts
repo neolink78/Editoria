@@ -84,7 +84,11 @@ class Comment extends BaseEntity {
     });
   }
 
-  static async getCommentByUserId(userId: string, take?: number, skip?: number): Promise<Comment[]> {
+  static async getCommentByUserId(
+    userId: string,
+    take?: number,
+    skip?: number,
+  ): Promise<Comment[]> {
     return await Comment.find({
       where: { owner: { id: userId } },
       relations: ["owner", "project"],
