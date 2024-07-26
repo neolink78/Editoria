@@ -22,6 +22,10 @@ export type Context = {
   res: Response;
   user: User | null;
   userSessionId: string | undefined;
+};
+
+export type ContextReset = {
+  res: Response;
   userResetSessionId?: string | undefined;
 };
 
@@ -47,7 +51,7 @@ const startApolloServer = async () => {
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: PORT },
-    context: async ({ req, res }): Promise<Context> => {
+    context: async ({ req, res }): Promise<Context | ContextReset> => {
       const userSessionId = getUserSessionIdFromCookie(req);
       const userResetSessionId = getUserResetSessionIdFromCookie(req);
 
@@ -57,12 +61,13 @@ const startApolloServer = async () => {
       if (userSessionId) {
         user = await User.getUserWithSessionId(userSessionId);
         sessionId = userSessionId;
+        return { res: res as Response, user, userSessionId };
       } else if (userResetSessionId) {
-        user = await User.getUserResetWithSessionId(userResetSessionId);
         sessionId = userResetSessionId;
+        return { res: res as Response, userResetSessionId };
       }
 
-      return { res: res as Response, user, userSessionId: sessionId };
+      return { res: res as Response };
     },
   });
 

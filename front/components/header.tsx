@@ -12,7 +12,7 @@ import UserDropdown from "./user/userDropdown";
 const Header = () => {
   const router = useRouter();
   const { user, signOut } = useAuth();
-  const [openModal, setOpenModal] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
   const userIconRef = useRef<HTMLInputElement | null>(null);
   const modalRef = useRef<HTMLInputElement | null>(null);
 
@@ -24,12 +24,12 @@ const Header = () => {
    */
   const clickOutsideHandler = (event: MouseEvent) => {
     if (
-      openModal &&
+      openDropdown &&
       modalRef &&
       isClickOutside(event, modalRef.current) &&
       isClickOutside(event, userIconRef.current)
     ) {
-      setOpenModal(false);
+      setOpenDropdown(false);
     }
   };
 
@@ -63,7 +63,7 @@ const Header = () => {
           <>
             <Box
               ref={userIconRef}
-              onClick={() => setOpenModal((modal) => !modal)}
+              onClick={() => setOpenDropdown((modal) => !modal)}
               cursor="pointer"
             >
               <UserIcon />
@@ -74,7 +74,10 @@ const Header = () => {
         )}
       </Flex>
       <Box ref={modalRef} className="absolute right-8 top-20 z-10">
-        <UserDropdown isVisible={openModal} />
+        <UserDropdown
+          isVisible={openDropdown}
+          setOpenDropdown={setOpenDropdown}
+        />
       </Box>
     </Flex>
   );

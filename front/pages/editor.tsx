@@ -195,7 +195,7 @@ function CodeEditor() {
 
   const [filesInTabs, setFilesInTabs] = useState<string[]>(["index.html"]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const userIconRef = useRef<HTMLInputElement | null>(null);
   const modalRef = useRef<HTMLInputElement | null>(null);
   const editRef = useRef<HTMLInputElement | null>(null);
@@ -501,12 +501,12 @@ function CodeEditor() {
    */
   const clickOutsideHandler = (event: MouseEvent) => {
     if (
-      openModal &&
+      openDropdown &&
       modalRef &&
       isClickOutside(event, modalRef.current) &&
       isClickOutside(event, userIconRef.current)
     ) {
-      setOpenModal(false);
+      setOpenDropdown(false);
     } else if (
       isEditOpen &&
       editRef &&
@@ -549,14 +549,17 @@ function CodeEditor() {
         {user && (
           <Box
             cursor="pointer"
-            onClick={() => setOpenModal((modal) => !modal)}
+            onClick={() => setOpenDropdown((modal) => !modal)}
             ref={userIconRef}
           >
             <UserIcon />
           </Box>
         )}
         <Box ref={modalRef} className="absolute right-4 top-16 z-10">
-          <UserDropdown isVisible={openModal} />
+          <UserDropdown
+            isVisible={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          />
         </Box>
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {!isNewProject || user ? (

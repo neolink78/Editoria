@@ -74,14 +74,21 @@ export const useResetFormik = (isEmail: boolean) => {
         });
       }
     } else {
-      const { data } = await ResetPasswordMutation({
-        variables: {
-          newPassword: formik.values.password,
-        },
-      });
+      try {
+        const { data } = await ResetPasswordMutation({
+          variables: {
+            newPassword: formik.values.password,
+          },
+        });
 
-      if (data && data.ResetPassword) {
-        router.push(`/sign-in`);
+        if (data && data.ResetPassword) {
+          router.push(`/sign-in`);
+        }
+      } catch (error: any) {
+        console.error("Error during mutation:", error);
+        formik.setErrors({
+          password: "An error occurred during the password reset",
+        });
       }
     }
   };

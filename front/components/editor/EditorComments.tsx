@@ -71,7 +71,7 @@ const EditorComments = ({ comments, refetch }: EditorCommentsProps) => {
   });
 
   const addComment = async () => {
-    if (!projectId || !newComment) return;
+    if (!projectId || !newComment || newComment.length < 2) return;
 
     await addCommentMutation({
       variables: {

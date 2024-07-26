@@ -8,7 +8,7 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import { Context } from "..";
+import { Context, ContextReset } from "..";
 import User from "../entities/user/user";
 import {
   CreateUser,
@@ -72,7 +72,7 @@ export class UserResolver {
   @Mutation(() => User)
   async ResetUser(
     @Args() args: ResetUser,
-    @Ctx() context: Context,
+    @Ctx() context: ContextReset,
   ): Promise<User> {
     const { user, session } = await User.resetUser(args);
     setUserResetSessionIdInCookie(context.res, session);
@@ -92,12 +92,11 @@ export class UserResolver {
     return user;
   }
 
-  @Authorized()
   @Mutation(() => User)
-  async ResetPassword(@Ctx() context: Context, @Args() args: ResetPassword) {
-    console.log("email", context.user?.email);
-    console.log("id", context.user?.id);
-    console.log("username", context.user?.username);
+  async ResetPassword(
+    @Ctx() context: ContextReset,
+    @Args() args: ResetPassword,
+  ) {
     const userResetSessionId = context.userResetSessionId as string;
     const updatedUser = await User.updatePassword(userResetSessionId, args);
 
