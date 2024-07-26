@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { Box, Flex } from "@chakra-ui/react";
-import { GetFollowingsQuery, GetUsersQuery } from "../../gql/graphql";
+import { GetFollowingsQuery } from "../../gql/graphql";
 import Tile from "../../lib/tile";
 import { GET_FAVORITE_CODERS } from "@/graphql/queries/followQueries";
 import { useEffect, useState } from "react";

@@ -259,6 +259,11 @@ export type QueryGetFollowersArgs = {
   followingId: Scalars["String"]["input"];
 };
 
+export type QueryGetFollowingsArgs = {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
 export type QueryGetOwnProjectArgs = {
   limit: Scalars["Int"]["input"];
   offset: Scalars["Int"]["input"];
@@ -271,6 +276,7 @@ export type QueryGetProjectByIdArgs = {
 export type QueryGetProjectsArgs = {
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
+  search?: InputMaybe<Scalars["String"]["input"]>;
   sortBy?: InputMaybe<Scalars["String"]["input"]>;
 };
 
@@ -353,18 +359,6 @@ export type GetCommentsbyProjectIdQuery = {
   }>;
 };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetUsersQuery = {
-  __typename?: "Query";
-  getUsers: Array<{
-    __typename?: "User";
-    id: string;
-    username: string;
-    email: string;
-  }>;
-};
-
 export type DeleteUserMutationVariables = Exact<{
   deleteUserId: Scalars["ID"]["input"];
 }>;
@@ -424,6 +418,8 @@ export type DeleteProjectMutation = {
   deleteProject: { __typename?: "Project"; id: string };
 };
 
+export type GetOwnCommentsQueryVariables = Exact<{ [key: string]: never }>;
+
 export type GetOwnCommentsQuery = {
   __typename?: "Query";
   getOwnComments: Array<{
@@ -481,6 +477,8 @@ export type GetFollowingsQuery = {
             __typename?: "CodeSnippet";
             language: Language;
           }>;
+          comments: Array<{ __typename?: "Comment"; id: string }>;
+          likes: Array<{ __typename?: "Like"; id: string }>;
           owner: { __typename?: "User"; id: string; username: string };
         };
       }>;
@@ -490,9 +488,11 @@ export type GetFollowingsQuery = {
         createdAt: any;
         project: {
           __typename?: "Project";
+          createdAt: any;
           id: string;
           title: string;
-          owner: { __typename?: "User"; username: string };
+          likes: Array<{ __typename?: "Like"; id: string }>;
+          owner: { __typename?: "User"; id: string; username: string };
         };
       }>;
     };
@@ -552,6 +552,7 @@ export type GetProjectsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   sortBy?: InputMaybe<Scalars["String"]["input"]>;
+  search?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type GetProjectsQuery = {
@@ -573,6 +574,34 @@ export type GetProjectsQuery = {
         language: Language;
       }>;
       comments: Array<{ __typename?: "Comment"; id: string }>;
+    }>;
+  };
+};
+
+export type GetProjectByIdQueryVariables = Exact<{
+  getProjectByIdId: Scalars["ID"]["input"];
+}>;
+
+export type GetProjectByIdQuery = {
+  __typename?: "Query";
+  getProjectById: {
+    __typename?: "Project";
+    id: string;
+    title: string;
+    description: string;
+    createdAt: any;
+    owner: { __typename?: "User"; id: string; username: string };
+    likes: Array<{ __typename?: "Like"; id: string }>;
+    comments: Array<{
+      __typename?: "Comment";
+      id: string;
+      content: string;
+      createdAt: any;
+    }>;
+    codeSnippetsOwned: Array<{
+      __typename?: "CodeSnippet";
+      id: string;
+      language: Language;
     }>;
   };
 };
@@ -774,10 +803,6 @@ export type UpdateProjectMutation = {
   updateProject: { __typename?: "Project"; id: string };
 };
 
-export type SearchProjectsQueryVariables = Exact<{
-  query: Scalars["String"]["input"];
-}>;
-
 export const AddCommentDocument = {
   kind: "Document",
   definitions: [
@@ -973,33 +998,6 @@ export const GetCommentsbyProjectIdDocument = {
   GetCommentsbyProjectIdQuery,
   GetCommentsbyProjectIdQueryVariables
 >;
-export const GetUsersDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetUsers" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "getUsers" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "username" } },
-                { kind: "Field", name: { kind: "Name", value: "email" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const DeleteUserDocument = {
   kind: "Document",
   definitions: [
@@ -1368,6 +1366,220 @@ export const GetFollowersDocument = {
     },
   ],
 } as unknown as DocumentNode<GetFollowersQuery, GetFollowersQueryVariables>;
+export const GetFollowingsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "getFollowings" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "getFollowings" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "following" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "likes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "createdAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "title" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: {
+                                      kind: "Name",
+                                      value: "description",
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "id" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: {
+                                      kind: "Name",
+                                      value: "codeSnippetsOwned",
+                                    },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: {
+                                            kind: "Name",
+                                            value: "language",
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "comments" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "id" },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "likes" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "id" },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "owner" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "id" },
+                                        },
+                                        {
+                                          kind: "Field",
+                                          name: {
+                                            kind: "Name",
+                                            value: "username",
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "createdAt" },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "comments" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "createdAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "createdAt" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "id" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "likes" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "id" },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "title" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "owner" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "id" },
+                                        },
+                                        {
+                                          kind: "Field",
+                                          name: {
+                                            kind: "Name",
+                                            value: "username",
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFollowingsQuery, GetFollowingsQueryVariables>;
 export const LikedProjectsDocument = {
   kind: "Document",
   definitions: [
@@ -1626,6 +1838,14 @@ export const GetProjectsDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "search" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1656,6 +1876,14 @@ export const GetProjectsDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "sortBy" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "search" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "search" },
                 },
               },
             ],
@@ -1750,6 +1978,113 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetProjectByIdDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetProjectById" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "getProjectByIdId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "getProjectById" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "getProjectByIdId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "likes" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "comments" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "content" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "codeSnippetsOwned" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "language" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetProjectByIdQuery, GetProjectByIdQueryVariables>;
 export const GetUserDocument = {
   kind: "Document",
   definitions: [
@@ -2858,68 +3193,3 @@ export const UpdateProjectDocument = {
   UpdateProjectMutation,
   UpdateProjectMutationVariables
 >;
-export const SearchProjectsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "SearchProjects" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "query" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "searchProjects" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "query" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "query" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "owner" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "username" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "email" } },
-                    ],
-                  },
-                },
-                { kind: "Field", name: { kind: "Name", value: "title" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SearchProjectsQuery, SearchProjectsQueryVariables>;
