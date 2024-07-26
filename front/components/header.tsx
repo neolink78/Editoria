@@ -74,7 +74,10 @@ const Header = () => {
         )}
       </Flex>
       <Box ref={modalRef} className="absolute right-8 top-20 z-10">
-        <UserDropdown isVisible={openDropdown} setOpenDropdown={setOpenDropdown} />
+        <UserDropdown
+          isVisible={openDropdown}
+          setOpenDropdown={setOpenDropdown}
+        />
       </Box>
     </Flex>
   );

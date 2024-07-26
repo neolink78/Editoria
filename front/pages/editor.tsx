@@ -556,7 +556,10 @@ function CodeEditor() {
           </Box>
         )}
         <Box ref={modalRef} className="absolute right-4 top-16 z-10">
-          <UserDropdown isVisible={openDropdown} setOpenDropdown={setOpenDropdown} />
+          <UserDropdown
+            isVisible={openDropdown}
+            setOpenDropdown={setOpenDropdown}
+          />
         </Box>
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {!isNewProject || user ? (
