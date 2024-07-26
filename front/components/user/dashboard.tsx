@@ -95,11 +95,10 @@ const Dashboard = () => {
     return project?.likes.length;
   };
 
-  const newUser = (
+  const newUser =
     (projects ?? []).length === 0 &&
     (ownComments ?? []).length === 0 &&
-    (likedProjects ?? []).length === 0
-  );
+    (likedProjects ?? []).length === 0;
 
   const handleShowMore = () => {
     setVisibleCommentsCount((prevCount) =>
