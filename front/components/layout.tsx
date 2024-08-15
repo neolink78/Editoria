@@ -20,7 +20,7 @@ const Layout = ({ children }: Props) => {
         bottom="0"
         zIndex={9}
       >
-        © 2025 Editoria. All rights reserved.
+        © 2024 Editoria. All rights reserved.
       </Flex>
     </Box>
   );

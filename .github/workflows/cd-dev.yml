@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [continuous-deployment]
+    branches: [dev]
 
 jobs:
   deploy:
@@ -11,11 +11,11 @@ jobs:
       - name: Deploy to editoria
         uses: appleboy/ssh-action@master
         with:
-          host: 0923-orange-3.wns.wilders.dev # Remarque: l'adresse du serveur, sans 'ssh'
+          host: 0923-orange-3.wns.wilders.dev
           username: wns_student
-          password: ecopedia
-          port: 2269 # Spécification du port ici
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 2269
           script: |
             cd apps/production/Editoria
-            git pull origin continuous-deployment
+            git pull origin dev
             make run-prod
