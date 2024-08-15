@@ -1,0 +1,21 @@
+name: CD
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to editoria
+        uses: appleboy/ssh-action@master
+        with:
+          host: 0923-orange-3.wns.wilders.dev
+          username: wns_student
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 2269
+          script: |
+            cd apps/production/Editoria
+            git pull origin dev
+            make run-prod
