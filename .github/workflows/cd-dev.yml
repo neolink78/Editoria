@@ -1,0 +1,17 @@
+name: CD
+
+on:
+  push:
+    branches: [ continuous-deployment ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to editoria
+      uses: appleboy/ssh-action@master
+      with:
+        username: wns_student
+        host: ssh wns_student@0923-orange-3.wns.wilders.dev
+        password: ecopedia
+        script: 'cd apps/production/Editoria && git pull origin continuous-deployment && make run-prod'
